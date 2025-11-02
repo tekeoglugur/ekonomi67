@@ -1,0 +1,2870 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinler Tarihi Sınav Uygulaması</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        /* Ana Menü */
+        .menu {
+            display: grid;
+            gap: 20px;
+        }
+
+        .topic-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-color: #667eea;
+        }
+
+        .topic-card h3 {
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .topic-card p {
+            color: #666;
+            font-size: 1em;
+        }
+
+        .topic-card .question-count {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        /* Soru Sayısı Seçimi */
+        .question-count-selection {
+            display: none;
+            text-align: center;
+        }
+
+        .question-count-selection h2 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .count-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .count-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .count-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .back-btn {
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #d0d0d0;
+        }
+
+        /* Sınav Ekranı */
+        .quiz-container {
+            display: none;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .question-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .question-box {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .question-meta {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .meta-tag {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option {
+            background: white;
+            border: 3px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            transform: translateX(10px);
+        }
+
+        .option-letter {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .option-text {
+            color: #333;
+            font-size: 1.1em;
+            line-height: 1.5;
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option.correct {
+            border-color: #4caf50;
+            background: #e8f5e9;
+        }
+
+        .option.correct .option-letter {
+            background: #4caf50;
+        }
+
+        .option.wrong {
+            border-color: #f44336;
+            background: #ffebee;
+        }
+
+        .option.wrong .option-letter {
+            background: #f44336;
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .explanation {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .explanation h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .explanation p {
+            color: #856404;
+            line-height: 1.6;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .prev-btn {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .prev-btn:hover:not(:disabled) {
+            background: #d0d0d0;
+        }
+
+        .next-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .next-btn:hover:not(:disabled) {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Sonuç Ekranı */
+        .results {
+            display: none;
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 30px auto;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+        }
+
+        .score-circle .score {
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .score-circle .label {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-card .label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .wrong-answers {
+            text-align: left;
+            margin-top: 30px;
+            background: #fff3cd;
+            padding: 25px;
+            border-radius: 15px;
+        }
+
+        .wrong-answers h3 {
+            color: #856404;
+            margin-bottom: 20px;
+        }
+
+        .wrong-question {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #f44336;
+        }
+
+        .wrong-question .q-text {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .wrong-question .answer {
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .wrong-question .your-answer {
+            color: #f44336;
+        }
+
+        .wrong-question .correct-answer {
+            color: #4caf50;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .primary-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .secondary-btn {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .secondary-btn:hover {
+            background: #d0d0d0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .question-text {
+                font-size: 1.1em;
+            }
+
+            .count-options {
+                grid-template-columns: 1fr;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .action-btns {
+                flex-direction: column;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Dinler Tarihi Sınav Uygulaması</h1>
+            <p>Konularını seç, soru sayını belirle ve başla!</p>
+        </div>
+
+        <div class="content">
+            <!-- Ana Menü -->
+            <div class="menu" id="mainMenu">
+                <div class="topic-card" onclick="selectTopic('giris1')">
+                    <h3>📖 Dinler Tarihine Giriş I</h3>
+                    <p>Din kavramı, tanımı, özellikleri ve dinlerin sınıflandırılması</p>
+                    <span class="question-count">47 Soru</span>
+                </div>
+
+                <div class="topic-card" onclick="selectTopic('kaynak')">
+                    <h3>🔍 Dinin Kaynağı</h3>
+                    <p>Animizm, Naturizm, Totemizm ve dinin kaynağına yönelik teoriler</p>
+                    <span class="question-count">45 Soru</span>
+                </div>
+
+                <div class="topic-card" onclick="selectTopic('bilim')">
+                    <h3>🎓 Dinler Tarihi Bilim Dalı</h3>
+                    <p>Metodoloji, fenomenoloji ve ilişkili bilim dalları</p>
+                    <span class="question-count">42 Soru</span>
+                </div>
+
+                <div class="topic-card" onclick="selectTopic('yahudilik')">
+                    <h3>✡️ Yahudilik</h3>
+                    <p>İnanç esasları, ibadetler, tarih ve kutsal metinler</p>
+                    <span class="question-count">60 Soru</span>
+                </div>
+
+                <div class="topic-card" onclick="selectTopic('karisik')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <h3 style="color: white;">🎲 Karışık Sınav</h3>
+                    <p style="color: white; opacity: 0.9;">Tüm konulardan rastgele sorular</p>
+                    <span class="question-count" style="background: white; color: #667eea;">194 Soru</span>
+                </div>
+            </div>
+
+            <!-- Soru Sayısı Seçimi -->
+            <div class="question-count-selection" id="countSelection">
+                <h2>Kaç soru çözmek istersin?</h2>
+                <div class="count-options">
+                    <button class="count-btn" onclick="startQuiz(10)">10 Soru<br><small>Hızlı</small></button>
+                    <button class="count-btn" onclick="startQuiz(20)">20 Soru<br><small>Orta</small></button>
+                    <button class="count-btn" onclick="startQuiz(50)">50 Soru<br><small>Uzun</small></button>
+                    <button class="count-btn" onclick="startQuiz('all')">Tümü<br><small>Tam Sınav</small></button>
+                </div>
+                <button class="back-btn" onclick="backToMenu()">← Ana Menüye Dön</button>
+            </div>
+
+            <!-- Sınav Ekranı -->
+            <div class="quiz-container" id="quizContainer">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+
+                <div class="question-info">
+                    <span id="questionNumber">Soru 1/10</span>
+                    <span id="timeInfo">Süre: 00:00</span>
+                </div>
+
+                <div class="question-box">
+                    <div class="question-text" id="questionText"></div>
+                    <div class="question-meta" id="questionMeta"></div>
+                </div>
+
+                <div class="options" id="optionsContainer"></div>
+
+                <div class="explanation" id="explanation">
+                    <h4>💡 Açıklama</h4>
+                    <p id="explanationText"></p>
+                </div>
+
+                <div class="navigation">
+                    <button class="nav-btn prev-btn" id="prevBtn" onclick="previousQuestion()">← Önceki</button>
+                    <button class="nav-btn next-btn" id="nextBtn" onclick="nextQuestion()" disabled>Sonraki →</button>
+                </div>
+            </div>
+
+            <!-- Sonuç Ekranı -->
+            <div class="results" id="results">
+                <h2>🎉 Sınav Tamamlandı!</h2>
+                
+                <div class="score-circle">
+                    <div class="score" id="scorePercent">0%</div>
+                    <div class="label">Başarı Oranı</div>
+                </div>
+
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="number" id="correctCount">0</div>
+                        <div class="label">Doğru</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="wrongCount">0</div>
+                        <div class="label">Yanlış</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="totalTime">0:00</div>
+                        <div class="label">Süre</div>
+                    </div>
+                </div>
+
+                <div class="wrong-answers" id="wrongAnswers"></div>
+
+                <div class="action-btns">
+                    <button class="action-btn primary-btn" onclick="restartQuiz()">🔄 Tekrar Çöz</button>
+                    <button class="action-btn secondary-btn" onclick="backToMenu()">🏠 Ana Menü</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // SORU BANKASI
+        const questionBank = {
+            giris1: [
+                {
+                    question: "Din kelimesinin Arapça kökeni hangi fiilden türemiştir?",
+                    options: ["d-y-n", "s-l-m", "ʿ-b-d", "k-f-r", "ş-k-r"],
+                    correct: 0,
+                    difficulty: "Kolay",
+                    topic: "Din Kavramı"
+                },
+                {
+                    question: "Aşağıdakilerden hangisi 'd-y-n' kökünden türeyen kelimelerden DEĞİLDİR?",
+                    options: ["Medine (şehir)", "Mütedeyyîn (dindar)", "Deyn (borç)", "Deyyan (ceza veren)", "İman (inanç)"],
+                    correct: 4,
+                    difficulty: "Orta",
+                    topic: "Din Kavramı"
+                },
+                {
+                    question: "Din kelimesinin Latince karşılığı olan 'religio' kelimesi hangi fiilden türemiştir?",
+                    options: ["religare (bağlamak)", "credere (inanmak)", "orare (dua etmek)", "sanctus (kutsal)", "devotio (adanmışlık)"],
+                    correct: 0,
+                    difficulty: "Orta",
+                    topic: "Din Kavramı"
+                },
+                {
+                    question: "Hint dillerinde 'din' kavramını karşılayan ve 'taşımak, tutmak, sürdürmek' anlamına gelen kelime hangisidir?",
+                    options: ["Yoga", "Karma", "Dharma", "Moksha", "Brahman"],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Din Kavramı"
+                },
+                {
+                    question: "Eski Yunancada 'din' kavramını ifade eden ve 'ibadet, tapınma' anlamına gelen kelime hangisidir?",
+                    options: ["Philosophia", "Thriskeia", "Gnosis", "Pistis", "Theos"],
+                    correct: 1,
+                    difficulty: "Zor",
+                    topic: "Din Kavramı"
+                },
+                {
+                    question: "Modern Türkçede 'din' kelimesinin yanı sıra kullanılan ve Farsça kökenli olan kelime hangisidir?",
+                    options: ["İman", "İtikat", "Mezhep", "Diyanet", "Şeriat"],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Din Kavramı"
+                },
+                {
+                    question: "Cicero'nun din tanımı aşağıdakilerden hangisidir?",
+                    options: [
+                        "Tanrıya inanmak ve ibadet etmek",
+                        "Yüce bir tabiatın kültü",
+                        "İnsanın kutsal olanla ilişkisi",
+                        "Ahlaki değerlerin kaynağı",
+                        "Toplumsal düzenin temeli"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Din Tanımları"
+                },
+                {
+                    question: "Dinin 'kişinin yüksek bir varlığa karşı duyduğu bağlılık hissi' şeklinde tanımlanması hangi yaklaşımı ifade eder?",
+                    options: [
+                        "Sosyolojik yaklaşım",
+                        "Psikolojik yaklaşım",
+                        "Antropolojik yaklaşım",
+                        "Felsefi yaklaşım",
+                        "Teolojik yaklaşım"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Din Tanımları"
+                },
+                {
+                    question: "Emile Durkheim'a göre din hangi kavramlar üzerine kuruludur?",
+                    options: [
+                        "İnanç ve ritüel",
+                        "Tanrı ve ibadet",
+                        "Kutsal ve profan",
+                        "İyi ve kötü",
+                        "Cennet ve cehennem"
+                    ],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Din Tanımları"
+                },
+                {
+                    question: "Aşağıdakilerden hangisi dinin evrensel özelliklerinden DEĞİLDİR?",
+                    options: [
+                        "Her toplumda bulunması",
+                        "Aynı şekilde inanılması",
+                        "İnsan hayatını şekillendirmesi",
+                        "Kutsal-profan ayrımı yapması",
+                        "Ritüel ve sembollere sahip olması"
+                    ],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Dinin Özellikleri"
+                },
+                {
+                    question: "İlkel toplumların dinlerini inceleyen bilim dalına ne ad verilir?",
+                    options: ["Teoloji", "Etnoloji", "Arkeoloji", "Filoloji", "Sosyoloji"],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Din Bilimleri"
+                },
+                {
+                    question: "Dinlerin tarihsel gelişimini inceleyen ve mukayese yapan bilim dalı hangisidir?",
+                    options: [
+                        "Din Sosyolojisi",
+                        "Din Psikolojisi",
+                        "Dinler Tarihi",
+                        "Din Felsefesi",
+                        "Din Fenomenolojisi"
+                    ],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Din Bilimleri"
+                },
+                {
+                    question: "Tek tanrı inancına dayanan dinlere ne ad verilir?",
+                    options: ["Politeizm", "Henoteizm", "Monoteizm", "Panteizm", "Ateizm"],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Dinlerin Sınıflandırılması"
+                },
+                {
+                    question: "Çok tanrılı dinlere ne ad verilir?",
+                    options: ["Monoteizm", "Düalizm", "Henoteizm", "Politeizm", "Deizm"],
+                    correct: 3,
+                    difficulty: "Kolay",
+                    topic: "Dinlerin Sınıflandırılması"
+                },
+                {
+                    question: "Aşağıdakilerden hangisi monoteist (tektanrılı) dinlerdendir?",
+                    options: ["Hinduizm", "Budizm", "Yahudilik", "Şintoizm", "Taoizm"],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Dinlerin Sınıflandırılması"
+                },
+                {
+                    question: "İyi ve kötü olmak üzere iki ana ilkeye inanan dinlere ne ad verilir?",
+                    options: ["Monoteizm", "Politeizm", "Düalizm", "Panteizm", "Henoteizm"],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Dinlerin Sınıflandırılması"
+                },
+                {
+                    question: "Zerdüştlük hangi din kategorisine girer?",
+                    options: ["Monoteizm", "Politeizm", "Düalizm", "Panteizm", "Henoteizm"],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Dinlerin Sınıflandırılması"
+                },
+                {
+                    question: "'Her şey Tanrı'dır' anlayışına dayanan din görüşü hangisidir?",
+                    options: ["Monoteizm", "Politeizm", "Panteizm", "Deizm", "Ateizm"],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Dinlerin Sınıflandırılması"
+                },
+                {
+                    question: "Tanrı'nın dünyayı yarattıktan sonra müdahale etmediğine inanan görüş hangisidir?",
+                    options: ["Teizm", "Panteizm", "Deizm", "Ateizm", "Agnostisizm"],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Dinlerin Sınıflandırılması"
+                },
+                {
+                    question: "Kitaba dayanan dinlere ne ad verilir?",
+                    options: [
+                        "Semavi dinler",
+                        "Tabii dinler",
+                        "İlkel dinler",
+                        "Yerel dinler",
+                        "Etnik dinler"
+                    ],
+                    correct: 0,
+                    difficulty: "Kolay",
+                    topic: "Dinlerin Sınıflandırılması"
+                },
+                {
+                    question: "Aşağıdakilerden hangisi semavi dinlerden DEĞİLDİR?",
+                    options: ["Yahudilik", "Hristiyanlık", "İslam", "Hinduizm", "Hepsi semavi dindir"],
+                    correct: 3,
+                    difficulty: "Kolay",
+                    topic: "Semavi Dinler"
+                },
+                {
+                    question: "Belirli bir etnik gruba özgü olan dinlere ne ad verilir?",
+                    options: [
+                        "Evrensel dinler",
+                        "Yerel/Etnik dinler",
+                        "Semavi dinler",
+                        "Misyoner dinler",
+                        "Enternasyonal dinler"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Dinlerin Sınıflandırılması"
+                },
+                {
+                    question: "Aşağıdakilerden hangisi yerel/etnik dinlere örnektir?",
+                    options: ["İslam", "Hristiyanlık", "Budizm", "Yahudilik", "Zerdüştlük"],
+                    correct: 3,
+                    difficulty: "Orta",
+                    topic: "Yerel Dinler"
+                },
+                {
+                    question: "Yayılma amacı güden ve evrensel nitelik taşıyan dinlere ne ad verilir?",
+                    options: [
+                        "Etnik dinler",
+                        "Yerel dinler",
+                        "Misyoner/Evrensel dinler",
+                        "İlkel dinler",
+                        "Tabii dinler"
+                    ],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Dinlerin Sınıflandırılması"
+                },
+                {
+                    question: "Aşağıdakilerden hangisi misyoner (evrensel) dinlerdendir?",
+                    options: ["Yahudilik", "Şintoizm", "Hinduizm", "Hristiyanlık", "Caynizm"],
+                    correct: 3,
+                    difficulty: "Kolay",
+                    topic: "Evrensel Dinler"
+                },
+                {
+                    question: "Bir kurucuya sahip olmayan dinlere ne ad verilir?",
+                    options: [
+                        "Doğal/Tabii dinler",
+                        "Kurucu dinler",
+                        "Semavi dinler",
+                        "Vahiy dinleri",
+                        "Peygamber dinleri"
+                    ],
+                    correct: 0,
+                    difficulty: "Orta",
+                    topic: "Dinlerin Sınıflandırılması"
+                },
+                {
+                    question: "Aşağıdakilerden hangisi tabii (doğal/kurucusuz) dinlere örnektir?",
+                    options: ["İslam", "Hristiyanlık", "Hinduizm", "Budizm", "Yahudilik"],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Tabii Dinler"
+                },
+                {
+                    question: "Belirli bir kurucuya sahip dinlere ne ad verilir?",
+                    options: [
+                        "Tabii dinler",
+                        "Kurucu dinler",
+                        "İlkel dinler",
+                        "Doğal dinler",
+                        "Etnik dinler"
+                    ],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Dinlerin Sınıflandırılması"
+                },
+                {
+                    question: "Aşağıdakilerden hangisi kurucu dinlere örnektir?",
+                    options: ["Hinduizm", "Şintoizm", "Budizm", "Taoizm (tartışmalı)", "Yahudilik (Musa ile)"],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Kurucu Dinler"
+                },
+                {
+                    question: "Canlı dinler ve ölü dinler ayrımı neye göre yapılır?",
+                    options: [
+                        "Mensup sayısına",
+                        "Günümüzde yaşayıp yaşamamasına",
+                        "Kutsal kitaba sahip olup olmamaya",
+                        "Kurucuya sahip olup olmamaya",
+                        "Tarihi eskiliğe"
+                    ],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Dinlerin Sınıflandırılması"
+                },
+                {
+                    question: "Aşağıdakilerden hangisi 'ölü din' kategorisine girer?",
+                    options: [
+                        "İslam",
+                        "Yahudilik",
+                        "Hinduizm",
+                        "Eski Mısır dini",
+                        "Budizm"
+                    ],
+                    correct: 3,
+                    difficulty: "Orta",
+                    topic: "Ölü Dinler"
+                },
+                {
+                    question: "Aşağıdaki dinlerden hangisi hem yerel hem de canlı dindir?",
+                    options: [
+                        "Sümer dini",
+                        "Eski Yunan dini",
+                        "Yahudilik",
+                        "Eski Mısır dini",
+                        "Roma dini"
+                    ],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Dinlerin Sınıflandırılması"
+                },
+                {
+                    question: "İlkel dinler hangi özellikleriyle bilinir?",
+                    options: [
+                        "Yazılı kutsal kitaplara sahip olma",
+                        "Organize din kurumları",
+                        "Animizm, totemizm gibi inançlar",
+                        "Tek tanrı inancı",
+                        "Misyoner faaliyetler"
+                    ],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "İlkel Dinler"
+                },
+                {
+                    question: "Dinin sosyal işlevlerinden biri aşağıdakilerden hangisidir?",
+                    options: [
+                        "Ekonomik kalkınma sağlama",
+                        "Siyasi iktidarı ele geçirme",
+                        "Toplumsal dayanışmayı güçlendirme",
+                        "Bilimsel gelişmeyi engelleme",
+                        "Kültürel çeşitliliği ortadan kaldırma"
+                    ],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Dinin İşlevleri"
+                },
+                {
+                    question: "Dinin bireysel işlevlerinden hangisi yanlıştır?",
+                    options: [
+                        "Psikolojik huzur sağlama",
+                        "Hayata anlam kazandırma",
+                        "Ahlaki değerler sunma",
+                        "Ekonomik zenginlik garantisi",
+                        "Ölüm korkusunu azaltma"
+                    ],
+                    correct: 3,
+                    difficulty: "Kolay",
+                    topic: "Dinin İşlevleri"
+                },
+                {
+                    question: "Max Weber'e göre dinin ekonomik hayatla ilişkisi nasıldır?",
+                    options: [
+                        "Din ekonomiyi engellermiştir",
+                        "Din kapitalizmin gelişiminde etkili olmuştur",
+                        "Din ekonomiden tamamen bağımsızdır",
+                        "Din sadece tarım toplumlarını etkilemiştir",
+                        "Din ekonomik eşitsizliği ortadan kaldırmıştır"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Din ve Toplum"
+                },
+                {
+                    question: "Dinlerin kutsal metinlerini inceleyen bilim dalı hangisidir?",
+                    options: [
+                        "Teoloji",
+                        "Hermenötik",
+                        "Filoloji",
+                        "Arkeoloji",
+                        "Antropoloji"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Din Bilimleri"
+                },
+                {
+                    question: "Dinin psikolojik boyutunu inceleyen bilim dalı hangisidir?",
+                    options: [
+                        "Din Sosyolojisi",
+                        "Din Psikolojisi",
+                        "Din Fenomenolojisi",
+                        "Din Felsefesi",
+                        "Dinler Tarihi"
+                    ],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Din Bilimleri"
+                },
+                {
+                    question: "William James hangi alanda çalışmalar yapmıştır?",
+                    options: [
+                        "Din Sosyolojisi",
+                        "Din Psikolojisi",
+                        "Din Felsefesi",
+                        "Dinler Tarihi",
+                        "Din Fenomenolojisi"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Din Bilimleri"
+                },
+                {
+                    question: "Rudolf Otto'nun ünlü eseri hangisidir?",
+                    options: [
+                        "Din Sosyolojisi",
+                        "Dini Hayatın İlkel Şekilleri",
+                        "Kutsal'ın İdesi (Das Heilige)",
+                        "Din Felsefesi",
+                        "Dinler Tarihi"
+                    ],
+                    correct: 2,
+                    difficulty: "Zor",
+                    topic: "Din Bilimcileri"
+                },
+                {
+                    question: "Mircea Eliade hangi kavramla ünlüdür?",
+                    options: [
+                        "Profan ve kutsal",
+                        "Kollektif bilinç",
+                        "Dini tecrübe",
+                        "Protestan ahlakı",
+                        "Animizm teorisi"
+                    ],
+                    correct: 0,
+                    difficulty: "Orta",
+                    topic: "Din Bilimcileri"
+                },
+                {
+                    question: "Aşağıdakilerden hangisi dinin yapısal unsurlarından DEĞİLDİR?",
+                    options: [
+                        "İnanç sistemi",
+                        "Ritüeller ve ibadetler",
+                        "Kutsal metinler",
+                        "Ekonomik sistemler",
+                        "Dini topluluklar"
+                    ],
+                    correct: 3,
+                    difficulty: "Kolay",
+                    topic: "Dinin Yapısal Unsurları"
+                },
+                {
+                    question: "Din ve mitoloji ilişkisi nasıl açıklanır?",
+                    options: [
+                        "Mitoloji dinle ilgisizdir",
+                        "Mitoloji dinin anlatım biçimlerinden biridir",
+                        "Mitoloji sadece Yunan dininde vardır",
+                        "Din mitolojiden sonra ortaya çıkmıştır",
+                        "Mitoloji bilimsel gerçekleri anlatır"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Din ve Mitoloji"
+                },
+                {
+                    question: "Sekülerleşme ne anlama gelir?",
+                    options: [
+                        "Dinin güçlenmesi",
+                        "Toplumsal hayatta dinin etkisinin azalması",
+                        "Yeni dinlerin ortaya çıkması",
+                        "Dini kurumların çoğalması",
+                        "İbadetlerin artması"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Modern Dönem ve Din"
+                },
+                {
+                    question: "Laiklik kavramı ne ifade eder?",
+                    options: [
+                        "Dinsizlik",
+                        "Din ve devlet işlerinin birbirinden ayrılması",
+                        "Tüm dinlerin yasaklanması",
+                        "Tek bir dinin resmi olması",
+                        "Dinin tamamen özel alana çekilmesi"
+                    ],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Modern Dönem ve Din"
+                },
+                {
+                    question: "Fundamentalizm ne demektir?",
+                    options: [
+                        "Dinin temel ilkelerine katı bağlılık",
+                        "Din karşıtlığı",
+                        "Dinler arası diyalog",
+                        "Dinin reformu",
+                        "Liberal din anlayışı"
+                    ],
+                    correct: 0,
+                    difficulty: "Orta",
+                    topic: "Modern Dönem ve Din"
+                },
+                {
+                    question: "Dinlerin diyalogu kavramı ne anlama gelir?",
+                    options: [
+                        "Dinlerin birleşmesi",
+                        "Dinlerin birbirini anlaması ve barış içinde yaşaması",
+                        "Tek bir din oluşturma çabası",
+                        "Dinlerin tartışması",
+                        "Dini farklılıkları yok sayma"
+                    ],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Modern Dönem ve Din"
+                }
+            ],
+
+            kaynak: [
+                {
+                    question: "Dinin kaynağı konusunda Kutsal Kitapların verdiği ortak bilgi nedir?",
+                    options: [
+                        "Din insanın icat ettiği bir sistemdir",
+                        "Din doğa olaylarından kaynaklanır",
+                        "Din ilk insana ve onu yaratan Allah'a dayanır",
+                        "Din toplumsal ihtiyaçlardan doğmuştur",
+                        "Din korku ve ümit duygularından gelişmiştir"
+                    ],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Dinin Kaynağı"
+                },
+                {
+                    question: "Batı dünyasında dinin kaynağına yönelik farklı yaklaşımların ortaya çıktığı dönem hangisidir?",
+                    options: [
+                        "Antik Çağ",
+                        "Orta Çağ",
+                        "Rönesans",
+                        "Aydınlanma ve 19. yüzyıl",
+                        "20. yüzyıl"
+                    ],
+                    correct: 3,
+                    difficulty: "Kolay",
+                    topic: "Dinin Kaynağına Yönelik Yaklaşımlar"
+                },
+                {
+                    question: "Animizm teorisini ortaya atan bilim insanı kimdir?",
+                    options: [
+                        "Herbert Spencer",
+                        "Max Müller",
+                        "Edward Burnett Tylor",
+                        "James Frazer",
+                        "Emile Durkheim"
+                    ],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Animizm"
+                },
+                {
+                    question: "Animizm kelimesi Latince hangi kelimeden türemiştir?",
+                    options: [
+                        "animus (ruh)",
+                        "anima (rüzgar, hava, ruh)",
+                        "animal (hayvan)",
+                        "animus (düşmanlık)",
+                        "animare (canlandırmak)"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Animizm"
+                },
+                {
+                    question: "Tylor'a göre animizmin temelinde hangi inanç vardır?",
+                    options: [
+                        "Tek tanrı inancı",
+                        "Tabiat kuvvetlerine tapma",
+                        "Her şeyde ruh olduğu inancı",
+                        "Atalar kültü",
+                        "Büyü ve sihir"
+                    ],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Animizm"
+                },
+                {
+                    question: "Tylor'a göre ilk dini görüş nedir?",
+                    options: [
+                        "Tek tanrı inancı",
+                        "Çok tanrı inancı",
+                        "Ruhlara tapma (atalara ibadet)",
+                        "Doğa olaylarına tapma",
+                        "Büyü"
+                    ],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Animizm"
+                },
+                {
+                    question: "Atalar kültü teorisini savunan bilim insanı kimdir?",
+                    options: [
+                        "Edward Tylor",
+                        "Herbert Spencer",
+                        "Max Müller",
+                        "James Frazer",
+                        "Sigmund Freud"
+                    ],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Atalar Kültü"
+                },
+                {
+                    question: "Spencer'a göre dinin kaynağı nedir?",
+                    options: [
+                        "Tabiat korkusu",
+                        "Atalara tapınma",
+                        "Büyü",
+                        "Ruh inancı",
+                        "Tek tanrı inancı"
+                    ],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Atalar Kültü"
+                },
+                {
+                    question: "Spencer'a göre insandaki saygı duygusu neye dönüşmüştür?",
+                    options: [
+                        "Sevgiye",
+                        "Nefrete",
+                        "Korkuya",
+                        "Umuda",
+                        "İnanca"
+                    ],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Atalar Kültü"
+                },
+                {
+                    question: "Natürizm (Tabiatçılık) teorisini ortaya atan bilim insanı kimdir?",
+                    options: [
+                        "Edward Tylor",
+                        "Herbert Spencer",
+                        "Max Müller",
+                        "James Frazer",
+                        "Emile Durkheim"
+                    ],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Natürizm"
+                },
+                {
+                    question: "Max Müller'e göre dinin kaynağı nedir?",
+                    options: [
+                        "Atalar kültü",
+                        "Animizm",
+                        "Tabiat olaylarının verdiği korku",
+                        "Büyü",
+                        "Toplumsal yapı"
+                    ],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Natürizm"
+                },
+                {
+                    question: "Max Müller hangi kutsal metne dayanarak teorisini geliştirmiştir?",
+                    options: [
+                        "Tevrat",
+                        "İncil",
+                        "Vedalar",
+                        "Avesta",
+                        "Tripitaka"
+                    ],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Natürizm"
+                },
+                {
+                    question: "Büyü teorisini ortaya atan bilim insanı kimdir?",
+                    options: [
+                        "Edward Tylor",
+                        "Max Müller",
+                        "James G. Frazer",
+                        "Emile Durkheim",
+                        "Sigmund Freud"
+                    ],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Büyü Teorisi"
+                },
+                {
+                    question: "James Frazer'in ünlü eseri hangisidir?",
+                    options: [
+                        "İlkel Kültür",
+                        "Altın Dal (The Golden Bough)",
+                        "Dini Hayatın İlkel Şekilleri",
+                        "Totem ve Tabu",
+                        "Kutsal'ın İdesi"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Büyü Teorisi"
+                },
+                {
+                    question: "Frazer'e göre insanın varlık güçlerine karşı ilk tepkisi nedir?",
+                    options: [
+                        "İbadet",
+                        "Dua",
+                        "Büyü",
+                        "Korku",
+                        "Atalar kültü"
+                    ],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Büyü Teorisi"
+                },
+                {
+                    question: "Frazer'e göre büyünün başarısız olması insanı neye yönlendirmiştir?",
+                    options: [
+                        "Bilime",
+                        "Dine",
+                        "Felsefeye",
+                        "Sanata",
+                        "Teknolojiye"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Büyü Teorisi"
+                },
+                {
+                    question: "Kutsal olanla ilişki teorisini ortaya atan sosyolog kimdir?",
+                    options: [
+                        "Max Weber",
+                        "Emile Durkheim",
+                        "Karl Marx",
+                        "Auguste Comte",
+                        "Herbert Spencer"
+                    ],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Kutsal Olan Teorisi"
+                },
+                {
+                    question: "Durkheim'ın ünlü eseri hangisidir?",
+                    options: [
+                        "Altın Dal",
+                        "Dini Hayatın İlkel Şekilleri",
+                        "Totem ve Tabu",
+                        "İlkel Kültür",
+                        "Protestan Ahlakı"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Kutsal Olan Teorisi"
+                },
+                {
+                    question: "Durkheim'a göre dinin temeli nedir?",
+                    options: [
+                        "Tanrı inancı",
+                        "Kutsal ve profan ayrımı",
+                        "İbadet",
+                        "Ahlak",
+                        "Korku"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Kutsal Olan Teorisi"
+                },
+                {
+                    question: "Durkheim hangi ilkel toplumun totemizmi üzerine araştırma yapmıştır?",
+                    options: [
+                        "Kızılderili kabileleri",
+                        "Afrika kabileleri",
+                        "Avustralya Arunta kabilesi",
+                        "Polinezya halkları",
+                        "Eskimolar"
+                    ],
+                    correct: 2,
+                    difficulty: "Zor",
+                    topic: "Totemizm"
+                },
+                {
+                    question: "Totemizm psikoanalitik açıdan hangi bilim insanı tarafından incelenmiştir?",
+                    options: [
+                        "Carl Jung",
+                        "Sigmund Freud",
+                        "Alfred Adler",
+                        "Erik Erikson",
+                        "William James"
+                    ],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Totemizm"
+                },
+                {
+                    question: "Freud'un totemizm üzerine eseri hangisidir?",
+                    options: [
+                        "Rüyaların Yorumu",
+                        "Totem ve Tabu",
+                        "Uygarlık ve Hoşnutsuzlukları",
+                        "Psikanaliz Üzerine",
+                        "Benlik ve İd"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Totemizm"
+                },
+                {
+                    question: "Totem kelimesi hangi dilde kullanılan bir kavramdır?",
+                    options: [
+                        "Latince",
+                        "Yunanca",
+                        "Algonkin (Kızılderili dili)",
+                        "Sanskritçe",
+                        "Arapça"
+                    ],
+                    correct: 2,
+                    difficulty: "Zor",
+                    topic: "Totemizm"
+                },
+                {
+                    question: "Totem genellikle ne türden bir varlıktır?",
+                    options: [
+                        "İnsan",
+                        "Melek",
+                        "Hayvan veya bitki",
+                        "Tanrı",
+                        "Ruh"
+                    ],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Totemizm"
+                },
+                {
+                    question: "Mana kavramı hangi bölge terimidir?",
+                    options: [
+                        "Afrika",
+                        "Avustralya",
+                        "Melanezya",
+                        "Polinezya",
+                        "Mikronezya"
+                    ],
+                    correct: 2,
+                    difficulty: "Zor",
+                    topic: "Mana Kavramı"
+                },
+                {
+                    question: "Mana kavramı neyi ifade eder?",
+                    options: [
+                        "Tanrı",
+                        "Ruh",
+                        "Kutsal varlık ve nesnelerdeki kişilikdışı olağanüstü güç",
+                        "Totem",
+                        "Büyü"
+                    ],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Mana Kavramı"
+                },
+                {
+                    question: "Tabu kavramı hangi bölge terimidir?",
+                    options: [
+                        "Afrika",
+                        "Avustralya",
+                        "Melanezya",
+                        "Polinezya",
+                        "Amerika"
+                    ],
+                    correct: 3,
+                    difficulty: "Zor",
+                    topic: "Tabu Kavramı"
+                },
+                {
+                    question: "Tabu ne anlama gelir?",
+                    options: [
+                        "Kutsal",
+                        "Yasak/Dokunulmaz",
+                        "Temiz",
+                        "Güçlü",
+                        "Koruyucu"
+                    ],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Tabu Kavramı"
+                },
+                {
+                    question: "Freud'a göre Totem-Tabu ilişkisi hangi psikolojik durumla benzerlik gösterir?",
+                    options: [
+                        "Depresyon",
+                        "Şizofreni",
+                        "Oedipus kompleksi",
+                        "Narsisizm",
+                        "Paranoya"
+                    ],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Totemizm ve Psikanaliz"
+                },
+                {
+                    question: "İlkel monoteizm teorisini savunan bilim insanları kimlerdir?",
+                    options: [
+                        "Tylor ve Spencer",
+                        "P.W. Schmidt ve Andrew Lang",
+                        "Frazer ve Durkheim",
+                        "Freud ve Jung",
+                        "Müller ve Otto"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "İlkel Monoteizm"
+                },
+                {
+                    question: "P.W. Schmidt'in ünlü eseri hangisidir?",
+                    options: [
+                        "İlkel Kültür",
+                        "Tanrı Fikrinin Kaynağı",
+                        "Altın Dal",
+                        "Totem ve Tabu",
+                        "Dini Hayatın İlkel Şekilleri"
+                    ],
+                    correct: 1,
+                    difficulty: "Zor",
+                    topic: "İlkel Monoteizm"
+                },
+                {
+                    question: "İlkel monoteizm teorisine göre ilk din inancı nedir?",
+                    options: [
+                        "Çok tanrıcılık",
+                        "Animizm",
+                        "Tek tanrıcılık",
+                        "Totemizm",
+                        "Atalar kültü"
+                    ],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "İlkel Monoteizm"
+                },
+                {
+                    question: "Lang ve Schmidt'e göre tek tanrı inancı zamanla neye dönüşmüştür?",
+                    options: [
+                        "Ateizme",
+                        "Batıl inançlar ve politeizme",
+                        "Panteizme",
+                        "Deizme",
+                        "Agnostisizme"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "İlkel Monoteizm"
+                },
+                {
+                    question: "Afrika pigmelerinin dini inançlarında ne tespit edilmiştir?",
+                    options: [
+                        "Çok tanrılılık",
+                        "Ateizm",
+                        "Tek tanrı inancı",
+                        "Animizm",
+                        "Totemizm"
+                    ],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "İlkel Monoteizm"
+                },
+                {
+                    question: "Dinin kaynağına yönelik teorilerin ortaya çıktığı dönemde hangi düşünce akımları etkili olmuştur?",
+                    options: [
+                        "Romantizm ve İdealizm",
+                        "Pozitivizm ve Materyalizm",
+                        "Realizm ve Natüralizm",
+                        "Egzistansiyalizm ve Fenomenoloji",
+                        "Pragmatizm ve Rasyonalizm"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Tarihsel Bağlam"
+                },
+                {
+                    question: "19. yüzyılda hangi bilimsel teori dinin kaynağı teorilerini etkilemiştir?",
+                    options: [
+                        "Newton'un fizik yasaları",
+                        "Einstein'ın görelilik teorisi",
+                        "Darwin'in evrim teorisi",
+                        "Mendel'in genetik yasaları",
+                        "Pasteur'ün mikrop teorisi"
+                    ],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Tarihsel Bağlam"
+                },
+                {
+                    question: "Aşağıdakilerden hangisi dinin kaynağını 'korku ve ümit' duygularına bağlar?",
+                    options: [
+                        "İlkel monoteizm",
+                        "Animizm ve Natürizm teorileri",
+                        "Totemizm",
+                        "Büyü teorisi",
+                        "Kutsal olan teorisi"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Genel Değerlendirme"
+                },
+                {
+                    question: "Hangi teori dinin toplumsal yapıdan kaynaklandığını savunur?",
+                    options: [
+                        "Animizm",
+                        "Natürizm",
+                        "Durkheim'ın sosyolojik teorisi",
+                        "Büyü teorisi",
+                        "Atalar kültü"
+                    ],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Sosyolojik Yaklaşım"
+                },
+                {
+                    question: "Aşağıdaki bilim insanlarından hangisi psikolog değildir?",
+                    options: [
+                        "Sigmund Freud",
+                        "Carl Jung",
+                        "William James",
+                        "Emile Durkheim",
+                        "Hepsi psikologdur"
+                    ],
+                    correct: 3,
+                    difficulty: "Orta",
+                    topic: "Bilim İnsanları"
+                },
+                {
+                    question: "Dinin kaynağına yönelik hangi yaklaşım 'en eski din çok tanrıcılıktır' der?",
+                    options: [
+                        "İlkel monoteizm",
+                        "Evrimci teoriler (Tylor, Spencer, Frazer)",
+                        "Kutsal olan teorisi",
+                        "Fenomenolojik yaklaşım",
+                        "Teolojik yaklaşım"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Genel Değerlendirme"
+                },
+                {
+                    question: "M. Eliade ve Pettazzoni hangi bulguyla ilkel monoteizmi desteklemiştir?",
+                    options: [
+                        "Arkeolojik bulgular",
+                        "İlkel kabilelerin karmaşık ve tek tanrılı inançları",
+                        "Yazılı belgeler",
+                        "Bilimsel deneyler",
+                        "Sosyal anketler"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "İlkel Monoteizm"
+                },
+                {
+                    question: "Sömürgecilik dönemi hangi teorilerin gelişmesini etkilemiştir?",
+                    options: [
+                        "İlkel monoteizm",
+                        "Teolojik teoriler",
+                        "Afrika ve Avustralya halklarını 'ilkel' gören teoriler",
+                        "Fenomenolojik teoriler",
+                        "Hermenötik teoriler"
+                    ],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Tarihsel Bağlam"
+                },
+                {
+                    question: "Rafaelle Pettazzoni hangi konuda önemli çalışmalar yapmıştır?",
+                    options: [
+                        "Din sosyolojisi",
+                        "İlkel toplumların tek tanrı inancı",
+                        "Din psikolojisi",
+                        "Büyü teorisi",
+                        "Animizm"
+                    ],
+                    correct: 1,
+                    difficulty: "Zor",
+                    topic: "Bilim İnsanları"
+                }
+            ],
+
+            bilim: [
+                {
+                    question: "Dinler Tarihi bilim dalı hangi yüzyılda ortaya çıkmıştır?",
+                    options: ["18. yüzyıl", "19. yüzyıl", "20. yüzyıl", "21. yüzyıl", "17. yüzyıl"],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Dinler Tarihi'nin Doğuşu"
+                },
+                {
+                    question: "Dinler Tarihi'nin konusu nedir?",
+                    options: [
+                        "Sadece İslam dini",
+                        "Sadece semavi dinler",
+                        "Tarih sahnesinde görülmüş tüm dinler",
+                        "Sadece canlı dinler",
+                        "Sadece ölü dinler"
+                    ],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Dinler Tarihi'nin Konusu"
+                },
+                {
+                    question: "Dinler Tarihi aşağıdaki özelliklerin hangisini inceler?",
+                    options: [
+                        "Sadece inanç esasları",
+                        "Sadece ibadetler",
+                        "Dinlerin tarihsel süreçleri, inanış/uygulama, ahlaki kurallar ve kültürel özellikleri",
+                        "Sadece kutsal metinler",
+                        "Sadece din kurucuları"
+                    ],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Dinler Tarihi'nin İnceleme Alanı"
+                },
+                {
+                    question: "Dinler Tarihi hangi metodları sıklıkla kullanır?",
+                    options: [
+                        "Sadece tarihsel metot",
+                        "Sadece fenomenolojik metot",
+                        "Nitelendirici-betimleyici, tarihsel, mukayeseli ve fenomenolojik metotlar",
+                        "Sadece deneysel metot",
+                        "Sadece felsefi metot"
+                    ],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Dinler Tarihi'nin Metodu"
+                },
+                {
+                    question: "Nitelendirici-betimleyici metot hangi özelliğe sahiptir?",
+                    options: [
+                        "Din savunuculuğu yapar",
+                        "Dinleri olduğu gibi tanımlar ve tarafsız yaklaşır",
+                        "Dinleri değerlendirir",
+                        "Sadece bir dini inceler",
+                        "Dinleri eleştirir"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Nitelendirici-Betimleyici Metot"
+                },
+                {
+                    question: "Dinler Tarihi araştırmacılarının tutumu nasıl olmalıdır?",
+                    options: [
+                        "Kendi dinini savunmalı",
+                        "Objektif ve tarafsız olmalı",
+                        "Tüm dinleri reddetmeli",
+                        "Sadece bir dini desteklemeli",
+                        "Dinlere karşı olumsuz tutum takınmalı"
+                    ],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Bilimsel Tarafsızlık"
+                },
+                {
+                    question: "Tarihsel metot dinleri nasıl ele alır?",
+                    options: [
+                        "Sadece günümüzdeki halleriyle",
+                        "Doğuşundan gelişip yayılmasına kadar tarihi seyir içinde",
+                        "Sadece kuruluş aşamalarıyla",
+                        "Sadece son dönemleriyle",
+                        "Coğrafi dağılımlarıyla"
+                    ],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Tarihsel Metot"
+                },
+                {
+                    question: "Tarihsel metotla dinlerin incelenmesi hangi ifadeyle açıklanır?",
+                    options: [
+                        "Dinin yatay olarak ele alınması",
+                        "Dinin dikey olarak ele alınması",
+                        "Dinin statik incelenmesi",
+                        "Dinin sadece bir dönemi",
+                        "Dinlerin karşılaştırılması"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Tarihsel Metot"
+                },
+                {
+                    question: "Mukayese (karşılaştırma) metodu hangi bilim insanı tarafından kullanılmıştır?",
+                    options: [
+                        "Emile Durkheim",
+                        "Max Müller ve Ugo Bianchi",
+                        "Sigmund Freud",
+                        "Rudolf Otto",
+                        "Mircea Eliade"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Mukayese Metodu"
+                },
+                {
+                    question: "Dinler Tarihi biliminin kurucusu sayılan kişi kimdir?",
+                    options: [
+                        "Edward Tylor",
+                        "Herbert Spencer",
+                        "Max Müller",
+                        "James Frazer",
+                        "Emile Durkheim"
+                    ],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Dinler Tarihi'nin Kurucusu"
+                },
+                {
+                    question: "Tarihsel mukayeseli metoda göre dinler nasıl incelenmelidir?",
+                    options: [
+                        "Tarihsel bağlamlarından izole edilerek",
+                        "Bağlam ve süreçlere sahip olgular olarak",
+                        "Sadece benzerliklerine bakarak",
+                        "Sadece farklılıklarına bakarak",
+                        "Güncel halleriyle"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Tarihsel Mukayeseli Metot"
+                },
+                {
+                    question: "Mukayeseli metot dinleri nasıl inceler?",
+                    options: [
+                        "Sadece dikey olarak",
+                        "Yatay şekilde (farklı dinlerdeki benzer unsurları karşılaştırarak)",
+                        "Kronolojik olarak",
+                        "Coğrafi olarak",
+                        "İstatistiksel olarak"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Mukayeseli Metot"
+                },
+                {
+                    question: "Fenomenolojik metotta 'fenomen' terimi nereden gelir?",
+                    options: [
+                        "Latince",
+                        "Grekçe Phainomenon (kendini gösteren şey)",
+                        "Arapça",
+                        "Sanskritçe",
+                        "Farsça"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Fenomenolojik Metot"
+                },
+                {
+                    question: "Fenomenolojik metot neyi amaçlar?",
+                    options: [
+                        "Dinlerin dış görünüşünü tasvir etme",
+                        "İnancın dış yönünün altındaki anlamı ifade etme",
+                        "Dinleri tarihi süreçte inceleme",
+                        "Dinleri eleştirme",
+                        "Dinleri sayısal verilerle analiz etme"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Fenomenolojik Metot"
+                },
+                {
+                    question: "Rudolf Otto hangi eseriyle tanınır?",
+                    options: [
+                        "Dini Hayatın İlkel Şekilleri",
+                        "Kutsal'ın İdesi (Das Heilige)",
+                        "Altın Dal",
+                        "Totem ve Tabu",
+                        "İlkel Kültür"
+                    ],
+                    correct: 1,
+                    difficulty: "Zor",
+                    topic: "Rudolf Otto"
+                },
+                {
+                    question: "Otto'ya göre din hangi tecrübeye dayanır?",
+                    options: [
+                        "Ahlaki tecrübe",
+                        "Estetik tecrübe",
+                        "Kutsal tecrübe",
+                        "Bilimsel tecrübe",
+                        "Sosyal tecrübe"
+                    ],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Rudolf Otto"
+                },
+                {
+                    question: "Otto'ya göre tüm dini tecrübelerde ortak unsur nedir?",
+                    options: [
+                        "İbadet",
+                        "Dua",
+                        "Kutsal kavramı",
+                        "Tanrı inancı",
+                        "Ahlak"
+                    ],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Rudolf Otto"
+                },
+                {
+                    question: "Gerardus van der Leeuw hangi eseri yazmıştır?",
+                    options: [
+                        "Kutsal'ın İdesi",
+                        "Fenomenologia Religiosa",
+                        "Phänomenologie der Religion",
+                        "Dini Hayatın İlkel Şekilleri",
+                        "Dinler Tarihi"
+                    ],
+                    correct: 2,
+                    difficulty: "Zor",
+                    topic: "Gerardus van der Leeuw"
+                },
+                {
+                    question: "Leeuw'a göre fenomenolojik yöntemde hangi kavramlar önemlidir?",
+                    options: [
+                        "Analiz ve sentez",
+                        "Empati ve anlama",
+                        "Gözlem ve deney",
+                        "Tümdengelim ve tümevarım",
+                        "Karşılaştırma ve sınıflandırma"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Gerardus van der Leeuw"
+                },
+                {
+                    question: "Leeuw fenomenleri hangi açıdan inceler?",
+                    options: [
+                        "Tarihsel devamlılık bağlamında",
+                        "Aktüel halleriyle (şimdiki zamandaki anlamlarıyla)",
+                        "Coğrafi dağılımıyla",
+                        "Sayısal verilerle",
+                        "Ekonomik etkileriyle"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Gerardus van der Leeuw"
+                },
+                {
+                    question: "Rafaelle Pettazzoni fenomenoloji ve tarihi nasıl değerlendirir?",
+                    options: [
+                        "Birbirinden tamamen ayrı tutar",
+                        "Fenomenolojiyi tarihten üstün tutar",
+                        "Tarihi fenomenolojiden üstün tutar",
+                        "İkisini birleştirerek orta yol bulur",
+                        "Her ikisini de reddeder"
+                    ],
+                    correct: 3,
+                    difficulty: "Orta",
+                    topic: "Rafaelle Pettazzoni"
+                },
+                {
+                    question: "Pettazzoni'ye göre fenomenlerin anlaşılması için ne gereklidir?",
+                    options: [
+                        "Sadece anlık durumları",
+                        "Tarihsel süreç ve bağlamları",
+                        "Sadece karşılaştırma",
+                        "Sadece istatistikler",
+                        "Sadece sezgi"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Rafaelle Pettazzoni"
+                },
+                {
+                    question: "Pettazzoni'ye göre fenomenoloji Dinler Tarihi için nedir?",
+                    options: [
+                        "Alternatif bir yöntem",
+                        "Karşıt bir yaklaşım",
+                        "Tamamlayıcı yön",
+                        "Gereksiz bir eklenti",
+                        "Tek geçerli metot"
+                    ],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Rafaelle Pettazzoni"
+                },
+                {
+                    question: "Dinler Tarihi hangi bilim dalından faydalanır?",
+                    options: [
+                        "Sadece tarih",
+                        "Sadece sosyoloji",
+                        "Tarih, mitoloji, arkeoloji, filoloji ve din bilimleri",
+                        "Sadece felsefe",
+                        "Sadece antropoloji"
+                    ],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "İlişkili Bilim Dalları"
+                },
+                {
+                    question: "Din Fenomenolojisi neyi inceler?",
+                    options: [
+                        "Dinlerin tarihini",
+                        "Kutsal olana karşı verilen cevapları ve sembolik ifadeleri",
+                        "Sadece ibadetleri",
+                        "Sadece ahlaki kuralları",
+                        "Sadece kutsal metinleri"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Din Fenomenolojisi"
+                },
+                {
+                    question: "Din Sosyolojisi neyi konu edinir?",
+                    options: [
+                        "Bireyin dini tecrübesini",
+                        "Din-toplum münasebetlerini ve sosyal dini kurumları",
+                        "Sadece kutsal metinleri",
+                        "Sadece tarihi olayları",
+                        "Sadece felsefi konuları"
+                    ],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Din Sosyolojisi"
+                },
+                {
+                    question: "Din Psikolojisi hangi konuları inceler?",
+                    options: [
+                        "Toplumsal dini yapıları",
+                        "Ferdin dini tecrübesini ve din duygusunu",
+                        "Dinlerin tarihini",
+                        "Kutsal metinlerin anlamını",
+                        "Felsefi argümanları"
+                    ],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Din Psikolojisi"
+                },
+                {
+                    question: "Din Felsefesi hangi yaklaşımla dini inceler?",
+                    options: [
+                        "Sosyolojik",
+                        "Psikolojik",
+                        "Felsefi ve akli",
+                        "Antropolojik",
+                        "Arkeolojik"
+                    ],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Din Felsefesi"
+                },
+                {
+                    question: "Din Felsefesi hangi konularla uğraşır?",
+                    options: [
+                        "Sadece ibadetler",
+                        "Allah'ın varlığı, sıfatları, yaratma, peygamberlik, vahiy gibi konular",
+                        "Sadece tarihsel olaylar",
+                        "Sadece toplumsal yapılar",
+                        "Sadece psikolojik durumlar"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Din Felsefesi"
+                },
+                {
+                    question: "Din Bilimleri'nin ortak özelliği nedir?",
+                    options: [
+                        "Normatif (kural koyucu) olmak",
+                        "Nitelendirici ve değer yargısız olmak",
+                        "Sadece bir dini incelemek",
+                        "Dinleri eleştirmek",
+                        "Din savunuculuğu yapmak"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Din Bilimlerinin Özellikleri"
+                },
+                {
+                    question: "Apolojetik üslup ne demektir?",
+                    options: [
+                        "Eleştirel yaklaşım",
+                        "Savunma amaçlı yaklaşım",
+                        "Tarafsız yaklaşım",
+                        "Bilimsel yaklaşım",
+                        "Objektif yaklaşım"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Bilimsel Metot"
+                },
+                {
+                    question: "Dinler Tarihçisi hangi tutumu takınmamalıdır?",
+                    options: [
+                        "Objektif tutum",
+                        "Tarafsız tutum",
+                        "Apolojetik (savunmacı) tutum",
+                        "Bilimsel tutum",
+                        "Eleştirel tutum"
+                    ],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Bilimsel Tarafsızlık"
+                },
+                {
+                    question: "Dinlerin mukayese edilmesinin amacı nedir?",
+                    options: [
+                        "Bir dini diğerinden üstün göstermek",
+                        "Benzerlikleri ve farklılıkları anlamak",
+                        "Dinleri birleştirmek",
+                        "Dinleri eleştirmek",
+                        "Dinleri yok saymak"
+                    ],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Mukayese Metodunun Amacı"
+                },
+                {
+                    question: "Mitoloji Dinler Tarihi için neden önemlidir?",
+                    options: [
+                        "Eğlenceli hikayeler içerir",
+                        "Dinlerin inanç ve kültürel özelliklerini anlatır",
+                        "Bilimsel gerçekleri açıklar",
+                        "Tarihi olayları kaydeder",
+                        "Felsefi argümanlar sunar"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Mitoloji ve Dinler Tarihi"
+                },
+                {
+                    question: "Arkeoloji Dinler Tarihi'ne nasıl katkı sağlar?",
+                    options: [
+                        "Dinlerin felsefi boyutunu açıklar",
+                        "Eski dinlere ait maddi kalıntılar ve belgeler sunar",
+                        "Dinlerin psikolojik yönünü inceler",
+                        "Dinlerin sosyolojisini araştırır",
+                        "Kutsal metinleri yorumlar"
+                    ],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Arkeoloji ve Dinler Tarihi"
+                },
+                {
+                    question: "Filoloji Dinler Tarihi için neden gereklidir?",
+                    options: [
+                        "Dinlerin toplumsal yapısını anlar",
+                        "Eski dilleri ve kutsal metinleri okumak için",
+                        "Dinlerin psikolojisini inceler",
+                        "Arkeolojik bulguları değerlendirir",
+                        "Felsefi argümanlar geliştirir"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Filoloji ve Dinler Tarihi"
+                },
+                {
+                    question: "Dinler Tarihi'nin temel amacı nedir?",
+                    options: [
+                        "Bir dini yaymak",
+                        "Dinleri eleştirmek",
+                        "Dinleri objektif olarak tanımak ve anlamak",
+                        "Dinleri birleştirmek",
+                        "Dini yapıları yıkmak"
+                    ],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Dinler Tarihi'nin Amacı"
+                },
+                {
+                    question: "Hangi bilim insanı 'Mircea Eliade' ile birlikte fenomenolojik yöntemi geliştirmiştir?",
+                    options: [
+                        "Max Müller",
+                        "Rudolf Otto",
+                        "Emile Durkheim",
+                        "James Frazer",
+                        "Sigmund Freud"
+                    ],
+                    correct: 1,
+                    difficulty: "Zor",
+                    topic: "Fenomenoloji Tarihçileri"
+                },
+                {
+                    question: "Empati yoluyla dindarın durumunu anlamak hangi metotla ilişkilidir?",
+                    options: [
+                        "Tarihsel metot",
+                        "Mukayeseli metot",
+                        "Fenomenolojik metot",
+                        "Deneysel metot",
+                        "İstatistiksel metot"
+                    ],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Fenomenolojik Metot"
+                },
+                {
+                    question: "Dinlerin 'dikey' incelenmesi ne demektir?",
+                    options: [
+                        "Farklı dinleri karşılaştırma",
+                        "Bir dinin tarihsel gelişimini kronolojik olarak inceleme",
+                        "Dinlerin coğrafi dağılımını inceleme",
+                        "Dinlerin sosyal yapılarını inceleme",
+                        "Dinlerin psikolojik etkilerini inceleme"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Dikey İnceleme"
+                },
+                {
+                    question: "Dinlerin 'yatay' incelenmesi ne demektir?",
+                    options: [
+                        "Bir dinin tarihsel gelişimini izleme",
+                        "Farklı dinlerdeki benzer unsurları karşılaştırma",
+                        "Bir dinin ibadetlerini inceleme",
+                        "Bir dinin coğrafi yayılımını izleme",
+                        "Bir dinin kutsal metinlerini okuma"
+                    ],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Yatay İnceleme"
+                }
+            ],
+
+            yahudilik: [
+                {
+                    question: "Yahudiliğin İslam gibi kalıplaşmış bir inanç sistemi olmadığını belirten ifade aşağıdakilerden hangisidir?",
+                    options: ["Yahudilik hukuk merkezli bir dindir", "Yahudilik ibadet merkezli bir dindir", "Yahudilik felsefe merkezli bir dindir", "Yahudilik mistik merkezli bir dindir", "Yahudilik ahlak merkezli bir dindir"],
+                    correct: 0,
+                    difficulty: "Kolay",
+                    topic: "Yahudiliğin İnanç Esasları"
+                },
+                {
+                    question: "Tevrat'ta yer alan mitzvot (emir) sayıları aşağıdakilerden hangisinde doğru verilmiştir?",
+                    options: ["365 olumlu, 248 olumsuz", "248 olumlu, 365 olumsuz", "300 olumlu, 313 olumsuz", "400 olumlu, 213 olumsuz", "500 olumlu, 113 olumsuz"],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Tevrat ve Mitzvot"
+                },
+                {
+                    question: "12. yüzyılda yaşayan ve İslam alimlerinden etkilenerek Yahudiler için 13 maddelik bir inanç esası ortaya koyan Yahudi alim kimdir?",
+                    options: ["Ezra", "Samuel", "Musa b. Meymun (Maimonides)", "Haham Hillel", "Rabbi Akiva"],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Maimonides'in İnanç Esasları"
+                },
+                {
+                    question: "Maimonides'in inanç esaslarına göre aşağıdakilerden hangisi YANLIŞTIR?",
+                    options: ["Tanrı Tek'tir ve O'ndan başkası yoktur", "Tanrı'nın bedeni yoktur ve maddenin tüm özellikleri O'ndan uzaktır", "Peygamberlerin tüm sözleri doğrudur", "Musa tüm peygamberlerin en büyüğüdür", "Tora değiştirilebilir ve yeni bir Tora gelebilir"],
+                    correct: 4,
+                    difficulty: "Orta",
+                    topic: "Maimonides'in 13 İnanç İlkesi"
+                },
+                {
+                    question: "'Mesih gelecektir; ve gelişi gecikmiş olsa da, her gün onun gelmesini beklerim' ifadesi Maimonides'in kaçıncı inanç ilkesidir?",
+                    options: ["9. ilke", "10. ilke", "11. ilke", "12. ilke", "13. ilke"],
+                    correct: 3,
+                    difficulty: "Zor",
+                    topic: "Maimonides'in İnanç Esasları"
+                },
+                {
+                    question: "Yahudilerde seçilmişlik inancının temelinde yatan kavram aşağıdakilerden hangisidir?",
+                    options: ["Mitzvot", "Ahit (Berit)", "Halakha", "Kashrut", "Tzedakah"],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Seçilmişlik ve Ahit"
+                },
+                {
+                    question: "Tanrı ile Yahudilerin ataları arasında ilk defa ahit (anlaşma) hangi peygamberle yapılmıştır?",
+                    options: ["Nuh", "İbrahim", "İshak", "Yakup", "Musa"],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Ahit ve Kutsal Toprak"
+                },
+                {
+                    question: "Yaratılış kitabı 15. bab 18-21. bölümlerde vaad edilmiş toprakların sınırları hangi iki ırmak arasında belirtilmiştir?",
+                    options: ["Dicle - Fırat", "Nil - Ürdün", "Mısır Irmağı - Fırat", "Ürdün - Fırat", "Dicle - Nil"],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Vaad Edilmiş Topraklar"
+                },
+                {
+                    question: "Yahudilerde erkek çocukların sekiz günlükken sünnet edilmesinin kaynağı aşağıdakilerden hangisidir?",
+                    options: ["İsmail'in 13 yaşında sünnet edilmesi", "İshak'ın 8. günde sünnet edilmesi", "Musa'nın emri", "Hahamların kararı", "Talmud'un emri"],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Sünnet"
+                },
+                {
+                    question: "Yahudilerin ilk mabedi (Bet Hamikdaş) kim tarafından yaptırılmıştır?",
+                    options: ["Kral Davud", "Kral Süleyman", "Kral Saul", "Samuel", "Ezra"],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Mabed ve İbadet"
+                },
+                {
+                    question: "M.S. 70 yılında II. Mabedin yıkılmasıyla Yahudiler için hangi ibadet askıya alınmıştır?",
+                    options: ["Namaz ibadeti", "Oruç ibadeti", "Kurban ibadeti", "Zekat ibadeti", "Hac ibadeti"],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Kurban İbadeti"
+                },
+                {
+                    question: "Yahudilerin topluca ibadet ettikleri mekana ne ad verilir?",
+                    options: ["Mabed", "Sinagog", "Yeshiva", "Bet Midrash", "Havra"],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Sinagog"
+                },
+                {
+                    question: "Sinagogda topluca ibadet en az kaç buluğ çağına ermiş erkekle yapılır?",
+                    options: ["5", "7", "10", "12", "13"],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Sinagog İbadeti"
+                },
+                {
+                    question: "'Dinle ey İsrael! Tanrımız Rab tek Rab'dir' ifadesiyle başlayan ve Yahudiliğin Kelime-i Tevhidi sayılan dua hangisidir?",
+                    options: ["Kaddish", "Amida", "Şema Yisrael", "Hallel", "Birkat Hamazon"],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Şema Yisrael Duası"
+                },
+                {
+                    question: "Şema Yisrael duasının içine yerleştirildiği ve Yahudilerin alınlarına, sol kollarına taktıkları küçük kutucuklara ne ad verilir?",
+                    options: ["Mezuza", "Tefilin", "Tallit", "Kipa", "Tzitzit"],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Tefilin"
+                },
+                {
+                    question: "Yahudi evlerinin giriş kapılarına takılan ve Şema Yisrael duasını içeren kutucuğa ne ad verilir?",
+                    options: ["Tefilin", "Mezuza", "Hamsa", "Menorah", "Magen David"],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Mezuza"
+                },
+                {
+                    question: "Yahudilerin haftalık kutsal dinlenme ve ibadet günü olan Şabat hangi gün başlayıp hangi gün biter?",
+                    options: ["Cumartesi sabahı - Pazar akşamı", "Cuma sabahı - Cumartesi akşamı", "Cuma öğleden sonra - Cumartesi güneş batımı", "Perşembe akşamı - Cuma akşamı", "Cumartesi sabahı - Cumartesi akşamı"],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Şabat"
+                },
+                {
+                    question: "Şabat gününün kaynağı aşağıdakilerden hangisidir?",
+                    options: ["Musa'nın Sina Dağı'nda 7 gün kalması", "Tanrı'nın dünyayı 6 günde yaratıp 7. günde dinlenmesi", "İbrahim'in 7 gün oruç tutması", "İsrailoğullarının Mısır'dan çıkışı", "On Emrin verilmesi"],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Şabat'ın Kaynağı"
+                },
+                {
+                    question: "Yahudi takviminde yılbaşı olan ve Tişri ayının başında iki gün kutlanan bayram hangisidir?",
+                    options: ["Yom Kippur", "Sukkot", "Pesah", "Roş Haşana", "Şavuot"],
+                    correct: 3,
+                    difficulty: "Orta",
+                    topic: "Roş Haşana"
+                },
+                {
+                    question: "Roş Haşana ibadetleri esnasında boynuzdan yapılmış hangi enstrüman çalınır?",
+                    options: ["Hazozerah", "Şofar", "Kinnor", "Nevel", "Tof"],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Roş Haşana ve Şofar"
+                },
+                {
+                    question: "Roş Haşana'nın birinci gününden 10 gün sonra gelen ve 25 saatlik oruç tutulan kefaret günü hangisidir?",
+                    options: ["Tişa B'Av", "Yom Kippur", "Taanit Esther", "Tzom Gedaliah", "Asara B'Tevet"],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Yom Kippur"
+                },
+                {
+                    question: "Yahudilerin Mısır'dan çıktıktan sonra kırk yıl çölde dolaşmaları anısına kutlanan ve evlerinin bahçesine çardak kurdukları bayram hangisidir?",
+                    options: ["Pesah", "Şavuot", "Sukkot", "Hanuka", "Purim"],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Sukkot"
+                },
+                {
+                    question: "Tevrat'ın hatim bayramı olan ve Sukkot'un 8. gününde kutlanan bayram hangisidir?",
+                    options: ["Şavuot", "Simha Tora", "Şemini Atzeret", "Lag BaOmer", "Tu BiShvat"],
+                    correct: 1,
+                    difficulty: "Zor",
+                    topic: "Simha Tora"
+                },
+                {
+                    question: "M.Ö. 165 yılında Makkabilerin Epifanes'e karşı verdiği mücadele ve dokuz kollu şamdanın bir günlük yağla sekiz gün yanması anısına kutlanan bayram hangisidir?",
+                    options: ["Purim", "Hanuka", "Pesah", "Sukkot", "Şavuot"],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Hanuka (Işıklar Bayramı)"
+                },
+                {
+                    question: "Tevrat'ın Tanrı tarafından Yahudilere verilişini kutlayan ve Haziran-Temmuz aylarında kutlanan bayram hangisidir?",
+                    options: ["Pesah", "Sukkot", "Şavuot", "Roş Haşana", "Yom Kippur"],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Şavuot"
+                },
+                {
+                    question: "Yahudilerin Mısır'dan çıkış olayının anısına sekiz gün boyunca mayasız ekmek yedikleri bayram hangisidir?",
+                    options: ["Sukkot", "Şavuot", "Hanuka", "Pesah (Fısıh)", "Purim"],
+                    correct: 3,
+                    difficulty: "Kolay",
+                    topic: "Pesah (Hamursuz Bayramı)"
+                },
+                {
+                    question: "Yahudilikte 13 yaşına giren erkek çocuğun sinagoga giderek Tevrat'tan bölümler okuduğu ve cemaate katıldığını duyurduğu tören hangisidir?",
+                    options: ["Bat Mitzva", "Bar Mitzva", "Brit Mila", "Pidyon Haben", "Upsherin"],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Bar Mitzva"
+                },
+                {
+                    question: "Yahudilerde evlilik için yapılan sözleşmeye ne ad verilir?",
+                    options: ["Ketuba", "Get", "Kiddushin", "Erusin", "Nisuin"],
+                    correct: 0,
+                    difficulty: "Orta",
+                    topic: "Yahudi Evliliği"
+                },
+                {
+                    question: "Yahudilerde boşanma için erkeğin kadına vermesi gereken belgeye ne ad verilir?",
+                    options: ["Ketuba", "Get", "Heter Meah Rabbanim", "Agunah", "Seruv"],
+                    correct: 1,
+                    difficulty: "Zor",
+                    topic: "Yahudi Boşanması"
+                },
+                {
+                    question: "Yahudilikte yeme-içme kurallarını ifade eden ve 'uygun, münasip' anlamına gelen kavram hangisidir?",
+                    options: ["Halal", "Tahor", "Koşer", "Mitzvot", "Halakha"],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Koşer Kuralları"
+                },
+                {
+                    question: "Yahudiliğe göre aşağıdaki hayvanlardan hangisi yenmesi yasaktır?",
+                    options: ["Sığır", "Koyun", "Deve", "Keçi", "Geyik"],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Koşer Hayvanlar"
+                },
+                {
+                    question: "Yahudilikte et ve süt ürünlerinin aynı anda tüketilmemesinin dayanağı Tevrat'taki hangi ifadedir?",
+                    options: ["Kan yemeyeceksiniz", "Oğlağı anasının sütünde pişirmeyeceksin", "Yırtıcı hayvan eti yemeyeceksiniz", "Pis hayvanları yemeyeceksiniz", "Ölü hayvan yemeyeceksiniz"],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Et ve Süt Ayrımı"
+                },
+                {
+                    question: "Yahudilerin İbraniler, İsrailoğulları ve Yahudiler şeklinde farklı isimlerle anılmasının nedeni aşağıdakilerden hangisidir?",
+                    options: ["Farklı mezheplere ait olmaları", "Farklı coğrafyalarda yaşamaları", "Her ismin tarihte bir döneme işaret etmesi", "Farklı diller kullanmaları", "Farklı kitaplara inanmaları"],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Yahudilerin İsimleri"
+                },
+                {
+                    question: "'İbraniler' isminin kaynağı olan ve Nuh'un oğlu Sam'ın soyundan gelen ata kimdir?",
+                    options: ["Terah", "Eber", "İbrahim", "Yakup", "İshak"],
+                    correct: 1,
+                    difficulty: "Zor",
+                    topic: "İbranilerin Kökeni"
+                },
+                {
+                    question: "Hz. İbrahim'in M.Ö. 2000-1800 yılları arasında Ur şehrinden çıkıp önce gittiği şehir hangisidir?",
+                    options: ["Babil", "Kenan", "Harran", "Memphis", "Ninova"],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "İbrahim'in Göçü"
+                },
+                {
+                    question: "Yahudilerin atası kabul edilen ve kurban hadisesiyle anılan İbrahim'in oğlu kimdir?",
+                    options: ["İsmail", "İshak", "Esav", "Yakup", "Yusuf"],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Yahudilerin Atası"
+                },
+                {
+                    question: "'Tanrı ile uğraşan' anlamına gelen ve Yahudilere 'İsrailoğulları' ismini kazandıran Yakup'un lakabı hangisidir?",
+                    options: ["El Şaddai", "İsrail", "Adonai", "Elohim", "YHWH"],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "İsrailoğulları İsminin Kaynağı"
+                },
+                {
+                    question: "İsrailoğullarının 12 kabilesinin oluşmasını sağlayan Yakup'un kaç oğlu vardır?",
+                    options: ["7", "10", "12", "13", "14"],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "12 Kabile"
+                },
+                {
+                    question: "Yakup'un oğlu olan ve Kenan ülkesinden Mısır'a geçerek yöneticiliğe yükselen peygamber kimdir?",
+                    options: ["Ruben", "Yusuf", "Levi", "Yahuda", "Benyamin"],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Hz. Yusuf"
+                },
+                {
+                    question: "Tevrat'a göre İsrailoğulları Mısır'da yaklaşık ne kadar süre yaşamışlardır?",
+                    options: ["200 yıl", "300 yıl", "400 yıl", "500 yıl", "600 yıl"],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Mısır'da Kalış Süresi"
+                },
+                {
+                    question: "İsrailoğullarını Mısır'dan çıkaran ve Sina Dağı'nda 10 Emir'i alan peygamber kimdir?",
+                    options: ["İbrahim", "İshak", "Yakup", "Yusuf", "Musa"],
+                    correct: 4,
+                    difficulty: "Kolay",
+                    topic: "Hz. Musa"
+                },
+                {
+                    question: "Yahudi yasasının temelini oluşturan ve Musa'ya Sina Dağı'nda verilen emirlerin sayısı kaçtır?",
+                    options: ["5", "7", "10", "12", "13"],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "On Emir"
+                },
+                {
+                    question: "Henüz bir mabed kuramayan İsrailoğullarının ibadetlerini yaptıkları ve On Emir'i muhafaza ettikleri yer aşağıdakilerden hangisidir?",
+                    options: ["Sinagog", "Toplanma çadırı", "Bet Midrash", "Yeshiva", "Havra"],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Mabed Öncesi İbadet"
+                },
+                {
+                    question: "İsrailoğullarını kutsal topraklara sokan ve Kudüs'e yerleştiren kral kimdir?",
+                    options: ["Kral Saul", "Kral Davud", "Kral Süleyman", "Kral Hizkiya", "Kral Yehoşafat"],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Kral Davud"
+                },
+                {
+                    question: "İlk Yahudi mabedi (Bet Hamikdaş/Süleyman Mabedi) yaklaşık hangi yüzyılda inşa edilmiştir?",
+                    options: ["M.Ö. 1200ler", "M.Ö. 1000ler", "M.Ö. 900ler", "M.Ö. 700ler", "M.Ö. 500ler"],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "I. Mabedin İnşası"
+                },
+                {
+                    question: "Kral Süleyman'ın ölümünden sonra Yahudiler kaç krallığa bölünmüşlerdir?",
+                    options: ["2", "3", "4", "5", "12"],
+                    correct: 0,
+                    difficulty: "Kolay",
+                    topic: "Krallığın Bölünmesi"
+                },
+                {
+                    question: "Kuzeydeki İsrail Krallığı M.Ö. 722'de hangi imparatorluk tarafından yıkılmıştır?",
+                    options: ["Mısır", "Babil", "Asur", "Pers", "Roma"],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "İsrail Krallığının Yıkılışı"
+                },
+                {
+                    question: "Güneydeki Yahuda Krallığı ve I. Mabed M.Ö. 587'de hangi kral tarafından yıkılmıştır?",
+                    options: ["Asurbanipal", "Nabukadnezzar (Nebukadnezar)", "Kyros (Koreş)", "Kambyses", "Darius"],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "I. Mabedin Yıkılışı"
+                },
+                {
+                    question: "M.Ö. 587'de Yahudilerin çoğunun Kudüs'ten Babil'e sürgün edilmesine ne ad verilir?",
+                    options: ["Mısır Sürgünü", "I. Sürgün (Babil Sürgünü)", "II. Sürgün", "Asur Sürgünü", "Roma Sürgünü"],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "Babil Sürgünü"
+                },
+                {
+                    question: "Babil krallığını yıkarak Yahudilerin Kudüs'e dönmelerine ve mabed inşa etmelerine izin veren Pers kralı kimdir?",
+                    options: ["Darius", "Artaxerxes", "Xerxes", "Kyros (Koreş)", "Kambyses"],
+                    correct: 3,
+                    difficulty: "Orta",
+                    topic: "Sürgünün Sonu"
+                },
+                {
+                    question: "M.Ö. 500'lerin ortalarında Yahudileri Kudüs'e döndüren ve II. Mabedin inşasını gerçekleştiren peygamber kimdir?",
+                    options: ["Daniel", "Ezra", "Nehemya", "Zekeriya", "Malaki"],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Ezra ve II. Mabed"
+                },
+                {
+                    question: "Ezra peygamberin Yahudiliğin kurucusu sayılmasının nedeni aşağıdakilerden hangisidir?",
+                    options: ["İlk mabedi inşa etmesi", "On Emir'i yazıya geçirmesi", "Unutulan dini metinleri yeniden yazıya geçirmesi ve ibadetleri canlandırması", "İlk haham olması", "Tevrat'ı tamamlaması"],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Ezra'nın Önemi"
+                },
+                {
+                    question: "II. Mabed M.S. 70 yılında hangi imparatorluğun kumandanı tarafından yıkılmıştır?",
+                    options: ["Selevkoslar", "Roma (Kumandan Titus)", "Bizans", "Partlar", "Sasaniler"],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "II. Mabedin Yıkılışı"
+                },
+                {
+                    question: "M.S. 132-135 yılları arasında Roma'ya karşı gerçekleşen ve başarısız olan son Yahudi ayaklanması hangisidir?",
+                    options: ["Makkabi Ayaklanması", "Birinci Yahudi-Roma Savaşı", "Bar Kohba (Bar Kokhba) Ayaklanması", "Hasmonean İsyanı", "Zelotlar İsyanı"],
+                    correct: 2,
+                    difficulty: "Zor",
+                    topic: "Bar Kohba Ayaklanması"
+                },
+                {
+                    question: "M.S. 135'te Roma İmparatoru Hadriyanus Kudüs'ün ismini neye değiştirmiştir?",
+                    options: ["Jerusalem", "Hierosolyma", "Aelia Capitolina", "Palestina", "Sion"],
+                    correct: 2,
+                    difficulty: "Zor",
+                    topic: "Kudüs'ün İsminin Değiştirilmesi"
+                },
+                {
+                    question: "M.S. 135'ten itibaren Yahudilerin Kudüs'ten sürülmesi ve dünyanın çeşitli yerlerine dağılmasına ne ad verilir?",
+                    options: ["Exodus", "Galut", "Diaspora", "Aliyah", "Yeruşalayim"],
+                    correct: 2,
+                    difficulty: "Orta",
+                    topic: "Diaspora (II. Sürgün)"
+                },
+                {
+                    question: "Halife Ömer'in Kudüs'ü hangi imparatorluktan almasıyla Yahudiler tekrar Kudüs'e girebilmişlerdir?",
+                    options: ["Roma", "Bizans", "Pers", "Mısır", "Haçlılar"],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "İslam Hakimiyeti"
+                },
+                {
+                    question: "Roma'nın 4. yüzyıldan itibaren hangi dini resmi din olarak benimsemesi Yahudilere yönelik baskıyı artırmıştır?",
+                    options: ["Zerdüştlük", "Mithraizm", "Hristiyanlık", "Maniheizm", "Gnostisizm"],
+                    correct: 2,
+                    difficulty: "Kolay",
+                    topic: "Hristiyan Roma ve Yahudiler"
+                },
+                {
+                    question: "Orta Çağ boyunca Yahudilerin Müslüman topraklarında sahip oldukları statü hangisidir?",
+                    options: ["Mevali", "Zimmi", "Köle", "Müstemen", "Harbî"],
+                    correct: 1,
+                    difficulty: "Kolay",
+                    topic: "İslam Dünyasında Yahudiler"
+                },
+                {
+                    question: "Yahudilerin II. Mabedinden geriye kalan ve günümüzde 'Ağlama Duvarı' olarak bilinen yapı nedir?",
+                    options: ["Mabedin ana kapısı", "Mabedin batı duvarı", "Mabedin doğu duvarı", "Kutsal sandığın bulunduğu yer", "Kurban sunulan sunak"],
+                    correct: 1,
+                    difficulty: "Orta",
+                    topic: "Ağlama Duvarı"
+                }
+            ]
+        };
+
+        // UYGULAMA DEĞİŞKENLERİ
+        let currentTopic = '';
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let startTime;
+        let timerInterval;
+
+        // FONKSIYONLAR
+        function selectTopic(topic) {
+            currentTopic = topic;
+            document.getElementById('mainMenu').classList.add('hidden');
+            document.getElementById('countSelection').style.display = 'block';
+        }
+
+        function backToMenu() {
+            document.getElementById('mainMenu').classList.remove('hidden');
+            document.getElementById('countSelection').style.display = 'none';
+            document.getElementById('quizContainer').style.display = 'none';
+            document.getElementById('results').style.display = 'none';
+            
+            // Reset
+            if(timerInterval) clearInterval(timerInterval);
+            currentQuestions = [];
+            currentQuestionIndex = 0;
+            userAnswers = [];
+        }
+
+        function startQuiz(count) {
+            // Soruları hazırla
+            if(currentTopic === 'karisik') {
+                let allQuestions = [];
+                Object.values(questionBank).forEach(topicQuestions => {
+                    allQuestions = allQuestions.concat(topicQuestions);
+                });
+                currentQuestions = shuffleArray(allQuestions);
+            } else {
+                currentQuestions = shuffleArray([...questionBank[currentTopic]]);
+            }
+
+            if(count !== 'all') {
+                currentQuestions = currentQuestions.slice(0, count);
+            }
+
+            userAnswers = new Array(currentQuestions.length).fill(null);
+            currentQuestionIndex = 0;
+            startTime = Date.now();
+
+            // Ekranları değiştir
+            document.getElementById('countSelection').style.display = 'none';
+            document.getElementById('quizContainer').style.display = 'block';
+
+            // Timer başlat
+            timerInterval = setInterval(updateTimer, 1000);
+
+            // İlk soruyu göster
+            showQuestion();
+        }
+
+        function shuffleArray(array) {
+            let newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function showQuestion() {
+            const question = currentQuestions[currentQuestionIndex];
+            
+            // Progress bar
+            const progress = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            // Soru numarası
+            document.getElementById('questionNumber').textContent = 
+                `Soru ${currentQuestionIndex + 1}/${currentQuestions.length}`;
+
+            // Soru metni
+            document.getElementById('questionText').textContent = question.question;
+
+            // Meta bilgiler
+            document.getElementById('questionMeta').innerHTML = `
+                <span class="meta-tag">${question.difficulty}</span>
+                <span class="meta-tag">${question.topic}</span>
+            `;
+
+            // Şıklar
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                if(userAnswers[currentQuestionIndex] === index) {
+                    optionDiv.classList.add('selected');
+                }
+                
+                optionDiv.innerHTML = `
+                    <div class="option-letter">${String.fromCharCode(65 + index)}</div>
+                    <div class="option-text">${option}</div>
+                `;
+                
+                optionDiv.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            // Açıklamayı gizle
+            document.getElementById('explanation').classList.remove('show');
+
+            // Butonları ayarla
+            document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+            document.getElementById('nextBtn').disabled = userAnswers[currentQuestionIndex] === null;
+            
+            if(currentQuestionIndex === currentQuestions.length - 1) {
+                document.getElementById('nextBtn').textContent = 'Sınavı Bitir 🎯';
+            } else {
+                document.getElementById('nextBtn').textContent = 'Sonraki →';
+            }
+        }
+
+        function selectOption(index) {
+            // Cevap kaydet
+            userAnswers[currentQuestionIndex] = index;
+            
+            // Şıkları güncelle
+            const options = document.querySelectorAll('.option');
+            options.forEach((opt, i) => {
+                opt.classList.remove('selected', 'correct', 'wrong');
+                if(i === index) opt.classList.add('selected');
+            });
+
+            // Doğru/yanlış göster
+            const question = currentQuestions[currentQuestionIndex];
+            options[question.correct].classList.add('correct');
+            if(index !== question.correct) {
+                options[index].classList.add('wrong');
+            }
+
+            // Tüm şıkları disable yap
+            options.forEach(opt => opt.classList.add('disabled'));
+
+            // Açıklamayı göster (varsa)
+            document.getElementById('explanationText').textContent = 
+                `Doğru cevap: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}`;
+            document.getElementById('explanation').classList.add('show');
+
+            // Next butonunu aktif et
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function previousQuestion() {
+            if(currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if(currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                showQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function updateTimer() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            document.getElementById('timeInfo').textContent = 
+                `Süre: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function finishQuiz() {
+            clearInterval(timerInterval);
+            
+            // Sonuçları hesapla
+            let correctCount = 0;
+            let wrongAnswers = [];
+
+            currentQuestions.forEach((question, index) => {
+                if(userAnswers[index] === question.correct) {
+                    correctCount++;
+                } else {
+                    wrongAnswers.push({
+                        question: question.question,
+                        userAnswer: userAnswers[index] !== null ? 
+                            `${String.fromCharCode(65 + userAnswers[index])}) ${question.options[userAnswers[index]]}` : 
+                            'Cevaplanmadı',
+                        correctAnswer: `${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}`,
+                        topic: question.topic
+                    });
+                }
+            });
+
+            const wrongCount = currentQuestions.length - correctCount;
+            const scorePercent = Math.round((correctCount / currentQuestions.length) * 100);
+            const totalTime = Math.floor((Date.now() - startTime) / 1000);
+            const timeStr = `${Math.floor(totalTime / 60)}:${(totalTime % 60).toString().padStart(2, '0')}`;
+
+            // Sonuçları göster
+            document.getElementById('scorePercent').textContent = `${scorePercent}%`;
+            document.getElementById('correctCount').textContent = correctCount;
+            document.getElementById('wrongCount').textContent = wrongCount;
+            document.getElementById('totalTime').textContent = timeStr;
+
+            // Yanlış cevapları göster
+            const wrongAnswersDiv = document.getElementById('wrongAnswers');
+            if(wrongAnswers.length > 0) {
+                wrongAnswersDiv.innerHTML = '<h3>❌ Yanlış Cevapladığın Sorular</h3>';
+                wrongAnswers.forEach((wa, index) => {
+                    wrongAnswersDiv.innerHTML += `
+                        <div class="wrong-question">
+                            <div class="q-text">${index + 1}. ${wa.question}</div>
+                            <div class="answer your-answer"><strong>Senin Cevabın:</strong> ${wa.userAnswer}</div>
+                            <div class="answer correct-answer"><strong>Doğru Cevap:</strong> ${wa.correctAnswer}</div>
+                            <small style="color: #666;">Konu: ${wa.topic}</small>
+                        </div>
+                    `;
+                });
+                wrongAnswersDiv.style.display = 'block';
+            } else {
+                wrongAnswersDiv.style.display = 'none';
+            }
+
+            // Ekranı değiştir
+            document.getElementById('quizContainer').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            userAnswers = new Array(currentQuestions.length).fill(null);
+            startTime = Date.now();
+            
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('quizContainer').style.display = 'block';
+            
+            timerInterval = setInterval(updateTimer, 1000);
+            showQuestion();
+        }
+    </script>
+</body>
+</html>
