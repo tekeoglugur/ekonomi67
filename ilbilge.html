@@ -678,16 +678,16 @@
             
             // Hızlı dokunuşlar için (500ms altı)
             if (timeDelta < 500) {
-                // Yukarı swipe - zıpla
-                if (deltaY > swipeThreshold && deltaY > deltaX) {
-                    jump();
-                }
-                // Aşağı swipe - eğil
-                else if (deltaY < -swipeThreshold && Math.abs(deltaY) > deltaX) {
+                // Aşağı swipe - eğil veya hızlı iniş (her zaman çalışsın!)
+                if (deltaY < -swipeThreshold && Math.abs(deltaY) > deltaX) {
                     duck();
                 }
-                // Tap (çok az hareket) - zıpla
-                else if (Math.abs(deltaY) < tapThreshold && deltaX < tapThreshold) {
+                // Yukarı swipe - zıpla
+                else if (deltaY > swipeThreshold && deltaY > deltaX) {
+                    jump();
+                }
+                // Tap (çok az hareket) - zıpla (sadece yerdeyken)
+                else if (Math.abs(deltaY) < tapThreshold && deltaX < tapThreshold && !player.isJumping) {
                     jump();
                 }
             }
@@ -722,11 +722,16 @@
         
         function duck() {
             if (!player.isJumping) {
+                // Yerdeyken eğil
                 player.isDucking = true;
                 player.height = player.duckHeight;
                 player.y = groundY - player.height;
                 sound.playDuck();
                 setTimeout(standUp, 500);
+            } else {
+                // Havadayken hızlı iniş
+                player.velocityY = 18;
+                sound.playDuck();
             }
         }
         
