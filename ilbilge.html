@@ -570,6 +570,9 @@
             });
         }
         
+        // Mobil cihaz tespiti
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+        
         // ==================== GAME STATE ====================
         let gameState = 'start';
         let score = 0;
@@ -578,10 +581,10 @@
         let combo = 0;
         let maxCombo = 0;
         let highscore = parseInt(localStorage.getItem('ilbilgeHighscore') || '0');
-        let gameSpeed = 8;
-        let baseSpeed = 8;
-        let maxSpeed = 18;
-        let speedIncreaseRate = 0.002;
+        let gameSpeed = isMobile ? 5.5 : 8; // Mobilde daha yavaş
+        let baseSpeed = isMobile ? 5.5 : 8; // Mobilde daha yavaş
+        let maxSpeed = isMobile ? 13 : 18; // Mobilde max hız daha düşük
+        let speedIncreaseRate = isMobile ? 0.0012 : 0.002; // Mobilde daha yavaş hızlanma
         let groundY;
         let lastTime = 0;
         let deltaTime = 0;
@@ -1294,7 +1297,7 @@
             combo = 0;
             maxCombo = 0;
             comboTimer = 0;
-            gameSpeed = baseSpeed;
+            gameSpeed = isMobile ? 5.5 : 8;
             obstacles = [];
             collectibles = [];
             powerups = [];
