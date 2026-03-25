@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bizans Tarihi - Kapsamlı Test</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f0e17;--surface:#1a1930;--surface2:#232145;--gold:#d4a94c;--gold-dim:#a67c2e;--cream:#fffbf0;--text:#e8e4d9;--text-dim:#8a8694;--correct:#4caf80;--correct-bg:rgba(76,175,128,.12);--wrong:#e05555;--wrong-bg:rgba(224,85,85,.12);--accent:#6c63ff;--radius:12px}
+*{margin:0;padding:0;box-sizing:border-box}body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 20%,rgba(108,99,255,.06) 0%,transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(212,169,76,.04) 0%,transparent 50%);pointer-events:none;z-index:0}
+.app{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:20px}
+.header{text-align:center;padding:50px 20px 30px;animation:fadeDown .8s ease}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
+.header-icon{font-size:48px;margin-bottom:16px;display:inline-block;filter:drop-shadow(0 0 20px rgba(212,169,76,.3))}
+.header h1{font-family:'Crimson Pro',serif;font-size:clamp(28px,5vw,42px);font-weight:700;color:var(--cream);letter-spacing:-.5px;margin-bottom:8px}
+.header h1 span{color:var(--gold)}
+.header p{color:var(--text-dim);font-size:15px;max-width:500px;margin:0 auto;line-height:1.6}
+.topic-grid{display:grid;grid-template-columns:1fr;gap:14px;margin:30px 0;animation:fadeUp .8s ease .2s both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.topic-card{background:var(--surface);border:1px solid rgba(212,169,76,.12);border-radius:var(--radius);padding:22px 24px;cursor:pointer;transition:all .3s ease;display:flex;align-items:center;gap:18px;position:relative;overflow:hidden}
+.topic-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gold);transform:scaleY(0);transition:transform .3s ease}
+.topic-card:hover{border-color:rgba(212,169,76,.35);background:var(--surface2);transform:translateX(4px)}
+.topic-card:hover::before{transform:scaleY(1)}
+.topic-emoji{font-size:32px;flex-shrink:0}
+.topic-info{flex:1}
+.topic-info h3{font-family:'Crimson Pro',serif;font-size:19px;color:var(--cream);margin-bottom:4px}
+.topic-info p{font-size:13px;color:var(--text-dim)}
+.topic-count{background:rgba(212,169,76,.12);color:var(--gold);padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;flex-shrink:0}
+.quiz-container{animation:fadeUp .5s ease}
+.quiz-top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.back-btn{background:none;border:1px solid rgba(255,255,255,.1);color:var(--text-dim);padding:8px 18px;border-radius:8px;cursor:pointer;font-size:14px;font-family:inherit;transition:all .2s}
+.back-btn:hover{border-color:var(--gold-dim);color:var(--gold)}
+.progress-info{display:flex;align-items:center;gap:14px;font-size:14px;color:var(--text-dim)}
+.progress-bar-wrap{width:100%;height:5px;background:rgba(255,255,255,.06);border-radius:10px;margin-bottom:28px;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));border-radius:10px;transition:width .5s ease}
+.question-card{background:var(--surface);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:32px 28px;margin-bottom:20px}
+.q-number{font-size:12px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:2px;margin-bottom:14px}
+.q-text{font-family:'Crimson Pro',serif;font-size:clamp(18px,3vw,22px);line-height:1.55;color:var(--cream);margin-bottom:28px}
+.options{display:flex;flex-direction:column;gap:10px}
+.option-btn{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:16px 20px;color:var(--text);font-family:inherit;font-size:15px;text-align:left;cursor:pointer;transition:all .25s ease;line-height:1.5;display:flex;align-items:flex-start;gap:12px}
+.option-btn:hover:not(.disabled){background:rgba(212,169,76,.06);border-color:rgba(212,169,76,.25)}
+.option-letter{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.06);font-size:13px;font-weight:600;flex-shrink:0;margin-top:1px;transition:all .25s}
+.option-btn.correct{background:var(--correct-bg);border-color:var(--correct)}
+.option-btn.correct .option-letter{background:var(--correct);color:#fff}
+.option-btn.wrong{background:var(--wrong-bg);border-color:var(--wrong)}
+.option-btn.wrong .option-letter{background:var(--wrong);color:#fff}
+.option-btn.disabled{cursor:default;opacity:.6}
+.option-btn.correct.disabled,.option-btn.wrong.disabled{opacity:1}
+.explanation{margin-top:18px;padding:16px 20px;background:rgba(108,99,255,.06);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text);animation:fadeUp .4s ease}
+.next-btn{display:block;width:100%;padding:16px;background:linear-gradient(135deg,var(--gold-dim),var(--gold));color:#0f0e17;border:none;border-radius:10px;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;transition:all .3s;margin-top:20px}
+.next-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(212,169,76,.25)}
+.results{text-align:center;padding:40px 20px;animation:fadeUp .6s ease}
+.results-circle{width:160px;height:160px;border-radius:50%;margin:0 auto 28px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+.results-circle::before{content:'';position:absolute;inset:0;border-radius:50%;border:4px solid rgba(255,255,255,.06)}
+.results-circle::after{content:'';position:absolute;inset:0;border-radius:50%;border:4px solid transparent;border-top-color:var(--gold);border-right-color:var(--gold);animation:spin 2s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.results-score{font-family:'Crimson Pro',serif;font-size:48px;font-weight:700;color:var(--gold)}
+.results-label{font-size:14px;color:var(--text-dim)}
+.results h2{font-family:'Crimson Pro',serif;font-size:28px;color:var(--cream);margin-bottom:10px}
+.results p{color:var(--text-dim);font-size:15px;margin-bottom:30px;line-height:1.6}
+.results-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:30px}
+.stat-box{background:var(--surface);border-radius:10px;padding:18px 12px}
+.stat-box .val{font-family:'Crimson Pro',serif;font-size:28px;font-weight:700}
+.stat-box .label{font-size:12px;color:var(--text-dim);margin-top:4px}
+.stat-box.green .val{color:var(--correct)}
+.stat-box.red .val{color:var(--wrong)}
+.stat-box.gold .val{color:var(--gold)}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.btn-primary{padding:14px 32px;background:linear-gradient(135deg,var(--gold-dim),var(--gold));color:#0f0e17;border:none;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all .3s}
+.btn-secondary{padding:14px 32px;background:none;border:1px solid rgba(255,255,255,.12);color:var(--text);border-radius:10px;font-family:inherit;font-size:15px;cursor:pointer;transition:all .3s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(212,169,76,.2)}
+.btn-secondary:hover{border-color:var(--gold-dim);color:var(--gold)}
+.all-topics-btn{display:block;width:100%;padding:18px;background:linear-gradient(135deg,var(--accent),#8b83ff);color:#fff;border:none;border-radius:var(--radius);font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;margin-top:10px;transition:all .3s;animation:fadeUp .8s ease .4s both}
+.all-topics-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(108,99,255,.3)}
+@media(max-width:600px){.app{padding:12px}.question-card{padding:22px 18px}.results-stats{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<script>
+var TOPICS = [
+{
+id:"justinian",emoji:"👑",title:"Jüstinyen Devri ve VI. Yüzyıl (518-565)",desc:"Jüstinyen, Teodora, fetihler, hukuk, Nika İsyanı, medeniyet, din politikası",
+questions:[
+{q:"Jüstin'i tahta çıkaran olay nedir?",opts:["Halk oylaması","Karanlık bir entrika ve muhafız kıtaları kumandanı olması","Askeri zafer","Seçim"],ans:1,exp:"518\'de Anastaz\'ın ölümünde oldukça karanlık bir entrika, muhafız kıtaları kumandanı Jüstin\'i tahta çıkarmıştır."},
+{q:"Jüstin tahta çıktığında yaklaşık kaç yaşındaydı?",opts:["50","60","70","80"],ans:2,exp:"70 yaşlarında sülale kuran bu sonradan görme..."},
+{q:"Jüstin hangi bölgeden gelmiş bir köylüydü?",opts:["İzorya","Kapadokya","Makedonya","Trakya"],ans:2,exp:"Makedonya\'lı bir köylüydü."},
+{q:"Jüstin'in en belirgin zaafı neydi?",opts:["Cesaret eksikliği","Çok cahil ve tecrübesiz olması","Sağlık sorunları","Askeri yetersizlik"],ans:1,exp:"İyi bir asker fakat çok cahil ve iş hususunda tamamıyla tecrübesizdi."},
+{q:"Jüstinyen İstanbul'da hangi tarzda eğitim almıştır?",opts:["Grek ve Pers","Roma ve Hıristiyan","Yahudi ve Grek","Mısır ve Suriye"],ans:1,exp:"Orada Roma ve Hıristiyan tarzında bir terbiye almıştı."},
+{q:"Jüstinyen bizzat hangi yıllar arasında saltanat sürmüştür?",opts:["518-565","518-527","527-565","530-565"],ans:2,exp:"527\'den 565\'e kadar bizzat saltanat sürmüştür."},
+{q:"Jüstinyen'in iki büyük ideali neydi?",opts:["Zenginlik ve güç","İmparatorluk fikri ve Hristiyanlık fikri","Toprak genişletme ve ticaret","Sanat ve bilim"],ans:1,exp:"İki büyük fikrin temsilcisiydi: İmparatorluk fikri, Hristiyanlık fikri."},
+{q:"Saray adamlarından birinin Jüstinyen'e taktığı lakap?",opts:["Adil İmparator","Hiç Uyumayan İmparator","Altın İmparator","Muzaffer"],ans:1,exp:"Kendi saray adamlarından biri ona \'Hiç uyumayan imparator\' demişti."},
+{q:"Jüstin devrinde Monofizitler'e ne yapılmıştır?",opts:["Hoşgörü gösterilmiştir","Üç sene şiddetle takip edilmişlerdir (518-521)","Sürgün edilmişlerdir","Yeni kiliseler verilmiştir"],ans:1,exp:"Ortodoks gayretinin teminatını vermek için üç sene (518-521) şiddetle takip edilmişlerdir."},
+{q:"Yeni Roma'yı (İstanbul) ziyaret eden ilk Papa kimdir?",opts:["Papa Gregoire","Papa Jan (Jean) - 525","Papa Vigil","Papa Martin"],ans:1,exp:"525\'de Papa Jan İstanbul\'a gelmiştir."},
+{q:"Teodora'nın babası ne iş yapıyordu?",opts:["Asker","Tüccar","Hippodrom'da ayılar bekçisi","Balıkçı"],ans:2,exp:"Koşu yerinde (Hippodrome) ayılar bekçisinin kızıydı."},
+{q:"Teodora hangi yılda ölmüştür?",opts:["540","548","553","565"],ans:1,exp:"548\'de ölmüştür."},
+{q:"Teodora'nın siyasi vizyonu Jüstinyen'den nasıl farklıydı?",opts:["Aynı düşünüyorlardı","Doğuya odaklanıyor, din kavgalarını çözmek istiyordu","Batı fetihlerini destekliyordu","Savaşa karşıydı"],ans:1,exp:"İmparatoriçe doğuya doğru gözlerini çeviriyordu; din kavgalarını susturmak istiyordu."},
+{q:"Nika İsyanı hangi yıl ve nerede olmuştur?",opts:["530 - Ravenna","532 Ocağı - İstanbul","535 - Roma","540 - Antakya"],ans:1,exp:"532 ocağında İstanbul\'u bir hafta süreyle yangın ve kana boğmuştur."},
+{q:"Nika İsyanı'nda Atmeydanı'nda kaç kişi hayatını kaybetmiştir?",opts:["10.000","20.000","30.000","50.000"],ans:2,exp:"Atmeydanı\'nda 30.000 cesedi yere seren cezalandırma olmuştur."},
+{q:"Nika İsyanı'nda Jüstinyen'i kimler kurtarmıştır?",opts:["Narses ve Tribonien","Teodora'nın cesareti ve Belizer'in azmi","Patrik Sergiyus","Halk desteği"],ans:1,exp:"Teodora\'nın cesareti, Belizer\'in azmi sayesinde kurtulabilmişti."},
+{q:"532'de Sasanilerle barışın imzalanma sebebi?",opts:["Askeri zafer","Batıdaki emellerine odaklanmak için doğu tehlikesini bertaraf etmek","Ekonomik kriz","Din sorunları"],ans:1,exp:"Batıdaki ihtiraslı emellerini geciktiren engeli bertaraf etmek için barışı imzaladı."},
+{q:"Afrika seferinde Belizer'in ordusunun mevcudu?",opts:["5.000","10.000 yaya + 5-6 bin atlı","30.000","50.000"],ans:1,exp:"533\'de 10.000 yaya ve 5-6 bin atlıdan oluşan orduyla sefere çıkmıştır."},
+{q:"Vandal Kralı Gelimer hangi savaşlarda mağlup edilmiştir?",opts:["Dara ve Callinicum","Decimum ve Tricamarum","Taginae ve Kanpania","Ninova ve Ktezifon"],ans:1,exp:"Decimum ve Tricamarum\'da mağlup olan Gelimer Pappua tepesinde teslim olmuştur (534)."},
+{q:"Afrika fethinden sonra Jüstinyen hangi lakabı almıştır?",opts:["Büyük","Vandal ve Afrikalı","Augustus","Muzaffer"],ans:1,exp:"\'Vandal ve Afrikalı\' lakabını almıştır."},
+{q:"Belizer Sicilya'yı hangi yılda almıştır?",opts:["533","535","537","540"],ans:1,exp:"Sicilya\'yı zapt (535) etmiştir."},
+{q:"Ostrogotların yetenekli son kralı kimdir?",opts:["Vitiges","Theodat","Totila","Teodorik"],ans:2,exp:"Totila\'nın idaresinde Gotlar kendilerine gelmişlerdir."},
+{q:"İtalya'nın kesin fethini tamamlayan komutan?",opts:["Belizer","Narses","Tribonien","Mundus"],ans:1,exp:"Taginae\'de (552) Narses\'in azmi ile fetih tamamlanmıştır."},
+{q:"İtalya'nın fethi toplam kaç yıl sürmüştür?",opts:["5","10","20","30"],ans:2,exp:"İtalya ancak yirmi senede tekrar zapt olunabildi."},
+{q:"Hüsrev Anuşirvan Antakya'yı hangi yılda yağma etmiştir?",opts:["532","537","540","545"],ans:2,exp:"540\'da Suriye üzerine atılıp Antakya\'yı yağma etmiştir."},
+{q:"562'de İran'la imzalanan barış kaç yıllıktı?",opts:["10","25","50","100"],ans:2,exp:"562\'de elli senelik bir barış imzalanmıştır."},
+{q:"559'da İstanbul önündeki Hunlara karşı şehri kim kurtarmıştır?",opts:["Narses","İhtiyar Belizer","Tribonien","Jüstinyen bizzat"],ans:1,exp:"İhtiyar Belizer\'in cesareti güç bela şehri kurtarabilmişti."},
+{q:"Jüstinyen kanun yapma işini kime vermiştir?",opts:["Belizer","Narses","Tribonien","Kapadokyalı Jan"],ans:2,exp:"Nazır Tribonien\'e büyük bir yasama görevi verilmiştir."},
+{q:"Codex Justinianus ilk olarak hangi yılda yayınlanmıştır?",opts:["527","529","533","535"],ans:1,exp:"529\'da yayınlanmıştır."},
+{q:"Digeste (Pandectes) hangi yılda tamamlanmıştır?",opts:["529","530","533","535"],ans:2,exp:"533\'de tamamlanmıştır."},
+{q:"Corpus Juris Civilis hangi eserlerden oluşur?",opts:["Codex, Digeste, Institutes, Novellae","Codex, Ecloga, Basilika, Procheiron","Digeste, Ecloga, Typikon, Novellae","Institutes, Ecloga, Basilika, Hexabiblos"],ans:0,exp:"Codex, Digeste, Institutes ve Novellae (yeni emirnameler)."},
+{q:"Jüstinyen hukuk mektepleri hangi şehirlerde açılmıştır?",opts:["Roma, Atina, İskenderiye","İstanbul, Beyrut, Roma","Antakya, Kudüs, Efes","Selanik, Ravenna, Kartaca"],ans:1,exp:"İstanbul, Beyrut ve Roma\'da açılmıştır."},
+{q:"535'deki idari reformda vilayetlerde ne yapılmıştır?",opts:["Vergi muafiyeti","Sivil ve askeri makamlar birleştirilmiştir","Yeni vilayetler kurulmuştur","Ordular dağıtılmıştır"],ans:1,exp:"Birçok vilayetlerde sivil ve askeri makamlar birleştirilmiştir."},
+{q:"541'de tasarruf amacıyla kaldırılan kurum?",opts:["Senato","Konsüllük","Eksarhlık","Patriklik"],ans:1,exp:"541\'de konsüllüğün kaldırılması."},
+{q:"Jüstinyen 529'da hangi okulu neden kapatmıştır?",opts:["İstanbul Üni. - mali","Atina Üni. - müşrik profesörler","Beyrut Hukuk - deprem","Roma Akad. - siyasi"],ans:1,exp:"İçinde birkaç müşrik profesör gizlenen Atina üniversitesini kapatmıştır."},
+{q:"Üç Fasıl meselesi imparatorluğu kaç yıl karıştırmıştır?",opts:["10","15","20'den fazla (543-565)","30"],ans:2,exp:"Yirmi seneden fazla (543-565) karıştırmıştır."},
+{q:"Jüstinyen kendini nasıl ilan etmiştir?",opts:["Sadece imparator","İmparator ve papas","Tanrının oğlu","Kutsal kral"],ans:1,exp:"Kendini açıktan açığa \'imparator ve papas\' ilan etmiştir."},
+{q:"Ayasofya hangi yıllar arasında ve kimler tarafından inşa edilmiştir?",opts:["527-530, yerli ustalar","530-535, Romalı mimarlar","532-537, Aydınlı Anthemus ve Miletli İsidore","535-540, Suriyeli mimarlar"],ans:2,exp:"532-537 arasında Aydınlı Anthemus ve Miletli İsidore tarafından yapılmıştır."},
+{q:"557'de Çin'den getirilen önemli sır nedir?",opts:["Barut","Kağıt","İpekböceği yetiştiriciliği","Pusula"],ans:2,exp:"557\'de iki rahip Çin\'den ipekböceği yetiştirilmesi sırrını getirmişlerdir."},
+{q:"Jüstinyen kaç yaşında ölmüştür?",opts:["75","80","85","87"],ans:3,exp:"565\'de 87 yaşında ölmüştür."},
+{q:"'Şairler Prensi' olarak bilinen Bizanslı kimdir?",opts:["Prokopius","Agathias","Romanos","Paul le Silentiaire"],ans:2,exp:"Şairler prensi Romanos dini şiirleri ve ilahileri vücuda getirmiştir."},
+{q:"Bugünkü Küçük Ayasofya Camii hangi kiliseydi?",opts:["San Apollinare","Saint Demetrius","Saint-Serge-et-Baccus","Saint Apotres"],ans:2,exp:"İstanbul\'daki Saint-Serge-et-Baccus bugünkü Küçük Ayasofya Camii\'dir."},
+{q:"Jüstinyen'in haleflerinin izlediği yeni politika ne olmuştur?",opts:["Batıda fetih devam etmiştir","Batıdan yüz çevirip eksarhlıklar kurarak doğuya odaklanmışlardır","İran'la ittifak kurmuşlardır","Dini reformlar yapmışlardır"],ans:1,exp:"Halefleri batıdan yüz çevirdiler, Afrika ve Raven Eksarhlıklarını kurarak doğuya dikkatlerini çevirmişlerdir."},
+]},
+{
+id:"heraclius",emoji:"⚔️",title:"Herakleios ve Arap Fetihleri (565-717)",desc:"Fokas, Herakleios, Sasani seferleri, İslam fetihleri, Bulgarlar, VII. yüzyıl dönüşümü",
+questions:[
+{q:"Lombard istilası hangi yılda İtalya'nın yarısını kaybettirmiştir?",opts:["555","565","568","578"],ans:2,exp:"Lombard istilası (568) İtalya\'nın yarısını kaybettirmiştir."},
+{q:"Afrika ve Raven Eksarhlıkları kimin döneminde kurulmuştur?",opts:["Jüstinyen","Jüstin II","Tibere","Maurice (Mavrikios)"],ans:3,exp:"VI. yüzyıl sonunda Morik eksarhlıkları kurmuştur."},
+{q:"Fokas hangi yıllar arasında hüküm sürmüştür?",opts:["598-608","600-606","602-610","605-615"],ans:2,exp:"Fokas (602-610) kaba bir askerdi."},
+{q:"Herakleios tahta hangi yılda ve nereden gelerek çıkmıştır?",opts:["605-Roma","608-Selanik","610-Afrika (Kartaca eksarhının oğlu)","612-Antakya"],ans:2,exp:"610\'da Kartaca eksarhının oğlu Heraklius tahta çıkmıştır."},
+{q:"Sasaniler Kudüs'ü hangi yılda işgal etmişlerdir?",opts:["610","612","615","617"],ans:2,exp:"615\'de Kudüs\'ü işgal edip mukaddes haçı Ktezifon\'a taşımışlardır."},
+{q:"Sasaniler Mısır'ı hangi yılda işgal etmişlerdir?",opts:["612","615","617","620"],ans:2,exp:"617\'de Mısır\'ı işgal etmişlerdir."},
+{q:"Herakleios devletin merkezini nereye nakletmeyi düşünmüştür?",opts:["Roma","Selanik","Afrika","Antakya"],ans:2,exp:"İstanbul\'u bırakıp devletin merkezini Afrika\'ya nakletmeyi düşünmüştür."},
+{q:"Herakleios'a cesaret veren ve kilise hazinelerini veren kişi?",opts:["Papa Gregoire","Patrik Sergiyus","Şamlı Yuhanna","Belizer"],ans:1,exp:"Patrik Sergiyus kırılmaz azmiyle ona cesaret verip kilisenin hazinelerini emrine verdi."},
+{q:"Herakleios savaşı Sasani topraklarına hangi yıldan taşımıştır?",opts:["618","620","622","625"],ans:2,exp:"622\'de mücadeleye hazırdı."},
+{q:"626'daki İstanbul kuşatmasını kimler birlikte yapmıştır?",opts:["Araplar ve Bulgarlar","İranlılar ve Avarlar","Slavlar ve Hunlar","Gotlar ve Vandallar"],ans:1,exp:"Müttefik İranlıların ve Avarların müthiş taarruzu (626)."},
+{q:"Herakleios Ninova'da zafer hangi yılda kazanmıştır?",opts:["625","626","627","628"],ans:2,exp:"Ninova\'da (627) zafer kazanmıştır."},
+{q:"Mukaddes haç Kudüs'e hangi yılda geri götürülmüştür?",opts:["627","628","629","630"],ans:2,exp:"Muzaffer olarak Kudüs\'e tekrar götürmüştür (629)."},
+{q:"Ecthesis hangi yılda yayınlanmıştır?",opts:["630","635","638","641"],ans:2,exp:"Ecthesis ismi (638) altında monothelite nazariyeyi kabul ettirmeye uğraşmıştır."},
+{q:"Yermük felaketi hangi yılda olmuştur?",opts:["634","636","637","638"],ans:1,exp:"Yermuk felaketi (636)."},
+{q:"Ecnadeyn (Agnadain) Savaşı hangi yılda?",opts:["632","634","636","638"],ans:1,exp:"Bizans orduları Agnadain\'de mağlup olmuşlardır (634)."},
+{q:"Şam hangi yılda Müslümanlara düşmüştür?",opts:["634","635","636","637"],ans:1,exp:"Şam 635\'te düşmüştür."},
+{q:"Kudüs hangi yılda teslim olmuştur?",opts:["635","636","637","638"],ans:2,exp:"Kudüs 637\'de teslim olmuştur."},
+{q:"Mısır hangi yıllar arasında fethedilmiştir?",opts:["636-638","638-640","640-642","642-644"],ans:2,exp:"İki senede (640-642) Mısır zaptetmiştir."},
+{q:"Kuzey Afrika ilk kez hangi yılda istila edilmiştir?",opts:["642","645","647","650"],ans:2,exp:"647\'de ilk defa Kuzey Afrika istila edilmiştir."},
+{q:"Kıbrıs hangi yılda Araplarca alınmıştır?",opts:["645","649","652","660"],ans:1,exp:"Kıbrıs\'ı zapt (649) etmişlerdir."},
+{q:"İstanbul'un büyük Arap kuşatması hangi yıllar?",opts:["668-672","670-675","673-678","680-685"],ans:2,exp:"673-678 arasında beş sene kuşatma sürmüştür."},
+{q:"Grek ateşiyle Müslüman donanmasının bozulduğu yer?",opts:["Kıbrıs","Girit","Syllaeum sahilleri","Rodos"],ans:2,exp:"Syllaeum sahillerinde müthiş mağlubiyete uğramışlardır."},
+{q:"Muaviye'nin sulh imzaladığı yıl?",opts:["675","676","678","680"],ans:2,exp:"678\'de sulh imzalanmıştır. Bu İslam\'ın ilk duruşudur."},
+{q:"III. İstanbul Konsili (680-681) neyi mahkum etmiştir?",opts:["Monofizitizm","Aryanizm","Monoteletizm ve Monoenerjizm","İkonoklazm"],ans:2,exp:"Monotelitizm ve monoenergizm mahkum edilmiştir."},
+{q:"Bulgarlar Tuna-Balkan arasına hangi yıldan itibaren yerleşmiştir?",opts:["660","670","679","690"],ans:2,exp:"679\'dan beri yerleşmişlerdir."},
+{q:"Kayruan şehri hangi yılda kurulmuştur?",opts:["660","665","669","675"],ans:2,exp:"Kayruan 669\'da kurulmuştur."},
+{q:"'Basileus' unvanı hangi yılda ve kimin zamanında kullanılmıştır?",opts:["610-Herakleios","627-Herakleios","668-Konstantin IV","685-Jüstinyen II"],ans:1,exp:"Herakleios zamanında 627\'de meydana çıkmıştır."},
+{q:"VII. yüzyılda resmi dil ne olmuştur?",opts:["Latince","Arapça","Grekçe","Süryanice"],ans:2,exp:"İmparatorun bütün emirnameleri Grek dili ile yazılmıştır."},
+{q:"Theme kelimesi başlangıçta ne anlama geliyordu?",opts:["Bölge","Kolordu","Vergi birimi","Kilise"],ans:1,exp:"Önceleri kolordu manasına gelirdi."},
+{q:"Theme sisteminde idarecinin unvanı?",opts:["Logothete","Eparque","Stratege","Drongaire"],ans:2,exp:"Stratege ismi verilen askeri kumandana bırakılırdı."},
+{q:"Asya'da kurulan ilk üç theme?",opts:["Anatolikon, Thrakesion, Bukellarion","Ermeni, Anadolu, Opsikion","Optimaton, Paphlagonia, Kappadokia","Thessaloniki, Hellas, Peloponez"],ans:1,exp:"Ermeni, Anadolu ve Opsikion daireleri meydana gelmiştir."},
+{q:"695'ten 717'ye kadar kaç askeri darbe olmuştur?",opts:["4","6","8","10"],ans:1,exp:"Altı askeri hükümet darbesiyle altı imparator tahtta birbirini takip etmiştir."},
+{q:"Bizans Afrikası kesin olarak ne zaman kaybedilmiştir?",opts:["680","693-698","705","715"],ans:1,exp:"Kesin olarak 693-698\'de Müslümanlara düşmüştür."},
+{q:"Constans II'nin Typos fermanı hangi yılda?",opts:["640","645","648","653"],ans:2,exp:"648\'de her tür tartışmayı yasaklayan Typos yayınlanmıştır."},
+{q:"Slavların yerleşim bölgelerine ne ad veriliyordu?",opts:["Themata","Sclavinie'ler","Eksarhlıklar","Tagmata"],ans:1,exp:"Slav yerleşim bölgeleri Sclavinie\'ler."},
+]},
+{
+id:"thema",emoji:"🏛️",title:"Thema Sistemi'nin Ortaya Çıkışı",desc:"Thema teriminin kökeni, tartışmalar, kaynaklar, sistemin gelişimi",
+questions:[
+{q:"Thema kelimesinin Grekçe tekili ve çoğulu?",opts:["θέμα / θέματα","θέσις / θέσεις","τάγμα / τάγματα","στρατός / στρατοί"],ans:0,exp:"Tekili τό θέμα/thema; çoğulu τα θέματα/themata."},
+{q:"Thema sistemi hangi yüzyıllar arası yönetim birimi olmuştur?",opts:["V-IX","VI-X","VII - XI. yüzyıl ortaları","VIII-XII"],ans:2,exp:"VII. yüzyıldan XI. yüzyılın ortalarına kadar."},
+{q:"Themalara dair kaynaklardaki ilk atıf hangi yıla aittir?",opts:["620","650","687","700"],ans:2,exp:"İlk atıf 687 yılına tarihlenmektedir."},
+{q:"II. Justinianos'un mektubunda birlikler hangi Latince terimle ifade edilmiştir?",opts:["Thema","Exercitus (ordu)","Legio","Tagma"],ans:1,exp:"Latince \'exercitus\' terimi kullanılmıştır."},
+{q:"Theophanes thema kelimesini ilk kez hangi yılın olaylarında kullanmıştır?",opts:["602","610-611","619-620","636"],ans:1,exp:"610-11 olaylarını anlatırken kullanmıştır."},
+{q:"Theophanes'in 610-11'de kullandığı thema ne anlamdaydı?",opts:["Coğrafi bölge","Askeri birlik","Mali idare","Dini cemaat"],ans:1,exp:"Ordudaki bir kısım askeri birliği ifade etmek için kullanmıştır."},
+{q:"Simocatta aynı bağlamda thema yerine hangi terimi kullanmıştır?",opts:["Strategos","Tagma (merkezi birlik)","Exercitus","Scholae"],ans:1,exp:"Tagma (merkezi birlik) terimini kullanmıştır."},
+{q:"Howard-Johnston'a göre thema kelimesi hangi kavim vasıtasıyla gelmiştir?",opts:["Slavlar","Araplar","Avarlar","Persler"],ans:2,exp:"Avarlar vasıtasıyla geçtiğini ileri sürmüştür."},
+{q:"Tümen kelimesi kaç askerlik birliği ifade eder?",opts:["1.000","5.000","10.000","100.000"],ans:2,exp:"On bin askerden oluşan tümen."},
+{q:"Dölger thema terimini hangi kelimeyle ilişkilendirmiştir?",opts:["Taxis","Thesis (yerleştirmek)","Stratos","Basileus"],ans:1,exp:"Thesis kelimesinden geldiğini ileri sürmüştür."},
+{q:"Tithemi fiilinin anlamı nedir?",opts:["Savaşmak","Yerleştirmek-koymak","Yönetmek","Bölmek"],ans:1,exp:"Yerleştirmek-koymak anlamına gelen τίθημι/tithemi."},
+{q:"Theophanes 620-621'de Herakleios'un gittiği yer?",opts:["Konstantinopolis","Khalkedon","Themata khorası","İskenderiye"],ans:2,exp:"Themata khorasına doğru ilerlediğini belirtir."},
+{q:"Sebeos'a göre Herakleios ordusunu nerede toplamıştır?",opts:["Ankara","Kappadokia Kaisareiası","Antakya","Pylai"],ans:1,exp:"Kappadokia Kaisareiası buluşma merkezi olarak seçilmiştir."},
+{q:"Pylai günümüzde neresidir?",opts:["Bursa","Yalova-Çiftlikköy","İzmit","Eskişehir"],ans:1,exp:"Pylai: Yalova-Çiftlikköy."},
+{q:"Thema sistemi hakkında ilk sistemli çalışmayı yapan?",opts:["Ostrogorsky","H. Gelzer","J. Haldon","F. Dölger"],ans:1,exp:"İlk kişi Alman Bizans Tarihçisi H. Gelzer\'dir."},
+{q:"Gelzer'e göre themalar hangi sürecin sonucudur?",opts:["Arap fetihlerinin","Diokletianus-Justinianos-Mavrikios Eksarhlık sürecinin","Hun istilalarının","Bulgar tehlikesinin"],ans:1,exp:"Diokletianus\'tan başlayıp Mavrikios\'un Eksarhlık sistemiyle kökleşen düzenin sonucudur."},
+{q:"De Thematibus adlı eserin yazarı ve tarihi?",opts:["Theophanes - IX. yy","VII. Konstantinos Porphyrogennetos - 948-952","Sebeos - VII. yy","Pisidialı Georgios - VII. yy"],ans:1,exp:"948-952 yılları arasında Konstantinos Porphyrogennetos tarafından yazılmıştır."},
+{q:"De Thematibus'a göre themaları kim kurmuştur?",opts:["Justinianos","Mavrikios","Herakleios ve onun varisleri","Konstans II"],ans:2,exp:"Herakleios ve onun varisleri tarafından ortaya çıkartıldığı bilgisi geçer."},
+{q:"Shahid'in Byzantion'daki makalelerinin yılları?",opts:["1980,1985,1990","1987,1989,1994","1970,1975,1980","1995,2000,2005"],ans:1,exp:"1987, 1989 ve 1994\'te yayımlanmıştır."},
+{q:"Shahid'e göre thema düzeninin temelleri nerede atılmıştır?",opts:["Anadolu","Balkanlar","Bilâdü'ş-Şâm (Suriye-Filistin)","Mısır"],ans:2,exp:"Bilâdü\'ş-Şâm bölgesinde atıldığını ileri sürmüştür."},
+{q:"Belâzurî'nin kullandığı 'Ecnad' terimi ne demektir?",opts:["Vergiler","Cünd'ün çoğulu - askeri birlikler","Ticaret yolları","Din adamları"],ans:1,exp:"Cünd/Ecnad adında askeri bir sistem kurmuşlardır."},
+{q:"Haldon'a göre themaların kökeni?",opts:["Arap fetihleri","Eski Roma eyaletlerinin askerileştirilmesi","Hun istilaları","Pers etkisi"],ans:1,exp:"Eski Roma eyaletlerinin askerileştirilmesinden ileri gelir."},
+{q:"Diehl'e göre hangi iki eksarhlık thema'ya dönüşmüştür?",opts:["İstanbul-Antakya","Roma-İskenderiye","Kartaca (Afrika) ve Ravenna (İtalya)","Selanik-Atina"],ans:2,exp:"Kartaca ve Ravenna eksarhlıkları."},
+{q:"Themalardaki çiftçi-askerlere ne ad verilir?",opts:["Tagmata","Stratiotes","Scholares","Optimatoi"],ans:1,exp:"Çiftçi-askerler yani stratiotes."},
+{q:"Thema yöneticisinin öncekilerden farkı?",opts:["Daha az yetki","Olağanüstü yetkili hem sivil hem askeri yönetici","Sadece mali","Atanmıyordu"],ans:1,exp:"Olağanüstü yetkilerle donatılmış hem sivil hem de askeri bir yöneticiydi."},
+{q:"Sistemin Balkanlarda tesis amacı?",opts:["Ticaret","Slav ve Bulgar tehditlerini bertaraf etmek","Frankları durdurmak","İtalya'yı almak"],ans:1,exp:"Slav ve Bulgar tehditlerini bertaraf etmek için."},
+{q:"Ostrogorsky themaları nasıl nitelendirmiştir?",opts:["Sadece coğrafi","Sadece mali","Tamamıyla askeri nitelikte idari birlikler","Dini yönetim"],ans:2,exp:"Tamamıyla askeri nitelikte idari birlikler."},
+{q:"Pertusi'ye göre thema adının coğrafyayla ilgisi var mı?",opts:["Evet doğrudan","Hayır, birlikleri ifade eder","Kısmen","Sadece deniz themaları"],ans:1,exp:"Coğrafya ile ilgisinin olmadığını belirtmektedir."},
+{q:"Anatolikon themasının stratejik garnizon merkezi?",opts:["Ankara","Amorion","Kayseri","Konya"],ans:1,exp:"Anatolikon Theması\'nın garnizon merkezi Amorion\'dur."},
+{q:"Thema sisteminin ortaya çıkış tarihi net midir?",opts:["Evet, 610","Evet, 636","Hayır, araştırmacılar arasında tartışmalı","Evet, 687"],ans:2,exp:"Ne zaman ortaya çıktığı araştırmacılar arasında hâlâ tartışmalıdır."},
+]},
+{
+id:"iconoclasm",emoji:"🖼️",title:"Bizans İkonoklazmi ve İslam Etkisi",desc:"İkonoklazm nedenleri, Yahudilik, Monofizitizm, Doğu-Batı, İslam etkisi tartışması",
+questions:[
+{q:"İkonoklazm resmen hangi yılda başlamıştır?",opts:["711","717","726","730"],ans:2,exp:"III. Leo\'nun 726\'da yasaklaması ile başlar."},
+{q:"İkona karşıtlığının ilk sinyallerini veren imparator?",opts:["III. Leo","V. Constantine","Philippikos Barnades (711-713)","II. Justinianos"],ans:2,exp:"Ermeni kökenli Philippikos Barnades zamanında."},
+{q:"V. Constantine'in 754'te konsil topladığı yer?",opts:["İznik","Kadıköy","Hiereia (Fenerbahçe)","Ayasofya"],ans:2,exp:"754\'te Hiereia\'da toplanmıştır."},
+{q:"Birinci ikonoklazm dönemi hangi konsille sona ermiştir?",opts:["III. İstanbul","II. İznik Konsili (787)","Hiereia","Trullo"],ans:1,exp:"II. İznik Konsili (787) ile."},
+{q:"İkinci ikonoklazm dönemi kimin zamanında başlamıştır?",opts:["III. Leo","V. Constantine","V. Leo (Ermeni Leo, 813-820)","II. Mikhail"],ans:2,exp:"V. Leo (813-820) ile."},
+{q:"İkonoklazm kesin olarak ne zaman sona ermiştir?",opts:["787","815","842","867"],ans:2,exp:"842\'de İmparatoriçe Theodora ile sona ermiştir."},
+{q:"İkonoklastların temel iddiası?",opts:["İkonalar değersiz","İkona kültü putperestlik","İkonalar pahalı","İkonalar siyasi"],ans:1,exp:"İkona kültünün putperestlik olduğudur."},
+{q:"İkonoklastlara göre kutsal olan üç obje?",opts:["İkonalar, haç, Kitap","Evharistiya ekmeği-şarabı, kilise binaları, haç","Haç, emanetler, ikonalar","Kilise, ikonalar, kalıntılar"],ans:1,exp:"Evharistiya ekmeği-şarabı, kilise binaları ve haç."},
+{q:"Şamlı Yuhanna eserlerini nerede yazmıştır?",opts:["İstanbul","Roma","İslam egemenliği altında","Atina"],ans:2,exp:"İslam egemenliği altında yazmıştır."},
+{q:"Patrik Germanius'un temel argümanı?",opts:["İkonalar Tanrı'dan","Tasvir yasağı Eski Ahit içindir, İsa ile bitmiştir","İkonalar süs","İkonalar eğitim"],ans:1,exp:"Tasvir yasağı Eski Ahit zamanı içindir, İsa\'nın gelişiyle putperestlik bitmiştir."},
+{q:"İkonoklazm araştırmalarındaki en büyük kaynak sorunu?",opts:["Fazla kaynak","İkonoklast belgeler yok edilmiş","Arapça eksik","Arkeoloji yok"],ans:1,exp:"İkonoklastların belgeleri ikonodüller tarafından yok edilmiştir."},
+{q:"Elvira Konsili'ndeki tasvir karşıtı karar hangi yıla ait?",opts:["200","250","305","350"],ans:2,exp:"305 civarında alınmıştır."},
+{q:"Peter Brown'a göre her iki taraf neyi arıyordu?",opts:["İmparator","Kilise","Kutsal nerede?","Tanrı görünür mü?"],ans:2,exp:"\'Kutsal nerede?\' sorusuna cevap aramışlardır."},
+{q:"Monofizitizm ile ikonoklazm ilişkisi?",opts:["İlişki yok","Doğrudan sebep","Kristolojik tartışmalarla yakından alakalı","Monofizitler ikona taraftarı"],ans:2,exp:"İkonoklazm krizi kristolojik tartışmalarla yakından alakalıdır."},
+{q:"Pavlikanlarla ikonoklastların ortak noktası?",opts:["Roma desteği","İkona ve Meryem karşıtlığı, keşişlere olumsuz bakma","Monofizitizm","İmparator karşıtlığı"],ans:1,exp:"İkona ve Meryem saygısına karşı çıkma ve keşişlere kötü gözle bakma."},
+{q:"VIII. yüzyılda İstanbul'daki tahmini keşiş sayısı?",opts:["10.000","50.000","100.000","200.000"],ans:2,exp:"100.000 civarındadır."},
+{q:"Grabbar'a göre İslam'daki tasvir karşıtlığı nasıl tanımlanmalı?",opts:["Iconoclasm","Aniconism (ikonalardan uzak durma)","Vandalism","Reformation"],ans:1,exp:"\'Aniconism\' olarak tanımlanmalıdır."},
+{q:"III. Leo İstanbul'da ne yaptırarak 'saracen zihniyetli' denmiştir?",opts:["Sinagog","Cami","Zerdüşt tapınağı","Süryani kilisesi"],ans:1,exp:"İstanbul\'da ilk defa bir cami yapılmıştır."},
+{q:"Griffith'e göre Yezid'in fermanı ile Leo'nun girişimleri?",opts:["Doğrudan etki","Tamamen farklı amaç ve gayeler","Yezid etkiledi","Leo taklit etti"],ans:1,exp:"Birbirinden tamamen farklı amaç ve gayelerle ilgilidir."},
+{q:"King'e göre ikonoklazmi açıklamak için İslam'a gerek var mı?",opts:["Evet","Hayır, Hristiyan tasvir karşıtlığı yeterli","Kısmen","Belki"],ans:1,exp:"Hristiyan tasvir karşıtlığını keşfetmek için İslam\'a gerek yoktur."},
+{q:"Brown'a göre İslam yerine neyin etkisi yeterlidir?",opts:["Roma geleneği","Yahudilik ve Eski Ahit","Pers kültürü","Mısır geleneği"],ans:1,exp:"Yahudilik ve Eski Ahit\'in etkisi yeterlidir."},
+{q:"Kadıköy Konsili (451) neyi kabul etmiştir?",opts:["İsa'da tek tabiat","İsa'da iki tabiat (diyofizitizm)","İsa'da tek irade","Sadece ilahi tabiat"],ans:1,exp:"İsa\'da hem beşeri hem ilahi iki tabiat vardır."},
+{q:"VIII-IX. yüzyıllarda Bizans'ın İslam bilgisi nasıldı?",opts:["Çok iyi","Oldukça zayıf ve yanlış","Orta düzey","Bilgi yoktu"],ans:1,exp:"Oldukça zayıf ve yanlıştır."},
+{q:"Vasiliev'in Kur'an alıntısındaki hata?",opts:["Yanlış sure","'Ensab' (putlar) kelimesini 'tasvirler' olarak çevirmesi","Hadis alıntısı","Ayet numarası yanlış"],ans:1,exp:"\'Ensab\' kelimesi tasvirler değil putlar/dikili taşlar anlamına gelir."},
+{q:"Kur'an'da Hristiyanlar hangi kategoride?",opts:["Müşrik","Kafir","Ehl-i Kitab","Münafık"],ans:2,exp:"Ehl-i kitab kategorisindedir."},
+{q:"Meyendorf'a göre ikonoklast imparatorların amacı?",opts:["İslam taklidi","İslam karşısındaki dezavantajdan kurtulmak","Yahudileri memnun etmek","Ekonomi"],ans:1,exp:"İslam karşısındaki dezavantajdan kurtulmak ve daha iyi rekabet edebilmek."},
+{q:"Bizans ikonoklazmi ile İslam'daki tasvir karşıtlığı farkı?",opts:["Fark yok","Bizans daha radikal, İslam'da bu boyutta olay yok","İslam daha şiddetli","Aynı kaynak"],ans:1,exp:"Bizans\'taki ikonoklazm daha radikaldir."},
+{q:"Philippikos Barnades ilk işaretinde ne yapmıştır?",opts:["İkonaları yakmış","III. İstanbul Konsili tasvirlerini kaldırıp kendi resmini koymuş","Kiliseleri kapatmış","Rahipleri sürmüş"],ans:1,exp:"Konsili resmeden tasvirler kaldırılıp yerine imparator resmi konmuştur."},
+{q:"Trullo Konsili (692) ne karar almıştır?",opts:["İkonaları yasaklamış","İsa'nın kuzu değil insan olarak tasvir edilmesini öngörmüş","İkonaları zorunlu","Karar alınmamış"],ans:1,exp:"İsa\'nın kuzu şeklinde değil insan olarak tasvir edilmesini öngörmüştür."},
+{q:"III. Leo'nun Ecloga'sında ne iddia edilmiştir?",opts:["Roma hukuku geçersiz","Kanunlar Musa'nın kanunlarının uygulanmasıdır","Kilise üstün","Hukuk yeniden yazıldı"],ans:1,exp:"Kanunların Musa\'nın kanunlarının uygulanmasından başka bir şey olmadığını söylemiştir."},
+]},
+{
+id:"isaurian",emoji:"🔥",title:"İzoryalı İmparatorlar (717-867)",desc:"III. Leon, V. Konstantin, İrene, resimler kavgası, Makedonyalı Vasil",
+questions:[
+{q:"İzorya (Isauria) günümüzde neresidir?",opts:["Bursa","İçel (Silifke)","Trabzon","Antalya"],ans:1,exp:"Bugünkü İçel (Silifke) mıntıkasıdır."},
+{q:"III. Leon tahta çıkmadan önceki görevi?",opts:["Patrik","Anadolu kumandanı","Deniz kumandanı","Saray muhafızı"],ans:1,exp:"Anadolu kumandanı olarak tahta çıkmıştır."},
+{q:"717-718 İstanbul kuşatması ne kadar sürmüştür?",opts:["3 ay","6 ay","1 yıl","2 yıl"],ans:2,exp:"Bir senelik kuşatma (717 Ağustos-718 Ağustos)."},
+{q:"718 savunması hangi savaşla karşılaştırılır?",opts:["Yermük","Poitiers (732)","Manzikert","Kadıköy"],ans:1,exp:"Poitiers\'deki zaferden daha önemli görülmüştür."},
+{q:"V. Konstantin'in aşağılayıcı lakapları?",opts:["Zalim-Gaddar","Copronyme (gübre) ve Caballinos (seyis)","Kanlı-Merhametsiz","Deli-Sarhoş"],ans:1,exp:"Copronyme ve Caballinos."},
+{q:"Akroinos Savaşı hangi yıl ve nerede?",opts:["735-İznik","740-Afyon Karahisar","745-Ankara","750-Konya"],ans:1,exp:"Akroinos\'ta (Afyon Karahisar) 740\'da Araplar mağlup edilmiştir."},
+{q:"Ecloga hangi yılda yayınlanmıştır?",opts:["726","730","739","750"],ans:2,exp:"Ecloga (739)."},
+{q:"Abbasiler hangi yılda hükümet başına geçmiştir?",opts:["740","745","750","755"],ans:2,exp:"750\'de."},
+{q:"Halifelerin başkenti nereye taşınmıştır?",opts:["Medine","Kahire","Bağdat","Kurtuba"],ans:2,exp:"Şam\'dan Bağdat\'a."},
+{q:"Konstantin V Bulgarları hangi savaşlarda yenmiştir?",opts:["Dara-Callinicum","Marcellai (759) ve Anchialos (762)","Taginae-Kanpania","Ninova-Ktezifon"],ans:1,exp:"Marcellai (759), Anchialos (762)\'de."},
+{q:"Leon III Papaların nüfuz alanından hangi bölgeleri ayırmıştır?",opts:["Tüm İtalya","Kalabra, Sicilya, Girit, Batı İlirya (732)","Galya","İspanya"],ans:1,exp:"732\'de bu bölgeleri İstanbul patriğine vermiştir."},
+{q:"Raven Eksarhlığı ne zaman yıkılmıştır?",opts:["740","745","751","756"],ans:2,exp:"751\'de Lombard\'lar yıkmıştır."},
+{q:"Papalığın dünyevi ülkesi ne zaman oluşmuştur?",opts:["750","754","760","774"],ans:1,exp:"Pepin\'den alınan topraklarla 754\'te."},
+{q:"İmparatoriçe İrene İznik Konsili'ni hangi patriğin yardımıyla toplamıştır?",opts:["Germanos","Nicephorus","Tarasios","Methodius"],ans:2,exp:"Patrik Tarasios\'un yardımı ile (787)."},
+{q:"İrene oğluna ne yapmıştır?",opts:["Sürgün","Gözlerini oydurmuş (797)","Manastıra kapatmış","İdam"],ans:1,exp:"797\'de gözlerini oymakta tereddüt etmemiştir."},
+{q:"İrene tek başına kaç yıllar arası imparator olmuştur?",opts:["787-802","790-802","797-802","800-810"],ans:2,exp:"797-802 arasında."},
+{q:"800'de Batıda Bizans için onur kırıcı olan olay?",opts:["Raven'in düşmesi","Şarlman'ın Batı Roma İmparatoru ilan edilmesi","Papa'nın aforozu","Lombardların İtalya'yı alması"],ans:1,exp:"Frank Kralı lehine Roma Batı İmparatorluğunun yeniden dirilişi."},
+{q:"Nicephore (802-811) nasıl ölmüştür?",opts:["Hastalık","Bulgaristan seferinde kanlı felaket (811)","Suikast","İhtilal"],ans:1,exp:"Bulgaristan seferinde kanlı felaketle mahvolmuştur."},
+{q:"Thomas İsyanı (822-824) hangi özelliğiyle dikkat çeker?",opts:["Dini isyan","Sosyalist karakter taşıması","Yabancı destekli","Askeri darbe"],ans:1,exp:"Aşağı sınıflara dayanarak sosyalist karakter vermiştir."},
+{q:"Girit'i hangi yılda ve kimler işgal etmiştir?",opts:["820-Mısır","826-İspanya Müslüman korsanları","830-Afrika","835-Arap donanması"],ans:1,exp:"826\'da İspanya Müslüman korsanları."},
+{q:"815'te Ayasofya'da konsil toplayan imparator?",opts:["Nicephore","V. Leo (Ermeni Leo)","II. Mikhail","Theophilos"],ans:1,exp:"V. Leo döneminde yeniden resimler yasak edilmiştir."},
+{q:"Theophilos'un resim karşıtı emirnamesi hangi yıl?",opts:["830","832","835","838"],ans:1,exp:"832\'de."},
+{q:"843 meclisini yöneten patrik?",opts:["Tarasios","Nicephorus","Methodius","Photius"],ans:2,exp:"Yeni patrik Methode."},
+{q:"Ortodoksluk Bayramı ne zaman kutlanır?",opts:["25 Aralık","6 Ocak","19 Şubat","15 Ağustos"],ans:2,exp:"Her sene 19 Şubat\'ta."},
+{q:"Resimler kavgasının en önemli siyasi sonucu?",opts:["Kilise bağımsızlığı","Kiliseyi imparatora daha itaatkar yapması","Papa gücünün artması","Manastır güçlenmesi"],ans:1,exp:"Kiliseyi imparatorun nüfuzu karşısında daha itaatkar yapmak."},
+{q:"İstanbul Üniversitesi kim tarafından ve nerede yeniden kurulmuştur?",opts:["Patrik-Ayasofya","Sezar Bardas-Magnaure sarayı","İmparator-Hippodrom","Theodore-Stoudion"],ans:1,exp:"Sezar Bardas tarafından (850) Magnaure sarayında."},
+{q:"Slavların havarileri kimlerdir?",opts:["Methodius-Photius","Cyrille ve Methode","Theodore-Nicephorus","Germanos-Tarasios"],ans:1,exp:"Cyrille ve Methode."},
+{q:"Glagolitik yazı kimin eseridir?",opts:["Photius","Cyrille ve Methode","Theophilos","Bardas"],ans:1,exp:"Cyrille ve Methode glagolitik yazıyı keşfetmişlerdir."},
+{q:"Bulgar Çar Boris Ortodoksluğu hangi yıl kabul etmiştir?",opts:["855","860","864","870"],ans:2,exp:"864\'de."},
+{q:"Ruslar ilk kez İstanbul önünde hangi yıl?",opts:["850","855","860","865"],ans:2,exp:"860\'da."},
+{q:"Patrik Photius hangi yılda İstanbul patriği olmuştur?",opts:["842","850","858","867"],ans:2,exp:"858\'de."},
+{q:"İstanbul Meclisi (867) Papayı neden aforoz etmiştir?",opts:["Filioque","Roma'nın Bulgaristan politikası ve Doğu kilisesine karışması","Haçlı Seferleri","Monofizitizm"],ans:1,exp:"Roma\'nın Bulgaristan\'daki politikası ve Doğu kilisesine karışması."},
+{q:"Makedonyalı Vasil tahta hangi yılda çıkmıştır?",opts:["860","863","865","867"],ans:3,exp:"867\'de tahta çıkmıştır."},
+{q:"Makedonyalı Vasil'in ailesi hangi kökendendir?",opts:["Grek","Slav","Ermeni","Suriyeli"],ans:2,exp:"Vasil ailesinin Ermeni olduğu bilinmektedir."},
+{q:"Makedonyalı Vasil sülalesi kaç yıllık ihtişam vermiştir?",opts:["50","100","150","200"],ans:2,exp:"Yüz elli yıllık ihtişam, refah ve şeref vermiştir."},
+]},
+];
+var state={screen:'home',topicId:null,qIndex:0,answered:false,selectedOpt:-1,score:0};
+function render(){var a=document.getElementById('app');if(state.screen==='home')renderHome(a);else if(state.screen==='quiz')renderQuiz(a);else renderResult(a);}
+function renderHome(a){var t=TOPICS.reduce(function(s,t){return s+t.questions.length;},0);var cards='';for(var i=0;i<TOPICS.length;i++){var tp=TOPICS[i];cards+='<div class="topic-card" onclick="startTopic(\''+tp.id+'\')"><div class="topic-emoji">'+tp.emoji+'</div><div class="topic-info"><h3>'+tp.title+'</h3><p>'+tp.desc+'</p></div><div class="topic-count">'+tp.questions.length+' Soru</div></div>';}a.innerHTML='<div class="header"><div class="header-icon">🏛️</div><h1>Bizans Tarihi <span>Kapsamlı Test</span></h1><p>Jüstinyen\'den İkonoklazm\'a, Thema Sistemi\'nden Arap Fetihlerine — '+t+' soruyla bilgini sına!</p></div><div class="topic-grid">'+cards+'</div><button class="all-topics-btn" onclick="startAll()">🎯 Tüm Konular — '+t+' Soru</button>';}
+function startTopic(id){state={screen:'quiz',topicId:id,qIndex:0,answered:false,selectedOpt:-1,score:0};render();window.scrollTo({top:0,behavior:'smooth'});}
+function startAll(){state={screen:'quiz',topicId:'__all__',qIndex:0,answered:false,selectedOpt:-1,score:0};render();window.scrollTo({top:0,behavior:'smooth'});}
+function getQuestions(){if(state.topicId==='__all__'){var all=[];for(var i=0;i<TOPICS.length;i++){var t=TOPICS[i];for(var j=0;j<t.questions.length;j++){var q=Object.assign({},t.questions[j]);q._topic=t.title;all.push(q);}}return all;}for(var i=0;i<TOPICS.length;i++){if(TOPICS[i].id===state.topicId)return TOPICS[i].questions;}return[];}
+function getTopicTitle(){if(state.topicId==='__all__')return'Tüm Konular';for(var i=0;i<TOPICS.length;i++){if(TOPICS[i].id===state.topicId)return TOPICS[i].title;}return'';}
+function renderQuiz(a){var qs=getQuestions(),q=qs[state.qIndex],total=qs.length,prog=((state.qIndex)/total)*100,L=['A','B','C','D'];var optsHtml='';for(var i=0;i<q.opts.length;i++){var c='';if(state.answered){c='disabled';if(i===q.ans)c+=' correct';else if(i===state.selectedOpt)c+=' wrong';}optsHtml+='<button class="option-btn '+c+'" onclick="sel('+i+')" '+(state.answered?'disabled':'')+'><span class="option-letter">'+L[i]+'</span><span>'+q.opts[i]+'</span></button>';}var topicLabel=q._topic?' · '+q._topic:'';a.innerHTML='<div class="quiz-container"><div class="quiz-top-bar"><button class="back-btn" onclick="goHome()">← Konular</button><div class="progress-info"><span>'+(state.qIndex+1)+' / '+total+'</span><span>·</span><span>Doğru: '+state.score+'</span></div></div><div class="progress-bar-wrap"><div class="progress-bar" style="width:'+prog+'%"></div></div><div class="question-card"><div class="q-number">Soru '+(state.qIndex+1)+topicLabel+'</div><div class="q-text">'+q.q+'</div><div class="options">'+optsHtml+'</div>'+(state.answered?'<div class="explanation">💡 '+q.exp+'</div>':'')+'</div>'+(state.answered?'<button class="next-btn" onclick="next()">'+(state.qIndex+1<total?'Sonraki Soru →':'Sonuçları Gör 🏆')+'</button>':'')+'</div>';}
+function sel(i){if(state.answered)return;var q=getQuestions()[state.qIndex];state.answered=true;state.selectedOpt=i;if(i===q.ans)state.score++;render();}
+function next(){var qs=getQuestions();if(state.qIndex+1<qs.length){state.qIndex++;state.answered=false;state.selectedOpt=-1;render();window.scrollTo({top:0,behavior:'smooth'});}else{state.screen='result';render();window.scrollTo({top:0,behavior:'smooth'});}}
+function renderResult(a){var qs=getQuestions(),t=qs.length,p=Math.round((state.score/t)*100),w=t-state.score;var m='';if(p>=90)m='Mükemmel! Bizans tarihine hâkimsin! 🏆';else if(p>=70)m='Çok iyi! Birkaç eksik var ama güçlü performans. 👏';else if(p>=50)m='Fena değil ama tekrar çalışmanı öneririm. 📚';else m='Daha çok çalışman gerekiyor. Tekrar dene! 💪';a.innerHTML='<div class="results"><div class="results-circle"><div class="results-score">%'+p+'</div><div class="results-label">Başarı</div></div><h2>'+getTopicTitle()+'</h2><p>'+m+'</p><div class="results-stats"><div class="stat-box green"><div class="val">'+state.score+'</div><div class="label">Doğru</div></div><div class="stat-box red"><div class="val">'+w+'</div><div class="label">Yanlış</div></div><div class="stat-box gold"><div class="val">'+t+'</div><div class="label">Toplam</div></div></div><div class="btn-row"><button class="btn-primary" onclick="retry()">Tekrar Dene</button><button class="btn-secondary" onclick="goHome()">Konulara Dön</button></div></div>';}
+function retry(){state.qIndex=0;state.answered=false;state.selectedOpt=-1;state.score=0;state.screen='quiz';render();window.scrollTo({top:0,behavior:'smooth'});}
+function goHome(){state={screen:'home',topicId:null,qIndex:0,answered:false,selectedOpt:-1,score:0};render();window.scrollTo({top:0,behavior:'smooth'});}
+render();
+</script>
+</body>
+</html>
