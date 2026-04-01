@@ -1,0 +1,2704 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Türk Dış Politikası Quiz</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&family=SF+Pro+Text:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f5f7;
+  --card: #ffffff;
+  --text-primary: #1d1d1f;
+  --text-secondary: #86868b;
+  --accent: #0071e3;
+  --accent-hover: #0077ED;
+  --correct: #34c759;
+  --correct-bg: rgba(52,199,89,0.08);
+  --wrong: #ff3b30;
+  --wrong-bg: rgba(255,59,48,0.08);
+  --border: rgba(0,0,0,0.06);
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
+  --radius: 16px;
+  --radius-sm: 12px;
+  --transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-header {
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 0.5px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 14px 0;
+}
+
+.app-header h1 {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-align: center;
+  margin: 0;
+}
+
+.main-container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 24px 20px 100px;
+}
+
+/* START SCREEN */
+.start-screen {
+  text-align: center;
+  padding: 60px 20px;
+  animation: fadeUp 0.6s ease;
+}
+
+.start-screen .icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #0071e3, #40a0ff);
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  font-size: 36px;
+  box-shadow: 0 6px 20px rgba(0,113,227,0.3);
+}
+
+.start-screen h2 {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin-bottom: 8px;
+}
+
+.start-screen p {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 32px;
+  text-align: left;
+}
+
+.cat-card {
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.cat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.cat-card.selected {
+  border-color: var(--accent);
+  background: rgba(0,113,227,0.04);
+}
+
+.cat-card.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.cat-card .cat-emoji { font-size: 24px; margin-bottom: 6px; display: block; }
+.cat-card .cat-name { font-weight: 600; font-size: 0.85rem; line-height: 1.3; }
+.cat-card .cat-count { font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px; }
+
+.btn-apple {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 980px;
+  padding: 14px 40px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  min-width: 200px;
+  letter-spacing: -0.01em;
+}
+
+.btn-apple:hover { background: var(--accent-hover); transform: scale(1.02); }
+.btn-apple:active { transform: scale(0.98); }
+.btn-apple:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.btn-outline {
+  background: transparent;
+  color: var(--accent);
+  border: 1.5px solid var(--accent);
+}
+
+.btn-outline:hover {
+  background: rgba(0,113,227,0.06);
+  color: var(--accent);
+}
+
+/* QUIZ SCREEN */
+.quiz-screen { animation: fadeUp 0.4s ease; }
+
+.progress-bar-container {
+  background: rgba(0,0,0,0.06);
+  height: 4px;
+  border-radius: 2px;
+  margin-bottom: 28px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.quiz-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.quiz-meta .category-tag {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--accent);
+  background: rgba(0,113,227,0.08);
+  padding: 4px 12px;
+  border-radius: 980px;
+}
+
+.quiz-meta .counter {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.question-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+  animation: fadeUp 0.35s ease;
+}
+
+.question-text {
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+  margin-bottom: 24px;
+}
+
+.option-btn {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: var(--bg);
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 15px 18px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  position: relative;
+}
+
+.option-btn:hover:not(.disabled) {
+  border-color: var(--accent);
+  background: rgba(0,113,227,0.03);
+}
+
+.option-btn .option-letter {
+  min-width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.8rem;
+  margin-right: 14px;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+
+.option-btn:hover:not(.disabled) .option-letter {
+  background: var(--accent);
+  color: #fff;
+}
+
+.option-btn.correct {
+  background: var(--correct-bg);
+  border-color: var(--correct);
+}
+
+.option-btn.correct .option-letter {
+  background: var(--correct);
+  color: #fff;
+}
+
+.option-btn.wrong {
+  background: var(--wrong-bg);
+  border-color: var(--wrong);
+}
+
+.option-btn.wrong .option-letter {
+  background: var(--wrong);
+  color: #fff;
+}
+
+.option-btn.disabled { cursor: default; opacity: 0.6; }
+.option-btn.disabled:hover { border-color: transparent; background: var(--bg); }
+.option-btn.correct.disabled, .option-btn.wrong.disabled { opacity: 1; }
+
+.feedback-box {
+  margin-top: 16px;
+  padding: 16px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  animation: fadeUp 0.3s ease;
+}
+
+.feedback-box.correct-fb {
+  background: var(--correct-bg);
+  border-left: 3px solid var(--correct);
+}
+
+.feedback-box.wrong-fb {
+  background: var(--wrong-bg);
+  border-left: 3px solid var(--wrong);
+}
+
+.feedback-box .fb-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.next-btn-wrap {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* SCORE BAR */
+.score-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-top: 0.5px solid var(--border);
+  padding: 12px 20px;
+  z-index: 100;
+}
+
+.score-bar-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+}
+
+.score-item .score-num {
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.score-item .score-label {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.score-num.green { color: var(--correct); }
+.score-num.red { color: var(--wrong); }
+.score-num.blue { color: var(--accent); }
+
+/* RESULT SCREEN */
+.result-screen {
+  text-align: center;
+  padding: 40px 20px;
+  animation: fadeUp 0.6s ease;
+}
+
+.result-circle {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  margin: 0 auto 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.result-circle svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotate(-90deg);
+}
+
+.result-circle .pct {
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  z-index: 1;
+}
+
+.result-circle .pct-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  z-index: 1;
+}
+
+.result-screen h2 {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin-bottom: 8px;
+}
+
+.result-screen .result-subtitle {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin-bottom: 32px;
+}
+
+.stat-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  flex: 1;
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 18px 12px;
+  box-shadow: var(--shadow);
+}
+
+.stat-card .stat-val {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.stat-card .stat-lbl {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.result-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.shake { animation: shake 0.4s ease; }
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+  .category-grid { grid-template-columns: 1fr; }
+  .start-screen h2 { font-size: 1.6rem; }
+  .question-text { font-size: 1.05rem; }
+  .stat-row { flex-direction: column; }
+}
+
+.retry-badge {
+  display: inline-block;
+  background: #ff9500;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 980px;
+  margin-left: 8px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+
+.hidden { display: none !important; }
+
+.select-all-row {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.select-all-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 12px;
+}
+
+.select-all-btn:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <h1>Türk Dış Politikası Quiz</h1>
+</header>
+
+<div class="main-container" id="app">
+  <!-- START SCREEN -->
+  <div id="startScreen" class="start-screen">
+    <div class="icon">📜</div>
+    <h2>Türk Dış Politikası</h2>
+    <p>1774'ten İkinci Dünya Savaşı'na kadar Osmanlı ve Türkiye dış politikasını test edin.</p>
+
+    <div class="select-all-row">
+      <button class="select-all-btn" onclick="toggleAllCategories()">Tümünü Seç / Kaldır</button>
+    </div>
+
+    <div class="category-grid" id="categoryGrid"></div>
+
+    <button class="btn-apple" id="startBtn" onclick="startQuiz()" disabled>
+      Teste Başla
+    </button>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quizScreen" class="quiz-screen hidden">
+    <div class="progress-bar-container">
+      <div class="progress-fill" id="progressBar" style="width:0%"></div>
+    </div>
+    <div class="quiz-meta">
+      <span class="category-tag" id="catTag"></span>
+      <span class="counter" id="qCounter"></span>
+    </div>
+    <div class="question-card" id="questionCard">
+      <div class="question-text" id="questionText"></div>
+      <div id="optionsContainer"></div>
+      <div id="feedbackBox"></div>
+    </div>
+    <div class="next-btn-wrap hidden" id="nextWrap">
+      <button class="btn-apple" onclick="nextQuestion()">Sonraki Soru</button>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div id="resultScreen" class="result-screen hidden"></div>
+</div>
+
+<!-- SCORE BAR -->
+<div class="score-bar hidden" id="scoreBar">
+  <div class="score-bar-inner">
+    <div class="score-item">
+      <div class="score-num green" id="correctCount">0</div>
+      <div class="score-label">Doğru</div>
+    </div>
+    <div class="score-item">
+      <div class="score-num red" id="wrongCount">0</div>
+      <div class="score-label">Yanlış</div>
+    </div>
+    <div class="score-item">
+      <div class="score-num blue" id="remainCount">0</div>
+      <div class="score-label">Kalan</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// QUESTION DATABASE
+// ═══════════════════════════════════════
+const allQuestions = [
+  // ─── KATEGORİ: Osmanlı Dağılma Dönemi ───
+  {
+    category: "Osmanlı Dağılma Dönemi",
+    q: "1699 Karlofça Antlaşması ile Osmanlı İmparatorluğu hangi bölgeleri kaybetmiştir?",
+    options: [
+      "Macaristan, Ukrayna, Mora Yarımadası ve Dalmaçya kıyıları",
+      "Mısır, Suriye ve Kıbrıs",
+      "Girit, Tunus ve Cezayir",
+      "Kırım, Kafkasya ve Gürcistan"
+    ],
+    answer: 0,
+    info: "Karlofça Antlaşması ile Osmanlı, Macaristan'ın büyük bölümünü, Ukrayna, Mora Yarımadası ve Dalmaçya kıyılarını kaybetmiş; Orta Avrupa'daki egemenliği sona ermiştir."
+  },
+  {
+    category: "Osmanlı Dağılma Dönemi",
+    q: "1878 Berlin Antlaşması'nın 61. maddesinde reform yapılması öngörülen 'Vilayet-i Sitte' hangi illerden oluşmaktadır?",
+    options: [
+      "Erzurum, Van, Elazığ, Diyarbakır, Sivas ve Bitlis",
+      "İstanbul, Edirne, Selanik, Manastır, Üsküp ve Prizren",
+      "Trabzon, Samsun, Kastamonu, Ankara, Konya ve Adana",
+      "Bağdat, Basra, Musul, Halep, Şam ve Kudüs"
+    ],
+    answer: 0,
+    info: "Berlin Antlaşması'nın 61. maddesi ile Erzurum, Van, Mamüret'ül Aziz (Elazığ), Diyarbakır, Sivas ve Bitlis'te reform yapılması kabul edildi. Bu durum Ermeni Meselesi'nin gündeme gelmesine yol açtı."
+  },
+  {
+    category: "Osmanlı Dağılma Dönemi",
+    q: "Ayastefanos Antlaşması (3 Mart 1878) neden Britanya İmparatorluğu'nu rahatsız etmiştir?",
+    options: [
+      "Hindistan yollarının tehlikeye girmesi",
+      "Osmanlı'nın borçlarını ödeyememesi",
+      "Akdeniz ticaretinin durması",
+      "Yunanistan'ın genişlemesi"
+    ],
+    answer: 0,
+    info: "Ayastefanos Antlaşması Britanya'yı rahatsız etti çünkü Rusya Bulgaristan üzerinden Akdeniz'e inebilecek ve Hindistan yolları tehlikeye girecekti."
+  },
+  {
+    category: "Osmanlı Dağılma Dönemi",
+    q: "1774 Küçük Kaynarca Antlaşması'nın Osmanlı için tarihi önemi nedir?",
+    options: [
+      "Rusya'ya Karadeniz'in kuzeyine ayak basma imkânı verdi",
+      "İlk kez kapitülasyonlar kabul edildi",
+      "Osmanlı ilk kez toprak kazandı",
+      "Fransa ile ilk ticaret anlaşması yapıldı"
+    ],
+    answer: 0,
+    info: "1774 Küçük Kaynarca Antlaşması ile Rusya Karadeniz'in kuzeyine ayak bastı. 1783'te Kırım'ı topraklarına kattı ve ilk kez Müslümanların yaşadığı bir toprak elden çıktı."
+  },
+  {
+    category: "Osmanlı Dağılma Dönemi",
+    q: "1844 yılında Osmanlı nüfusu yaklaşık kaçtır ve Müslüman oranı nedir?",
+    options: [
+      "26 milyon, 2/3'ü Müslüman",
+      "18 milyon, %81 Müslüman",
+      "35 milyon, %50 Müslüman",
+      "15 milyon, %90 Müslüman"
+    ],
+    answer: 0,
+    info: "1844'te Osmanlı nüfusu yaklaşık 26 milyon olup üçte ikisi Müslümandı. 1914'e gelindiğinde nüfus 18,5 milyona düşmüş ancak Müslüman oranı %81'e yükselmiştir."
+  },
+  {
+    category: "Osmanlı Dağılma Dönemi",
+    q: "Son yıllarda Osmanlı sınırlarında beliren üç tehlike arasında hangisi yer ALMAZ?",
+    options: [
+      "İran'ın doğu sınırlarındaki yayılmacılığı",
+      "Balkanlardaki milliyetçi akımlar",
+      "Rusya'nın boğazlara egemen olma isteği",
+      "Fransa ve İngiltere'nin Mısır ve Ortadoğu planları"
+    ],
+    answer: 0,
+    info: "Üç ana tehlike: Balkanlardaki milliyetçi akımlar, Rusya'nın boğazlara egemenlik talebi ve Fransa ile İngiltere'nin Ortadoğu planlarıydı. İran burada belirtilmemektedir."
+  },
+  {
+    category: "Osmanlı Dağılma Dönemi",
+    q: "Mehmet Ali Paşa kaç yılında Mısır valisi olmuştur?",
+    options: [
+      "1805",
+      "1821",
+      "1798",
+      "1830"
+    ],
+    answer: 0,
+    info: "Mehmet Ali Paşa 1805 yılında Mısır valisi olmuş ve Fransız uzmanların yardımıyla kapsamlı bir yenileştirme programı uygulamıştır."
+  },
+  {
+    category: "Osmanlı Dağılma Dönemi",
+    q: "İngiltere, Fransa ve Rusya'nın birleşen filoları 1827'de hangi limanda Osmanlı-Mısır filolarını batırmıştır?",
+    options: [
+      "Navarin limanı",
+      "İskenderiye limanı",
+      "Sinop limanı",
+      "Çeşme limanı"
+    ],
+    answer: 0,
+    info: "1827'de Navarin limanında İngiltere, Fransa ve Rusya'nın birleşik filoları Mısır-Osmanlı donanmasını batırmıştır."
+  },
+  {
+    category: "Osmanlı Dağılma Dönemi",
+    q: "Britanya İmparatorluğu Mısır'ı hangi yıl işgal etmiştir?",
+    options: [
+      "1882",
+      "1878",
+      "1856",
+      "1898"
+    ],
+    answer: 0,
+    info: "1882'de Britanya Mısır'ı işgal etmiş ve Kıbrıs'ı kontrolüne almıştır. Bu, İngiltere'nin Osmanlı'ya yönelik politikasının değiştiğinin bir göstergesidir."
+  },
+  // ─── KATEGORİ: II. Abdülhamid ve II. Meşrutiyet ───
+  {
+    category: "II. Abdülhamid ve II. Meşrutiyet",
+    q: "II. Abdülhamid tarafından Almanya'ya verilen ilk ekonomik imtiyaz hangi yılda ve hangi alanda verilmiştir?",
+    options: [
+      "1888 - İzmit-Ankara demiryolu imtiyazı",
+      "1890 - Bağdat demiryolu imtiyazı",
+      "1895 - İstanbul limanı imtiyazı",
+      "1878 - Maden çıkarma imtiyazı"
+    ],
+    answer: 0,
+    info: "Abdülhamid tarafından Almanya'ya ilk ekonomik imtiyaz 1888'de İzmit-Ankara demiryolu projesiyle verilmiştir. Bağdat Demiryolu ise uluslararası bir sorun olarak I. Dünya Savaşı'nın çıkmasına etki edecektir."
+  },
+  {
+    category: "II. Abdülhamid ve II. Meşrutiyet",
+    q: "Avusturya-Macaristan İmparatorluğu Bosna-Hersek'i hangi yılda ilhak etmiştir?",
+    options: [
+      "1908",
+      "1912",
+      "1878",
+      "1903"
+    ],
+    answer: 0,
+    info: "1908'de Bulgaristan bağımsızlığını ilan ederken, Avusturya-Macaristan İmparatorluğu da aynı yıl Bosna-Hersek'i ilhak etmiştir."
+  },
+  {
+    category: "II. Abdülhamid ve II. Meşrutiyet",
+    q: "1911-1912 Trablusgarp Savaşı hangi antlaşma ile sonuçlanmıştır?",
+    options: [
+      "Uşi Antlaşması",
+      "Londra Antlaşması",
+      "Berlin Antlaşması",
+      "Atina Antlaşması"
+    ],
+    answer: 0,
+    info: "1911-1912 Trablusgarp Savaşı Uşi Antlaşması ile sona ermiştir."
+  },
+  {
+    category: "II. Abdülhamid ve II. Meşrutiyet",
+    q: "Balkan Savaşları sonrası imzalanan Londra Antlaşması'na göre Edirne hangi devlete bırakılmıştır?",
+    options: [
+      "Bulgaristan",
+      "Yunanistan",
+      "Sırbistan",
+      "Romanya"
+    ],
+    answer: 0,
+    info: "Londra Antlaşması ile Midye-Enez çizgisinin batısındaki topraklar Balkan Devletlerine, Edirne ise Bulgaristan'a bırakılmıştır."
+  },
+  {
+    category: "II. Abdülhamid ve II. Meşrutiyet",
+    q: "1913 Bab-ı Ali Baskını sonrasında Osmanlı dış politikasında hangi yönelim ağırlık kazanmıştır?",
+    options: [
+      "Almanya yanlısı politika",
+      "İngiltere yanlısı politika",
+      "Rusya yanlısı politika",
+      "Fransa yanlısı politika"
+    ],
+    answer: 0,
+    info: "1913 Bab-ı Ali Baskını sonrasında Osmanlı dış ilişkilerinde Almanya yanlısı bir politika başlamıştır."
+  },
+  {
+    category: "II. Abdülhamid ve II. Meşrutiyet",
+    q: "Osmanlı'daki Alman askeri danışmanlığı kapsamında hangi kişinin 1. Ordu'nun başına atanması sorun olmuştur?",
+    options: [
+      "Liman Von Sanders",
+      "Otto Von Bismarck",
+      "Von Papen",
+      "Von Moltke"
+    ],
+    answer: 0,
+    info: "Liman Von Sanders'in 1. Ordu'nun başına atanması uluslararası sorun yaratmıştır."
+  },
+  {
+    category: "II. Abdülhamid ve II. Meşrutiyet",
+    q: "31 Mart Olayı (Vakası) hangi yılda gerçekleşmiştir?",
+    options: [
+      "1909",
+      "1908",
+      "1912",
+      "1913"
+    ],
+    answer: 0,
+    info: "31 Mart Olayı 1909 yılında İttihat ve Terakki Cemiyeti'ne muhalefet edenler tarafından gerçekleştirilmiştir."
+  },
+  // ─── KATEGORİ: I. Dünya Savaşı ve Sonrası ───
+  {
+    category: "I. Dünya Savaşı ve Sonrası",
+    q: "I. Dünya Savaşı sırasında yaşanan ve devletin dış politikasını etkileyen olaylar arasında hangisi yer ALMAZ?",
+    options: [
+      "Balkan Paktı'nın kurulması",
+      "Tehcir Kanunu",
+      "Bolşevik İhtilali",
+      "Arapların ihaneti"
+    ],
+    answer: 0,
+    info: "I. Dünya Savaşı sırasında etkili olan olaylar: Tehcir Kanunu, Bolşevik İhtilali, Arapların ihaneti ve ABD'nin savaşa girmesidir. Balkan Paktı savaş sonrası döneme aittir."
+  },
+  {
+    category: "I. Dünya Savaşı ve Sonrası",
+    q: "Paris Barış Konferansı hangi tarihte ve kaç devletin katılımıyla düzenlenmiştir?",
+    options: [
+      "19 Ocak 1918, 32 devlet",
+      "28 Haziran 1919, 27 devlet",
+      "11 Kasım 1918, 40 devlet",
+      "30 Ekim 1918, 15 devlet"
+    ],
+    answer: 0,
+    info: "Paris Barış Konferansı 19 Ocak 1918'de 32 devletin katılımıyla düzenlenmiştir. Kararları ABD, İngiltere, Fransa, İtalya ve Japonya'dan oluşan 'Beşler Konseyi' almıştır."
+  },
+  {
+    category: "I. Dünya Savaşı ve Sonrası",
+    q: "Almanya ile Versailles Antlaşması hangi tarihte imzalanmıştır?",
+    options: [
+      "28 Haziran 1919",
+      "10 Ağustos 1920",
+      "24 Temmuz 1923",
+      "11 Kasım 1918"
+    ],
+    answer: 0,
+    info: "Almanya ile Versailles Antlaşması 28 Haziran 1919'da imzalanmıştır."
+  },
+  {
+    category: "I. Dünya Savaşı ve Sonrası",
+    q: "Osmanlı dış politikasında yapılan en büyük hata olarak nitelendirilen olay nedir?",
+    options: [
+      "Enver Paşa'nın 1914'te denge politikasından vazgeçmesi",
+      "Berlin Antlaşması'nın imzalanması",
+      "Trablusgarp Savaşı'na girilmesi",
+      "Balkan Savaşları'nın kaybedilmesi"
+    ],
+    answer: 0,
+    info: "Osmanlı dış politikasında yapılan en büyük hata, Enver Paşa'nın denge taktikten vazgeçtiği 1914 yılında yaşanmıştır."
+  },
+  // ─── KATEGORİ: Kurtuluş Savaşı Dönemi ───
+  {
+    category: "Kurtuluş Savaşı Dönemi",
+    q: "M. Kemal Paşa hangi görevle Anadolu'ya geçmiştir?",
+    options: [
+      "9. Ordu Müfettişliği",
+      "15. Kolordu Komutanlığı",
+      "Yıldırım Orduları Komutanlığı",
+      "3. Ordu Müfettişliği"
+    ],
+    answer: 0,
+    info: "M. Kemal Paşa, 30 Nisan 1919'da 9. Ordu Müfettişliği'ne atanarak Anadolu'ya geçmiştir."
+  },
+  {
+    category: "Kurtuluş Savaşı Dönemi",
+    q: "Misak-ı Milli hangi tarihte kabul edilmiştir?",
+    options: [
+      "28 Ocak 1920",
+      "23 Nisan 1920",
+      "15 Mayıs 1919",
+      "10 Ağustos 1920"
+    ],
+    answer: 0,
+    info: "Meclis-i Mebusan kararı ile 28 Ocak 1920 tarihinde Misak-ı Milli kabul edilmiştir."
+  },
+  {
+    category: "Kurtuluş Savaşı Dönemi",
+    q: "ABD tarafından Ermenilerle ilgili araştırma yapmak için Türkiye'ye gönderilen general kimdir?",
+    options: [
+      "General James G. Harboard",
+      "General Douglas MacArthur",
+      "General John Pershing",
+      "General Allenby"
+    ],
+    answer: 0,
+    info: "ABD, Ermenilerle ilgili araştırma yapmak üzere General James G. Harboard'u Türkiye'ye göndermiştir. M. Kemal onunla Temsil Heyeti başkanı olarak görüşmüştür."
+  },
+  {
+    category: "Kurtuluş Savaşı Dönemi",
+    q: "TBMM hangi tarihte ve hangi gerekçeyle açılmıştır?",
+    options: [
+      "23 Nisan 1920 - 16 Mart 1920'de İstanbul'un işgali üzerine",
+      "28 Ocak 1920 - Misak-ı Milli'nin kabulü üzerine",
+      "19 Mayıs 1919 - Samsun'a çıkış sonrası",
+      "10 Ağustos 1920 - Sevr Antlaşması'na tepki olarak"
+    ],
+    answer: 0,
+    info: "16 Mart 1920'de İstanbul'un işgali üzerine meclisin açılması gerekliliği ortaya çıkmış, 23 Nisan 1920'de TBMM açılmıştır."
+  },
+  {
+    category: "Kurtuluş Savaşı Dönemi",
+    q: "Sevr Antlaşması kaç tarihinde ve kaç maddeden oluşmaktadır?",
+    options: [
+      "10 Ağustos 1920, 433 madde",
+      "24 Temmuz 1923, 143 madde",
+      "30 Ekim 1918, 25 madde",
+      "3 Ekim 1922, 200 madde"
+    ],
+    answer: 0,
+    info: "İtilaf Devletlerinin baskısıyla Osmanlı Devleti 10 Ağustos 1920'de 433 maddelik Sevr Antlaşması'nı imzalamıştır."
+  },
+  // ─── KATEGORİ: Sovyet Rusya ve Doğu İlişkileri ───
+  {
+    category: "Sovyet Rusya ve Doğu İlişkileri",
+    q: "Mustafa Kemal Paşa, Sovyet lideri Lenin'e hangi tarihte mektup yazmıştır ve ne istemiştir?",
+    options: [
+      "26 Nisan 1920 - Beş milyon altın, silah ve cephane",
+      "23 Nisan 1920 - Diplomatik tanınma",
+      "16 Mart 1921 - Askeri ittifak",
+      "1 Kasım 1920 - Petrol yardımı"
+    ],
+    answer: 0,
+    info: "Mustafa Kemal 26 Nisan 1920'de Lenin'e mektup yazarak emperyalist güçlere karşı birlikte hareket edilmesini ve beş milyon altın, silah ve cephane istemiştir."
+  },
+  {
+    category: "Sovyet Rusya ve Doğu İlişkileri",
+    q: "Moskova Antlaşması hangi tarihte imzalanmıştır?",
+    options: [
+      "16 Mart 1921",
+      "26 Nisan 1920",
+      "13 Ekim 1921",
+      "2 Ocak 1922"
+    ],
+    answer: 0,
+    info: "16 Mart 1921'de Moskova Antlaşması imzalanmıştır. Sovyetler milliyetçilere silah, cephane ve yaklaşık 10 milyon ruble nakit yardımı yapmıştır."
+  },
+  {
+    category: "Sovyet Rusya ve Doğu İlişkileri",
+    q: "Sovyet Rusya Ankara'da büyükelçilik hangi tarihte açmıştır?",
+    options: [
+      "9 Kasım 1920",
+      "16 Mart 1921",
+      "23 Nisan 1920",
+      "2 Ocak 1922"
+    ],
+    answer: 0,
+    info: "Sovyet Rusya 9 Kasım 1920'de Ankara'da büyükelçilik açmıştır."
+  },
+  {
+    category: "Sovyet Rusya ve Doğu İlişkileri",
+    q: "Gümrü Antlaşması ile hangi yerler geri alınmıştır?",
+    options: [
+      "Kars, Sarıkamış, Kağızman, Kulp ve Iğdır",
+      "Ardahan, Batum, Artvin ve Oltu",
+      "Erzurum, Van, Bitlis ve Muş",
+      "Trabzon, Rize, Gümüşhane ve Bayburt"
+    ],
+    answer: 0,
+    info: "2-3 Aralık 1920 Gümrü Antlaşması ile Kars, Sarıkamış, Kağızman, Kulp ve Iğdır geri alınmıştır. Bu, TBMM'nin imzaladığı ilk siyasi antlaşmadır."
+  },
+  {
+    category: "Sovyet Rusya ve Doğu İlişkileri",
+    q: "Kars Antlaşması hangi tarihte ve hangi devletler arasında imzalanmıştır?",
+    options: [
+      "13 Ekim 1921 - Türkiye, Ermenistan, Gürcistan, Azerbaycan",
+      "16 Mart 1921 - Türkiye ve Sovyet Rusya",
+      "2 Ocak 1922 - Türkiye ve Ukrayna",
+      "3 Aralık 1920 - Türkiye ve Ermenistan"
+    ],
+    answer: 0,
+    info: "13 Ekim 1921'de Türkiye, Ermenistan, Gürcistan ve Azerbaycan arasında 20 maddelik Kars Antlaşması imzalanmıştır."
+  },
+  {
+    category: "Sovyet Rusya ve Doğu İlişkileri",
+    q: "Türkiye-Ukrayna dostluk ve kardeşlik antlaşması hangi tarihte imzalanmıştır?",
+    options: [
+      "2 Ocak 1922",
+      "16 Mart 1921",
+      "13 Ekim 1921",
+      "9 Kasım 1920"
+    ],
+    answer: 0,
+    info: "2 Ocak 1922'de Türkiye-Ukrayna arasında dostluk ve kardeşlik antlaşması imzalanmıştır."
+  },
+  {
+    category: "Sovyet Rusya ve Doğu İlişkileri",
+    q: "Afganistan hangi lider döneminde ve hangi tarihte bağımsız olmuştur?",
+    options: [
+      "Emanullah Han, 3 Mart 1919",
+      "Nadir Şah, 1929",
+      "Habibullah Han, 1918",
+      "Zahir Şah, 1933"
+    ],
+    answer: 0,
+    info: "Afganistan, Emanullah Han liderliğinde 3 Mart 1919'da bağımsız olmuştur."
+  },
+  // ─── KATEGORİ: Mudanya ve Lozan ───
+  {
+    category: "Mudanya ve Lozan",
+    q: "Mudanya Ateşkes Antlaşması hangi tarihte imzalanmıştır?",
+    options: [
+      "3 Ekim 1922 (taraflar bir araya geldi)",
+      "24 Temmuz 1923",
+      "11 Ekim 1922",
+      "30 Ekim 1918"
+    ],
+    answer: 0,
+    info: "3 Ekim 1922'de taraflar Mudanya'da bir araya gelmiş, alınan karara göre Yunanlılar 15 gün içinde Meriç Nehri'nin batısına çekilecekti."
+  },
+  {
+    category: "Mudanya ve Lozan",
+    q: "Lozan Barış Antlaşması hangi tarihte imzalanmıştır ve kaç maddeden oluşur?",
+    options: [
+      "24 Temmuz 1923, 143 madde ve 17 ek",
+      "20 Kasım 1922, 200 madde",
+      "4 Şubat 1923, 100 madde",
+      "10 Ağustos 1920, 433 madde"
+    ],
+    answer: 0,
+    info: "Lozan Antlaşması 24 Temmuz 1923'te imzalanmıştır. 143 madde ve 17 adet ek maddeden oluşmaktadır."
+  },
+  {
+    category: "Mudanya ve Lozan",
+    q: "Lozan Konferansı'na Türkiye adına kim katılmıştır?",
+    options: [
+      "İsmet Paşa (İnönü)",
+      "Fevzi Paşa (Çakmak)",
+      "Kazım Karabekir Paşa",
+      "Rauf Orbay"
+    ],
+    answer: 0,
+    info: "Konferansa Mudanya'daki başarısından dolayı İsmet Paşa katılmıştır. Yanında Sağlık Bakanı Rıza Nur, Maliye Bakanı Hasan Saka ve 33 kişilik bir ekip bulunuyordu."
+  },
+  {
+    category: "Mudanya ve Lozan",
+    q: "Lozan Konferansı'nda Siyasi Komisyon kimin başkanlığında toplanmıştır?",
+    options: [
+      "Lord Curzon",
+      "Marki Garroni",
+      "George Barrére",
+      "Richard Child"
+    ],
+    answer: 0,
+    info: "Siyasi Komisyon Lord Curzon başkanlığında, Yabancılara Uygulanacak Rejim Komisyonu İtalyan Marki Garroni başkanlığında, Maliye ve İktisat Komisyonu Fransız George Barrére başkanlığında toplanmıştır."
+  },
+  {
+    category: "Mudanya ve Lozan",
+    q: "Lozan'da Lord Curzon hangi talebi dile getirmiştir?",
+    options: [
+      "Ulusal Ermeni Yurdu kurulması",
+      "İstanbul'un uluslararası yönetime bırakılması",
+      "Boğazların tamamen kapatılması",
+      "Musul'un Türkiye'ye verilmesi"
+    ],
+    answer: 0,
+    info: "Lord Curzon 12 Aralık 1922'de 'Ulusal Ermeni Yurdu' kurulmasını dile getirmiştir. İsmet Paşa net bir tavırla buna müsaade edilmeyeceğini ifade etmiştir."
+  },
+  {
+    category: "Mudanya ve Lozan",
+    q: "Yunan ve Türk Halklarının Mübadelesine İlişkin Sözleşme hangi tarihte imzalanmıştır?",
+    options: [
+      "30 Ocak 1923",
+      "24 Temmuz 1923",
+      "4 Şubat 1923",
+      "20 Kasım 1922"
+    ],
+    answer: 0,
+    info: "30 Ocak 1923'te mübadele sözleşmesi imzalanmış; İstanbul'da oturan Rumlar ve Batı Trakya'daki Müslümanlar mübadele dışında tutulmuştur."
+  },
+  {
+    category: "Mudanya ve Lozan",
+    q: "Lozan Antlaşması'na göre İmroz, Bozcaada ve Tavşan Adaları hangi ülkeye bırakılmıştır?",
+    options: [
+      "Türkiye",
+      "Yunanistan",
+      "İtalya",
+      "İngiltere"
+    ],
+    answer: 0,
+    info: "İmroz, Bozcaada ve Tavşan Adaları Türkiye'ye; Limni, Midilli, Sakız gibi adalar Yunanistan'a; On İki Ada İtalya'ya bırakılmıştır."
+  },
+  {
+    category: "Mudanya ve Lozan",
+    q: "Lozan Konferansı'nın birinci dönemi hangi tarihler arasında yapılmıştır?",
+    options: [
+      "21 Kasım 1922 - 4 Şubat 1923",
+      "23 Nisan 1923 - 24 Temmuz 1923",
+      "20 Kasım 1922 - 30 Ocak 1923",
+      "17 Şubat 1923 - 4 Mart 1923"
+    ],
+    answer: 0,
+    info: "Lozan'ın birinci dönemi 21 Kasım 1922'den 4 Şubat 1923'e kadar sürmüştür. 4 Şubat'ta kesilen görüşmeler 23 Nisan 1923'te yeniden başlamıştır."
+  },
+  // ─── KATEGORİ: 1923-1938 Dış Politika ───
+  {
+    category: "1923-1938 Dış Politika",
+    q: "Musul sorunu hangi antlaşma ile çözülmüştür ve sınır nasıl belirlenmiştir?",
+    options: [
+      "5 Haziran 1926 Türk-Irak Antlaşması, Brüksel Hattı sınır kabul edildi",
+      "24 Temmuz 1923 Lozan Antlaşması ile çözüldü",
+      "6 Ağustos 1924 Milletler Cemiyeti kararıyla",
+      "19 Mayıs 1924 Haliç Konferansı'nda"
+    ],
+    answer: 0,
+    info: "5 Haziran 1926'da imzalanan 'Türk-Irak Sınırı ve İyi Komşuluk İlişkileri Antlaşması' ile Brüksel Hattı sınır kabul edilmiştir. Irak petrol gelirlerinin %10'unu 25 yıl süreyle Türkiye'ye verecekti."
+  },
+  {
+    category: "1923-1938 Dış Politika",
+    q: "Bozkurt-Lotus Davası hangi yılda ve nerede karara bağlanmıştır?",
+    options: [
+      "7 Eylül 1927, Lahey Divanı - Türkiye haklı bulundu",
+      "1926, Cenevre - Fransa haklı bulundu",
+      "1928, Paris - Dava düşürüldü",
+      "1925, Londra - İki taraf da tazminat ödedi"
+    ],
+    answer: 0,
+    info: "Ağustos 1926'da Fransız Lotus gemisi ile Türk Bozkurt şilebinin çarpışması sonucu Lahey Divanı 7 Eylül 1927'de Türkiye'yi haklı bulmuştur."
+  },
+  {
+    category: "1923-1938 Dış Politika",
+    q: "Türkiye-İtalya arasında Meis Adası ve çevresi ile ilgili düzenleme ne zaman yapılmıştır?",
+    options: [
+      "4 Kasım 1932, Ankara'da",
+      "30 Mayıs 1928, Roma'da",
+      "1937, Milano'da",
+      "1939, Arnavutluk işgali sonrası"
+    ],
+    answer: 0,
+    info: "4 Kasım 1932'de Ankara'da yapılan antlaşmayla Kara Ada ve çevresi Türkiye'ye, Meis Adası ve etrafındaki adalar İtalya'ya bırakılmıştır."
+  },
+  {
+    category: "1923-1938 Dış Politika",
+    q: "Venizelos hangi yılda Türkiye'yi ziyaret etmiş ve hangi antlaşmalar imzalanmıştır?",
+    options: [
+      "1930 - Dostluk, Tarafsızlık, Uzlaşma ve Hakemlik Antlaşması",
+      "1928 - Ticaret antlaşması",
+      "1933 - Samimi Anlaşma belgesi",
+      "1926 - Atina Antlaşması"
+    ],
+    answer: 0,
+    info: "1930'da Venizelos Türkiye'yi ziyaret etmiş; Dostluk, Tarafsızlık, Uzlaşma ve Hakemlik Antlaşması ile Deniz Kuvvetlerinin Sınırlandırılması ve ticaret anlaşmaları imzalanmıştır."
+  },
+  {
+    category: "1923-1938 Dış Politika",
+    q: "Türk-Sovyet Dostluk ve Tarafsızlık Antlaşması hangi tarihte ve nerede imzalanmıştır?",
+    options: [
+      "17 Aralık 1925, Paris",
+      "16 Mart 1921, Moskova",
+      "13 Ekim 1921, Kars",
+      "1 Nisan 1929, Ankara"
+    ],
+    answer: 0,
+    info: "17 Aralık 1925'te Paris'te 'Türkiye Cumhuriyeti ile SSCB Arasında Dostluk ve Tarafsızlık Antlaşması' imzalanmıştır."
+  },
+  {
+    category: "1923-1938 Dış Politika",
+    q: "ABD'nin Ankara'ya atadığı ilk büyükelçi kimdir?",
+    options: [
+      "Joseph C. Grew (1927)",
+      "Richard Child",
+      "Amiral Bristol",
+      "General MacArthur"
+    ],
+    answer: 0,
+    info: "1927 Ekim'inde Joseph C. Grew Ankara'ya büyükelçi olarak atanmıştır. Türkiye de Ahmet Muhtar Bey'i Washington'a elçi olarak görevlendirmiştir."
+  },
+  {
+    category: "1923-1938 Dış Politika",
+    q: "Türk-Alman Dostluk Antlaşması hangi tarihte imzalanmıştır?",
+    options: [
+      "3 Mart 1924, Ankara",
+      "18 Haziran 1941, Ankara",
+      "16 Mayıs 1929, Berlin",
+      "1933, Londra"
+    ],
+    answer: 0,
+    info: "İki ülke arasındaki ilişkiler Lozan sonrası yeniden başlamış ve 3 Mart 1924'te Ankara'da Türk-Alman Dostluk Antlaşması imzalanmıştır."
+  },
+  {
+    category: "1923-1938 Dış Politika",
+    q: "Türkiye-İran Dostluk ve Güvenlik Antlaşması hangi tarihte imzalanmıştır?",
+    options: [
+      "22 Nisan 1926",
+      "21 Haziran 1921",
+      "22 Haziran 1922",
+      "1 Mart 1921"
+    ],
+    answer: 0,
+    info: "1925'te Şah olan Rıza Pehlevi döneminde, 22 Nisan 1926'da Türkiye-İran Dostluk ve Güvenlik Antlaşması yapılmıştır."
+  },
+  {
+    category: "1923-1938 Dış Politika",
+    q: "Briand-Kellog Paktı hangi tarihte imzalanmıştır ve TBMM ne zaman katılmıştır?",
+    options: [
+      "27 Ağustos 1928 imzalandı, TBMM 19 Ocak 1929'da katıldı",
+      "1 Aralık 1925 imzalandı, TBMM 1926'da katıldı",
+      "28 Nisan 1919 imzalandı, TBMM 1920'de katıldı",
+      "1929 imzalandı, TBMM 1930'da katıldı"
+    ],
+    answer: 0,
+    info: "Briand-Kellog Paktı 27 Ağustos 1928'de imzalanmış, Sovyetler Birliği ve Türkiye daha sonra dahil olmuştur. TBMM 19 Ocak 1929'da pakta katılmıştır."
+  },
+  // ─── KATEGORİ: Paktlar ve Uluslararası Örgütler ───
+  {
+    category: "Paktlar ve Uluslararası Örgütler",
+    q: "Türkiye Milletler Cemiyeti'ne hangi tarihte ve kimin önerisiyle üye olmuştur?",
+    options: [
+      "18 Temmuz 1932, İspanya'nın önerisiyle",
+      "6 Temmuz 1932, Fransa'nın önerisiyle",
+      "9 Temmuz 1932, İngiltere'nin önerisiyle",
+      "1 Ocak 1930, ABD'nin önerisiyle"
+    ],
+    answer: 0,
+    info: "Milletler Cemiyeti 6 Temmuz 1932'de İspanya'nın önerisiyle Türkiye'yi davet etmiş, 9 Temmuz'da kabul edilmiş, 18 Temmuz'da üyelik işlemi gerçekleşmiştir."
+  },
+  {
+    category: "Paktlar ve Uluslararası Örgütler",
+    q: "Balkan Paktı hangi tarihte ve hangi ülkeler arasında imzalanmıştır?",
+    options: [
+      "9 Şubat 1934, Atina - Yunanistan, Romanya, Türkiye, Yugoslavya",
+      "8 Temmuz 1937, Tahran - Türkiye, İran, Irak, Afganistan",
+      "1 Aralık 1925, Locarno - Almanya, Fransa, İngiltere",
+      "9 Şubat 1934, Belgrad - Tüm Balkan devletleri"
+    ],
+    answer: 0,
+    info: "9 Şubat 1934'te Atina'da Yunanistan, Romanya, Türkiye ve Yugoslavya arasında Balkan Paktı imzalanmıştır."
+  },
+  {
+    category: "Paktlar ve Uluslararası Örgütler",
+    q: "Sadabat Paktı hangi tarihte ve hangi ülkeler arasında imzalanmıştır?",
+    options: [
+      "8 Temmuz 1937 - Türkiye, İran, Irak ve Afganistan",
+      "9 Şubat 1934 - Türkiye, Yunanistan, Romanya, Yugoslavya",
+      "20 Temmuz 1936 - Boğazlara kıyıdaş devletler",
+      "2 Ekim 1935 - Türkiye, İran ve Irak"
+    ],
+    answer: 0,
+    info: "8 Temmuz 1937'de Türkiye, İran, Irak ve Afganistan arasında Sadabat Paktı imzalanmıştır."
+  },
+  {
+    category: "Paktlar ve Uluslararası Örgütler",
+    q: "Montrö Boğazlar Sözleşmesi hangi tarihte imzalanmıştır ve kaç maddeden oluşur?",
+    options: [
+      "20 Temmuz 1936, 29 madde, 4 ek ve 1 protokol",
+      "24 Temmuz 1923, 143 madde",
+      "10 Nisan 1936, 50 madde",
+      "17 Nisan 1935, 20 madde"
+    ],
+    answer: 0,
+    info: "20 Temmuz 1936'da Montrö Boğazlar Sözleşmesi imzalanmıştır. 29 madde, 4 ek ve 1 protokolden oluşmaktadır."
+  },
+  {
+    category: "Paktlar ve Uluslararası Örgütler",
+    q: "Locarno Antlaşması hangi tarihte imzalanmıştır?",
+    options: [
+      "1 Aralık 1925",
+      "27 Ağustos 1928",
+      "28 Nisan 1919",
+      "20 Temmuz 1936"
+    ],
+    answer: 0,
+    info: "Barışın korunması ve silahsızlanma adına Locarno Antlaşması 1 Aralık 1925'te Almanya, Fransa, İngiltere, Belçika, İtalya, Polonya ve Çekoslovakya arasında imzalanmıştır."
+  },
+  // ─── KATEGORİ: 1930-1938 İlişkiler ───
+  {
+    category: "1930-1938 İlişkiler",
+    q: "Hatay'ın Türkiye'ye katılmasını Fransa hangi tarihte kabul etmiştir?",
+    options: [
+      "23 Haziran 1939",
+      "29 Mayıs 1937",
+      "Temmuz 1938",
+      "20 Temmuz 1936"
+    ],
+    answer: 0,
+    info: "Uluslararası gelişmeler üzerine Fransa 23 Haziran 1939'da Hatay'ın Türkiye'ye katılmasını kabul etmiştir."
+  },
+  {
+    category: "1930-1938 İlişkiler",
+    q: "Hatay meclisinde kaç sandalye bulunuyordu ve Türkler kaçını kazanmıştır?",
+    options: [
+      "40 sandalye, Türkler 22 kazandı",
+      "50 sandalye, Türkler 30 kazandı",
+      "30 sandalye, Türkler 15 kazandı",
+      "60 sandalye, Türkler 40 kazandı"
+    ],
+    answer: 0,
+    info: "40 sandalyeli mecliste Türkler 22, Ermeniler 5, Aleviler 9, Rum ve Sünni Araplar 2'şer, 2 Ortodoks milletvekili seçildi. Tayfur Sökmen Cumhurbaşkanı oldu."
+  },
+  {
+    category: "1930-1938 İlişkiler",
+    q: "İngiltere'nin Alman etkisini azaltmak için 1938'de Türkiye'ye sağladığı kredi miktarı nedir?",
+    options: [
+      "16 milyon Sterlin",
+      "8 milyon Dolar",
+      "10 milyon Altın",
+      "25 milyon Frank"
+    ],
+    answer: 0,
+    info: "Türkiye'de Alman etkisini azaltmak için İngiltere Mayıs 1938'de 16 milyon Sterlinlik bir kredi sağlamıştır."
+  },
+  {
+    category: "1930-1938 İlişkiler",
+    q: "Sovyetlerin Türkiye'ye sağladığı 1934 kredisinin özellikleri nelerdir?",
+    options: [
+      "8 milyon dolar, faizsiz, 20 yıl tarım ürünleriyle geri ödemeli",
+      "16 milyon sterlin, %3 faizli",
+      "5 milyon altın, 10 yıl vadeli",
+      "10 milyon ruble, nakit ödeme"
+    ],
+    answer: 0,
+    info: "21 Ocak 1934'te yapılan anlaşmaya göre Sovyetler 8 milyon dolarlık faizsiz kredi sağlayacak, 20 yıl içerisinde tarım ürünleriyle geri ödenecekti. Bu krediyle Kayseri ve Nazilli'de dokuma fabrikaları kurulmuştur."
+  },
+  {
+    category: "1930-1938 İlişkiler",
+    q: "1936 yılında Almanya'nın Türk dış ticaretindeki payı neydi?",
+    options: [
+      "İthalatın %45'i, ihracatın %51'i",
+      "İthalatın %28'i, ihracatın %16'sı",
+      "İthalatın %12'si, ihracatın %9'u",
+      "İthalatın %60'ı, ihracatın %70'i"
+    ],
+    answer: 0,
+    info: "1936 yılında Almanya'nın Türkiye genel ithalatı içindeki payı %45, ihracatı içindeki payı ise %51 idi."
+  },
+  {
+    category: "1930-1938 İlişkiler",
+    q: "Türk-Yunan ilişkilerinde 'Samimi Anlaşma' belgesi hangi tarihte imzalanmıştır?",
+    options: [
+      "14 Eylül 1933",
+      "30 Ekim 1930",
+      "5 Ekim 1931",
+      "10 Haziran 1930"
+    ],
+    answer: 0,
+    info: "14 Eylül 1933'te 'Türkiye ile Yunanistan Arasında Samimi Anlaşma' belgesi imzalanmıştır."
+  },
+  // ─── KATEGORİ: II. Dünya Savaşı ve Türkiye ───
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Ekim 1939'da İngiltere ve Fransa ile imzalanan anlaşmanın adı nedir?",
+    options: [
+      "Üçlü İttifak Anlaşması",
+      "Balkan Paktı",
+      "Sadabat Paktı",
+      "Karşılıklı Yardım Antlaşması"
+    ],
+    answer: 0,
+    info: "Ekim 1939'da İngiltere ve Fransa ile üçlü ittifak anlaşması imzalanmıştır. Buna rağmen Türkiye tüm savaş boyunca tarafsızlığını korumuştur."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "İnönü'nün savaş dönemindeki yaklaşımını en iyi tanımlayan kelime hangisidir?",
+    options: [
+      "Tedbir",
+      "Saldırganlık",
+      "Tarafsızlık",
+      "İttifak"
+    ],
+    answer: 0,
+    info: "İnönü'nün yaklaşımını açıklayabilecek kelime 'tedbir'dir. Zaman kazanmaya çok önem vermiş, politikalarını zamanın şartlarına uydurarak cüretkâr girişimlerden kaçınmıştır."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Türk dış politikasının fikir babası olarak tanımlanan ve 1933-1942 arası dışişlerinde etkili olan kişi kimdir?",
+    options: [
+      "Numan Menemencioğlu",
+      "Şükrü Saraçoğlu",
+      "Tevfik Rüştü Aras",
+      "Fevzi Çakmak"
+    ],
+    answer: 0,
+    info: "Haziran 1944'te istifa etmeye zorlanana kadar Türk dış politikasının fikir babası olan kişi, 1933'ten itibaren dışişleri bakanlığında genel sekreterlik yapan Numan Menemencioğlu'ydu."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "1934'ten itibaren Türk Ordusu'nun yarısından fazlası nereye konuşlanmıştı?",
+    options: [
+      "Doğu Trakya - 'Çakmak Hattı' sistemi",
+      "Doğu Anadolu - Kafkas sınırı",
+      "Güneydoğu - Suriye sınırı",
+      "Ege kıyıları - Adalara karşı"
+    ],
+    answer: 0,
+    info: "1934'ten itibaren Türk Ordusu'nun yarısından fazlası teçhizatları ve modern silahlarıyla birlikte doğu Trakya'ya konuşlanmıştı. İngiliz yetkililerinin etkilendiği 'Çakmak Hattı' sistemi kurulmuştu."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Fransa'nın Haziran 1940'taki düşüşü Türkiye'nin savaş politikasını nasıl etkilemiştir?",
+    options: [
+      "Beklentileri tamamen tersine çevirdi, savaşa katılma olasılığını azalttı",
+      "Türkiye'yi Almanya ile ittifaka yöneltti",
+      "Türkiye hemen İngiltere tarafında savaşa girdi",
+      "Herhangi bir etkisi olmadı"
+    ],
+    answer: 0,
+    info: "Fransa'nın düşüşü Türkiye'nin beklentilerini tamamen tersine çevirdi. Artık İngiltere yeterli destek veremeyecekti ve Türkiye İtalya ile Almanya'ya karşı tek başına kalabilirdi."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Türk-Alman Dostluk ve Saldırmazlık Antlaşması hangi tarihte imzalanmıştır?",
+    options: [
+      "18 Haziran 1941",
+      "3 Mart 1924",
+      "17 Mayıs 1941",
+      "22 Haziran 1941"
+    ],
+    answer: 0,
+    info: "18 Haziran 1941'de on yıl geçerli olmak üzere Türk-Alman Dostluk ve Saldırmazlık Antlaşması imzalanmıştır. Sadece 4 gün sonra Almanya Sovyetler Birliği'ne saldırmıştır."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Kasım 1940'ta Molotov'un Berlin'deki görüşmelerde boğazlarla ilgili talebi neydi?",
+    options: [
+      "Sovyet kara ve deniz üslerinin kurulması",
+      "Boğazların tamamen kapatılması",
+      "Boğazlardan serbest geçiş hakkı",
+      "Boğazların uluslararası yönetime bırakılması"
+    ],
+    answer: 0,
+    info: "Molotov, boğazlarda Sovyet kara ve deniz üslerinin kurulmasını talep etmiştir. Bu talepler Hitler için de çok fazlaydı; boğazların kontrolünü Stalin'e vermek istemiyordu."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "İtalyan büyükelçi de Peppo'ya göre 'Türklerin ideali' neydi?",
+    options: [
+      "Son Alman askerinin, son Rus cesedi üzerine düşmesi",
+      "Her iki tarafla da ticaret yapabilmek",
+      "Savaşa hiçbir şekilde karışmamak",
+      "İngiltere'nin zafer kazanması"
+    ],
+    answer: 0,
+    info: "Ankara'daki İtalyan büyükelçi de Peppo'nun aktardığına göre Türklerin ideali, 'son Alman askerinin, son Rus cesedi üzerine düşmesiydi'."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Bir İngiliz askeri raporuna göre, Türkiye savaşa girip Almanya'nın saldırısına uğrarsa Hitler'in ordularının ülkeyi kaç haftada fethedeceği varsayılmıştır?",
+    options: [
+      "16 hafta",
+      "8 hafta",
+      "24 hafta",
+      "4 hafta"
+    ],
+    answer: 0,
+    info: "Bir İngiliz askeri raporunda, Türkiye'nin savaşa girmesi ve Almanya'nın saldırısına uğraması durumunda, Hitler'in ordularının ülkeyi 16 hafta içinde fethedeceği varsayılmıştı."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Nisan 1941'de Irak'ta darbe yaparak Mihver yanlısı hükümeti kuran kişi kimdir?",
+    options: [
+      "Raşit Ali Geylani",
+      "Kral Faysal",
+      "Nuri Said Paşa",
+      "Emir Abdullah"
+    ],
+    answer: 0,
+    info: "Nisan 1941'de Raşit Ali Geylani liderliğindeki Mihver taraftarı cunta hükümeti devirerek başbakan olmuştur."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "1941 yılının Mart ayında Türkiye'nin savunma hattı nereden nereye kaydırılmıştır?",
+    options: [
+      "İstanbul'u düşmana terk ederek batı Anadolu'ya",
+      "Trakya'dan Çanakkale'ye",
+      "Ankara'dan Konya'ya",
+      "Doğu'dan batıya"
+    ],
+    answer: 0,
+    info: "Almanya'nın blitzkrieg başarısı nedeniyle 1941 Mart'ında Balkanlarda gelecek bir saldırıya karşı savunma hattı, İstanbul düşmana terk edilerek batı Anadolu'ya kaydırılmıştır."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Alman savaş plancıları Orta Doğu kampanyasının, Türkiye'nin işbirliği yapması halinde kaç gün içinde sonuçlanacağını öngörmüşlerdir?",
+    options: [
+      "85 gün (işbirliği halinde), 145 gün (işbirliği yoksa)",
+      "30 gün (işbirliği halinde), 60 gün (işbirliği yoksa)",
+      "120 gün (işbirliği halinde), 200 gün (işbirliği yoksa)",
+      "45 gün (işbirliği halinde), 90 gün (işbirliği yoksa)"
+    ],
+    answer: 0,
+    info: "Alman plancılar Orta Doğu kampanyasının Türkiye'nin işbirliği yapması halinde 85, yapmaması durumunda 145 gün içinde sonuçlanacağını öngörmüşlerdir."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "İttifak antlaşmasının ardından Almanya ile ticaret nasıl etkilenmiştir?",
+    options: [
+      "İthalat %12'ye, ihracat %9'a düşmüştür",
+      "Tamamen kesilmiştir",
+      "İthalat %51'e, ihracat %31'e çıkmıştır",
+      "Değişmemiştir"
+    ],
+    answer: 0,
+    info: "İngiltere ve Fransa'yla ittifak antlaşmasının ardından Almanya ile ticaret kesilmiş, ithalat %12'ye, ihracat %9'a düşmüştür."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Mareşal Fevzi Çakmak hangi yılda İnönü tarafından görevden alınmıştır?",
+    options: [
+      "1944",
+      "1942",
+      "1940",
+      "1945"
+    ],
+    answer: 0,
+    info: "1922'den beri görevde olan Genelkurmay Başkanı Mareşal Fevzi Çakmak, 1944 yılında İnönü tarafından görevden alınmıştır."
+  },
+  // ═══════ YENİ SORULAR - DETAYLI TARAMA ═══════
+  // ─── Osmanlı Dağılma Dönemi (Ek) ───
+  {
+    category: "Osmanlı Dağılma Dönemi",
+    q: "93 Harbi olarak bilinen Osmanlı-Rus Savaşı hangi yıllar arasında yaşanmıştır?",
+    options: ["1877-1878", "1853-1856", "1828-1829", "1768-1774"],
+    answer: 0,
+    info: "93 Harbi olarak bilinen 1877-1878 Osmanlı-Rus Savaşı sonrasında Berlin Antlaşması imzalanmış ve Osmanlı dış politikasına yön vermiştir."
+  },
+  {
+    category: "Osmanlı Dağılma Dönemi",
+    q: "Britanya İmparatorluğu 93 Harbi sonrasında hangi politika değişikliğini yapmıştır?",
+    options: [
+      "Osmanlı toprak bütünlüğünü korumak yerine Yunanistan ve Ermenileri desteklemeye başladı",
+      "Osmanlı ile askeri ittifak kurdu",
+      "Rusya ile ortak hareket etmeye başladı",
+      "Akdeniz'den tamamen çekildi"
+    ],
+    answer: 0,
+    info: "93 Harbi sonrası Britanya, Osmanlı topraklarını korumanın güçleştiğini görerek Rusya'ya karşı ve Fransa'nın yayılmasını engelleyici bir politika izlemeye başlamış, Yunanistan ve Ermenileri desteklemiştir."
+  },
+  {
+    category: "Osmanlı Dağılma Dönemi",
+    q: "Rusya 1783'te hangi bölgeyi topraklarına katmıştır ve bunun önemi nedir?",
+    options: [
+      "Kırım - İlk kez Müslümanların yaşadığı bir toprak elden çıktı",
+      "Kafkasya - İlk deniz üssü kuruldu",
+      "Balkanlar - Slav hakimiyeti başladı",
+      "Ukrayna - Karadeniz ticareti ele geçirildi"
+    ],
+    answer: 0,
+    info: "Rusya 1783'te Kırım'ı topraklarına katmıştır. Bu, ilk kez Müslümanların oturduğu bir toprağın elden çıkması bakımından tarihi bir öneme sahiptir."
+  },
+  {
+    category: "Osmanlı Dağılma Dönemi",
+    q: "19. yüzyılın ikinci yarısında kaç Müslüman hayatını kaybetmiş ve kaçı Osmanlı'ya sığınmıştır?",
+    options: [
+      "5 milyon hayatını kaybetti, 5.4 milyon sığındı",
+      "3 milyon hayatını kaybetti, 2 milyon sığındı",
+      "1 milyon hayatını kaybetti, 10 milyon sığındı",
+      "8 milyon hayatını kaybetti, 1 milyon sığındı"
+    ],
+    answer: 0,
+    info: "Yunanistan, Kırım, Kafkas ve Balkanlarda yaklaşık 5 milyon Müslüman hayatını kaybederken 5,4 milyon Müslüman Osmanlı'ya sığınmıştır."
+  },
+  {
+    category: "Osmanlı Dağılma Dönemi",
+    q: "Dağılma sürecinde Osmanlı hükümeti büyük devletlere karşı nasıl bir yaklaşım benimsemiştir?",
+    options: [
+      "Askeri risk almaktansa diplomatik ilişkiler yürütmeyi tercih etti",
+      "Topyekûn savaş stratejisi izledi",
+      "Tek bir büyük devletle ittifak kurdu",
+      "Tamamen yalnızlık politikası izledi"
+    ],
+    answer: 0,
+    info: "Dağılma sürecinde hükümet, herhangi büyük bir Avrupa kuvvetine karşı askeri risk almaktansa diplomatik ilişkiler yürütmeyi tercih ediyordu."
+  },
+  {
+    category: "Osmanlı Dağılma Dönemi",
+    q: "Hünkar İskelesi Antlaşması hangi bağlamda imzalanmıştır?",
+    options: [
+      "Mehmet Ali Paşa'ya karşı Rusya'dan yardım alınması",
+      "Kırım Savaşı sonrası barış",
+      "Yunan isyanının bastırılması",
+      "Navarin olayı sonrası tazminat"
+    ],
+    answer: 0,
+    info: "Mehmet Ali Paşa'ya karşı Rusya'dan yardım alınmış ve Hünkar İskelesi Antlaşması imzalanmıştır."
+  },
+  {
+    category: "Osmanlı Dağılma Dönemi",
+    q: "1854-1856 Kırım Savaşı'nda Osmanlı hangi desteği almıştır?",
+    options: [
+      "Avrupa devletlerinin desteğini aldı",
+      "Tek başına savaştı",
+      "Yalnızca Rusya ile anlaştı",
+      "ABD'den yardım aldı"
+    ],
+    answer: 0,
+    info: "1854-1856 Kırım Savaşı'nda Osmanlı, Avrupa devletlerinin desteğini almıştır."
+  },
+  {
+    category: "Osmanlı Dağılma Dönemi",
+    q: "1914 yılında Osmanlı nüfusu ne kadardır ve Müslüman oranı nedir?",
+    options: [
+      "18.5 milyon, %81 Müslüman",
+      "26 milyon, %66 Müslüman",
+      "17 milyon, %72 Müslüman",
+      "22 milyon, %75 Müslüman"
+    ],
+    answer: 0,
+    info: "1914'te nüfus 18.5 milyon olup %81'i Müslümandı. Balkan Savaşları'nın etkisiyle nüfus azalmış ancak sınır dışından gelen Müslüman göçmenler oranı artırmıştır."
+  },
+  // ─── II. Abdülhamid ve II. Meşrutiyet (Ek) ───
+  {
+    category: "II. Abdülhamid ve II. Meşrutiyet",
+    q: "II. Abdülhamid'in dış politikada uyguladığı önemli ideolojik politika hangisidir?",
+    options: ["Panislamizm", "Turancılık", "Osmanlıcılık", "Batıcılık"],
+    answer: 0,
+    info: "II. Abdülhamid, dış politikada Panislamizm politikası uygulamıştır."
+  },
+  {
+    category: "II. Abdülhamid ve II. Meşrutiyet",
+    q: "Almanya'nın 'Weltpolitik' kavramı neyi ifade etmektedir?",
+    options: [
+      "Yayılmacı bir emperyalist siyaset",
+      "Savunmacı bir dış politika",
+      "Ekonomik izolasyon",
+      "Diplomatik tarafsızlık"
+    ],
+    answer: 0,
+    info: "Bismarck'a karşı I. Wilhelm yayılmacı bir siyaset izlemiştir. Weltpolitik, Almanya'nın emperyalist yayılmacı siyasetini ifade etmektedir."
+  },
+  {
+    category: "II. Abdülhamid ve II. Meşrutiyet",
+    q: "Osmanlı ile Britanya arasında 19 Temmuz 1913'te imzalanan belgenin adı nedir?",
+    options: [
+      "Osmanlı-İngiliz Konvansiyonu",
+      "Londra Antlaşması",
+      "İstanbul Protokolü",
+      "Haliç Muahedesi"
+    ],
+    answer: 0,
+    info: "Mahmud Şevket Paşa yönetimindeki Osmanlı, büyük devletlerle ilişkileri iyi tutmaya çalışmış ve 19 Temmuz 1913'te Osmanlı-İngiliz Konvansiyonu imzalanmıştır."
+  },
+  {
+    category: "II. Abdülhamid ve II. Meşrutiyet",
+    q: "1913 yılının Kasım ayında Osmanlı hangi devletle ticaret anlaşması imzalamıştır?",
+    options: [
+      "Çarlık Rusya",
+      "Almanya",
+      "Fransa",
+      "İtalya"
+    ],
+    answer: 0,
+    info: "1913 yılının Kasım ayında Çarlık Rusya ile bir ticaret anlaşması imzalanmıştır. Aynı dönemde Fransa da Osmanlı'ya borç para vermeyi kabul etmiştir."
+  },
+  {
+    category: "II. Abdülhamid ve II. Meşrutiyet",
+    q: "II. Meşrutiyet döneminde Girit hangi ülke ile birleşmiştir?",
+    options: [
+      "Yunanistan",
+      "İngiltere",
+      "İtalya",
+      "Fransa"
+    ],
+    answer: 0,
+    info: "1908'de Bulgaristan bağımsız olurken, Avusturya-Macaristan Bosna-Hersek'i ilhak etmiş ve Girit Yunanistan ile birleşmiştir."
+  },
+  // ─── I. Dünya Savaşı ve Sonrası (Ek) ───
+  {
+    category: "I. Dünya Savaşı ve Sonrası",
+    q: "I. Dünya Savaşı'nın nedenlerinden biri olarak gösterilen 'Osmanlı Mirası' ne anlama gelmektedir?",
+    options: [
+      "Osmanlı topraklarının paylaşılması sorunu",
+      "Osmanlı borçlarının ödenmesi",
+      "Osmanlı kültürel etkisi",
+      "Osmanlı ordusunun modernizasyonu"
+    ],
+    answer: 0,
+    info: "I. Dünya Savaşı nedenlerinden biri olan 'Osmanlı Mirası', büyük devletlerin Osmanlı topraklarını paylaşma çekişmesini ifade eder."
+  },
+  {
+    category: "I. Dünya Savaşı ve Sonrası",
+    q: "Paris Barış Konferansı'nda karar alan 'Beşler Konseyi'nde hangi ülke lideri yer ALMAZ?",
+    options: [
+      "Almanya Şansölyesi",
+      "ABD Başkanı Woodrow Wilson",
+      "İngiltere Başbakanı Lloyd George",
+      "Fransa Başbakanı Clémenceau"
+    ],
+    answer: 0,
+    info: "Beşler Konseyi: ABD Başkanı Wilson, İngiltere Başbakanı Lloyd George, Fransa Başbakanı Clémenceau, İtalya Başbakanı Orlando ve Japonya Prensi Saionji'den oluşuyordu."
+  },
+  {
+    category: "I. Dünya Savaşı ve Sonrası",
+    q: "ABD, Paris Barış Konferansı sonrasında hangi doktrine dönüş yapmıştır?",
+    options: [
+      "Monroe Doktrini",
+      "Wilson İlkeleri",
+      "Truman Doktrini",
+      "Marshall Planı"
+    ],
+    answer: 0,
+    info: "ABD, Paris Barış Konferansı sonrasında Monroe Doktrini'ne dönüş yapmıştır."
+  },
+  {
+    category: "I. Dünya Savaşı ve Sonrası",
+    q: "Almanya, Kurtuluş Savaşı döneminde Ruslara karşı hangi hareketi kışkırtmaktaydı?",
+    options: [
+      "Türkçü ve Turancı hareket",
+      "Panislamist hareket",
+      "Komünist hareket",
+      "Arap milliyetçiliği"
+    ],
+    answer: 0,
+    info: "Almanya, Ruslara karşı Türkçü ve Turancı hareketi kışkırtmaktaydı."
+  },
+  // ─── Kurtuluş Savaşı Dönemi (Ek) ───
+  {
+    category: "Kurtuluş Savaşı Dönemi",
+    q: "İzmir'in işgali hangi tarihte gerçekleşmiştir ve ne etkisi olmuştur?",
+    options: [
+      "15 Mayıs 1919 - Milli duyguları harekete geçirdi",
+      "30 Ekim 1918 - Mondros'a yol açtı",
+      "23 Nisan 1920 - TBMM'nin açılmasına neden oldu",
+      "16 Mart 1920 - İstanbul işgaline tepki oldu"
+    ],
+    answer: 0,
+    info: "15 Mayıs 1919'da İzmir'in işgali milli duyguları harekete geçirmiştir. Doğuda ise Ermenilerin devlet kurma çabaları başlamıştı."
+  },
+  {
+    category: "Kurtuluş Savaşı Dönemi",
+    q: "Wilson İlkeleri'nin hangi maddesi Osmanlı'da bazı faaliyetlere temel oluşturmuştur?",
+    options: [
+      "12. madde",
+      "14. madde",
+      "5. madde",
+      "1. madde"
+    ],
+    answer: 0,
+    info: "Wilson İlkeleri'nin 12. maddesine dayanan faaliyetler kapsamında Redd-i İlhak ve Müdafaa-i Hukuk grupları kurulmaya başlanmıştır."
+  },
+  {
+    category: "Kurtuluş Savaşı Dönemi",
+    q: "Sadrazam Damat Ferit Paşa'nın devleti kurtarma stratejisi neydi?",
+    options: [
+      "İngiliz himayesi ile devleti kurtarma",
+      "Alman desteği ile direniş",
+      "Anadolu'da milli mücadele",
+      "Fransız mandası altına girme"
+    ],
+    answer: 0,
+    info: "Sadrazam Damat Ferit Paşa, İngiliz himayesi ile devleti kurtarma amacı güdüyordu."
+  },
+  {
+    category: "Kurtuluş Savaşı Dönemi",
+    q: "TBMM'de Hariciye Encümeni'nde Ali Şükrü Bey hangi ülke ile ilişkiler kurulmasını istemiştir?",
+    options: [
+      "İngiltere",
+      "Fransa",
+      "Almanya",
+      "Rusya"
+    ],
+    answer: 0,
+    info: "Ali Şükrü Bey İngiltere, Hulusi Bey Fransa, Ziya Hurşit Bey Almanya ile ilişkiler kurulmasını isterken, Dr. Emin Bey doğu ile ilişkilerin geliştirilmesini savunmuştur."
+  },
+  {
+    category: "Kurtuluş Savaşı Dönemi",
+    q: "İngiliz Yarbay Rawlinson'un Mustafa Kemal ile görüşmesinin ardından ne yapmıştır?",
+    options: [
+      "Durumu Londra'ya bildirmiştir",
+      "Antlaşma imzalamıştır",
+      "Anadolu'da kalmıştır",
+      "Paris'e rapor göndermiştir"
+    ],
+    answer: 0,
+    info: "İngiliz Yarbay Rawlinson, Mustafa Kemal'le görüşmüş ve bu durumu Londra'ya bildirmiştir."
+  },
+  {
+    category: "Kurtuluş Savaşı Dönemi",
+    q: "İtilaf Orduları komutanı Fransız Mareşal Foch, Türkleri barış şartlarını kabul ettirmek için kaç tümene ihtiyaç olduğunu bildirmiştir?",
+    options: [
+      "27 tümen",
+      "15 tümen",
+      "40 tümen",
+      "10 tümen"
+    ],
+    answer: 0,
+    info: "İtilaf Orduları'nın komutanı Fransız Mareşal Foch, Nisan 1920'de Türklere barış şartlarını kabul ettirmek için 27 tümenden oluşan bir orduya ihtiyaç olduğunu bildirmiştir."
+  },
+  // ─── Sovyet Rusya ve Doğu İlişkileri (Ek) ───
+  {
+    category: "Sovyet Rusya ve Doğu İlişkileri",
+    q: "Sovyet Rusya Dışişleri Bakanı Çiçerin hangi tarihte Çarlık dönemine ait amaçlardan vazgeçtiklerini açıklamıştır?",
+    options: [
+      "13 Eylül 1919",
+      "26 Nisan 1920",
+      "16 Mart 1921",
+      "23 Nisan 1920"
+    ],
+    answer: 0,
+    info: "Sovyet Rusya Dışişleri Bakanı Georgi Vasilyeviç Çiçerin, 13 Eylül 1919'da Çarlık dönemine ait amaçlardan vazgeçtiklerini açıklamıştır."
+  },
+  {
+    category: "Sovyet Rusya ve Doğu İlişkileri",
+    q: "Bekir Sami Bey'in Moskova heyeti hangi konuda sorun yaşamıştır?",
+    options: [
+      "Van, Bitlis ve Muş'un Ermenistan'a verilmesi talebi",
+      "Boğazların kontrolü",
+      "Kars ve Ardahan sınırı",
+      "Ticaret anlaşması koşulları"
+    ],
+    answer: 0,
+    info: "Dışişleri Bakanı Bekir Sami Bey başkanlığındaki heyet 24 Temmuz 1920'de Moskova'da görüştü ancak Van, Bitlis ve Muş'un Ermenistan konusunda sorun yaşandı."
+  },
+  {
+    category: "Sovyet Rusya ve Doğu İlişkileri",
+    q: "Moskova Büyükelçisi Ali Fuat Paşa, Stalin ile hangi tarihte görüşme yapmıştır?",
+    options: [
+      "16-17 Ekim 1921",
+      "16 Mart 1921",
+      "9 Kasım 1920",
+      "2 Ocak 1922"
+    ],
+    answer: 0,
+    info: "Moskova Büyükelçisi Ali Fuat Paşa, 16-17 Ekim 1921'de Stalin'le görüşmüş ve bazı tereddütlerin önüne geçilmeye çalışılmıştır."
+  },
+  {
+    category: "Sovyet Rusya ve Doğu İlişkileri",
+    q: "Sovyet Rusya, TBMM ile ilişkisini hangi amaçlarla kurmuştur?",
+    options: [
+      "Tampon bölge oluşturma, boğazların kontrolü ve Bolşevizm'in yayılması",
+      "Yalnızca ticari çıkarlar",
+      "Osmanlı topraklarını ele geçirme",
+      "Pan-Türkizm hareketini destekleme"
+    ],
+    answer: 0,
+    info: "Sovyet Rusya iki devlet arasındaki ilişkiyi; tampon bölge oluşturma, boğazların kontrol altında olması ve Bolşevizm'in yayılmasına imkan olarak görmüştür."
+  },
+  {
+    category: "Sovyet Rusya ve Doğu İlişkileri",
+    q: "Karakol Cemiyeti'nin Sovyetlerle yaptığı görüşmeler neden kabul edilmemiştir?",
+    options: [
+      "Resmi yetkisiz görüşmeler olduğu için kabul edilmedi",
+      "Sovyetler Birliği reddettiği için",
+      "Askeri ittifak talep edildiği için",
+      "İngiltere baskı yaptığı için"
+    ],
+    answer: 0,
+    info: "TBMM açılmadan önceki dönemlerde Sovyetlerle görüşmeler yapılmıştı ancak Karakol Cemiyetinin yaptığı görüşmeler kabul edilmemişti."
+  },
+  {
+    category: "Sovyet Rusya ve Doğu İlişkileri",
+    q: "Azerbaycan Sovyet Hükümeti Türkiye'ye hangi konularda yardımcı olmuştur?",
+    options: [
+      "Malta'daki Türk siyasi esirlerin kurtarılması, petrol ve para yardımı",
+      "Askeri birlik gönderme",
+      "Silah fabrikası kurma",
+      "Deniz kuvvetleri desteği"
+    ],
+    answer: 0,
+    info: "Azerbaycan Sovyet Hükümeti, Malta'daki Türk siyasi esirlerin kurtarılmasında etkili olurken petrol ürünleri ve para yardımında da bulunmuştur."
+  },
+  {
+    category: "Sovyet Rusya ve Doğu İlişkileri",
+    q: "Azerbaycan Cumhuriyeti'nin Türkiye'ye atadığı elçinin adı nedir?",
+    options: [
+      "İbrahim Ebilov",
+      "Memduh Şevket Bey",
+      "Abdurrahman Bey",
+      "Ali Fuat Paşa"
+    ],
+    answer: 0,
+    info: "Azerbaycan ilişkilerini geliştirmek için elçilik açmış ve İbrahim Ebilov'u Türkiye'ye atamıştır."
+  },
+  {
+    category: "Sovyet Rusya ve Doğu İlişkileri",
+    q: "TBMM Hükümeti, Afganistan'a elçi olarak kimi atamıştır?",
+    options: [
+      "Afgan kökenli Abdurrahman Bey (18 Ağustos 1920)",
+      "Bekir Sami Bey",
+      "Ali Fuat Paşa",
+      "Memduh Şevket Bey"
+    ],
+    answer: 0,
+    info: "TBMM Hükümeti, 18 Ağustos 1920'de Afgan kökenli Abdurrahman Bey'i Afganistan'a elçi olarak atamıştır."
+  },
+  // ─── Mudanya ve Lozan (Ek) ───
+  {
+    category: "Mudanya ve Lozan",
+    q: "Mudanya Ateşkesi'nde Yunanlıların çekilme süresi ne kadardır?",
+    options: [
+      "15 gün içinde Meriç Nehri'nin batısına",
+      "30 gün içinde Trakya'dan",
+      "7 gün içinde Ege'den",
+      "45 gün içinde tüm Anadolu'dan"
+    ],
+    answer: 0,
+    info: "Mudanya'da alınan kararlar doğrultusunda Yunanlılar 15 gün içinde Meriç Nehri'nin batı kısmına çekilecekti."
+  },
+  {
+    category: "Mudanya ve Lozan",
+    q: "Lozan Konferansı'nın açılışı nerede ve hangi tarihte yapılmıştır?",
+    options: [
+      "20 Kasım 1922, Mont Bénon Gazinosu",
+      "21 Kasım 1922, Lozan Üniversitesi",
+      "24 Temmuz 1923, Ouchy Oteli",
+      "4 Şubat 1923, Beau-Rivage Oteli"
+    ],
+    answer: 0,
+    info: "Konferans 20 Kasım 1922'de Lozan'da Mont Bénon Gazinosu'ndaki törenle açılmıştır."
+  },
+  {
+    category: "Mudanya ve Lozan",
+    q: "Türkiye-İran sınırı Lozan'da hangi antlaşmaya dayandırılmıştır?",
+    options: [
+      "1639 Kasr-ı Şirin Antlaşması",
+      "1774 Küçük Kaynarca Antlaşması",
+      "1878 Berlin Antlaşması",
+      "1921 Moskova Antlaşması"
+    ],
+    answer: 0,
+    info: "Türkiye-İran sınırı konusunda 1639 tarihli Kasr-ı Şirin Antlaşması esas alınmıştır."
+  },
+  {
+    category: "Mudanya ve Lozan",
+    q: "İsmet Paşa, Musul sorununun çözümü için hangi yöntemi önermiştir?",
+    options: [
+      "Plebisit (halk oylaması)",
+      "Askeri müdahale",
+      "Milletler Cemiyeti'ne başvuru",
+      "İkili görüşme"
+    ],
+    answer: 0,
+    info: "İsmet İnönü, Musul sorunu için plebisit yapılmasını istemiştir. Sorun çözülemeyip sonraya bırakılmıştır."
+  },
+  {
+    category: "Mudanya ve Lozan",
+    q: "Yunanistan savaş tazminatı olarak neyi vermeyi kabul etmiştir?",
+    options: [
+      "Karaağaç",
+      "Batı Trakya",
+      "Dedeağaç",
+      "Selanik"
+    ],
+    answer: 0,
+    info: "Yunanistan savaş tazminatı olarak Karaağaç'ı verecekti."
+  },
+  {
+    category: "Mudanya ve Lozan",
+    q: "Lozan'da kesinti sonrası mesaj vermek amacıyla düzenlenen kongre hangisidir?",
+    options: [
+      "İzmir İktisat Kongresi (17 Şubat - 4 Mart 1923)",
+      "Sivas Kongresi",
+      "Erzurum Kongresi",
+      "Ankara İktisat Kongresi"
+    ],
+    answer: 0,
+    info: "4 Şubat 1923'te Lozan kesintiye uğramış, 17 Şubat - 4 Mart 1923 tarihlerinde İzmir İktisat Kongresi ile ekonomik bağımsızlık mesajı verilmiştir."
+  },
+  {
+    category: "Mudanya ve Lozan",
+    q: "Lozan'da Patrikhane ile ilgili alınan karar nedir?",
+    options: [
+      "Sadece dini işlerle uğraşmak şartıyla İstanbul'da kalması",
+      "Yunanistan'a taşınması",
+      "Tamamen kapatılması",
+      "Siyasi yetkilerinin artırılması"
+    ],
+    answer: 0,
+    info: "İstanbul Rum Ortodoks Patrikhanesi sadece dini işlerle uğraşmak şartıyla İstanbul'da kalmıştır."
+  },
+  {
+    category: "Mudanya ve Lozan",
+    q: "Saltanat hangi tarihte kaldırılmıştır?",
+    options: [
+      "1 Kasım 1922",
+      "29 Ekim 1923",
+      "24 Temmuz 1923",
+      "23 Nisan 1920"
+    ],
+    answer: 0,
+    info: "Lozan sürecinde 1 Kasım 1922'de Saltanat kaldırılmıştır."
+  },
+  // ─── 1923-1938 Dış Politika (Ek) ───
+  {
+    category: "1923-1938 Dış Politika",
+    q: "Musul sorununun Milletler Cemiyeti'ne taşınmasından sonra kurulan komisyonda hangi ülke temsilcileri yer almıştır?",
+    options: [
+      "Macaristan (Kont Teleki), Belçika (A. Poulis), İsveç (A. Wirsen)",
+      "Fransa, İngiltere, İtalya",
+      "ABD, Almanya, Rusya",
+      "Yunanistan, Bulgaristan, Romanya"
+    ],
+    answer: 0,
+    info: "Milletler Cemiyeti komisyonu Macaristan'dan Kont Teleki, Belçika'dan A. Poulis ve İsveç'ten A. Wirsen'den oluşmuştur."
+  },
+  {
+    category: "1923-1938 Dış Politika",
+    q: "Musul meselesinde Türkiye'nin elini zayıflatan iç faktörler nelerdir?",
+    options: [
+      "Şeyh Sait İsyanı, Yunanistan'la mübadele sorunu ve ordunun güçlü olmaması",
+      "Ekonomik kriz ve enflasyon",
+      "Cumhuriyet'in ilanına muhalefet",
+      "Halifeliğin kaldırılması tartışmaları"
+    ],
+    answer: 0,
+    info: "Şeyh Sait İsyanı, Yunanistan'la mübadele, ordunun güçlü olmaması ve İtalyan politikacılarının istilacı konuşmaları Türkiye'nin Musul meselesindeki elini zayıflatmıştır."
+  },
+  {
+    category: "1923-1938 Dış Politika",
+    q: "Türkiye-Suriye sınırı ile ilgili 'Dostluk ve İyi Komşuluk Sözleşmesi' hangi tarihte imzalanmıştır?",
+    options: [
+      "30 Mayıs 1926",
+      "5 Haziran 1926",
+      "3 Mayıs 1930",
+      "29 Mayıs 1937"
+    ],
+    answer: 0,
+    info: "30 Mayıs 1926'da 'Türkiye ve Fransa Dostluk ve İyi Komşuluk Sözleşmesi' imzalanmış; gümrük, sağlık ve vatandaşlık konuları düzenlenmiştir."
+  },
+  {
+    category: "1923-1938 Dış Politika",
+    q: "Osmanlı borçları hangi yıla kadar ödenmeye devam etmiştir?",
+    options: [
+      "1954",
+      "1938",
+      "1945",
+      "1960"
+    ],
+    answer: 0,
+    info: "Türkiye ilk taksiti zamanında ödemiş, 1929 ekonomik bunalımı nedeniyle yeni ödeme planı talep edilmiş, 1933'te düzenleme yapılmış ve 1954'e kadar ödeme devam etmiştir."
+  },
+  {
+    category: "1923-1938 Dış Politika",
+    q: "İtalya'nın 1930'lardaki Türkiye ihracatındaki ve ithalatındaki payı neydi?",
+    options: [
+      "İhracatta %28, ithalatta %16",
+      "İhracatta %45, ithalatta %51",
+      "İhracatta %10, ithalatta %5",
+      "İhracatta %35, ithalatta %25"
+    ],
+    answer: 0,
+    info: "İtalya ile ticari ilişkiler gelişmiş olup İtalya'nın bu yıllarda Türkiye ihracatındaki yeri %28, ithalatında ise %16 idi."
+  },
+  {
+    category: "1923-1938 Dış Politika",
+    q: "ABD Kongresi, Lozan'ın kabulüne dair Türkiye ile imzalanan antlaşmayı hangi tarihte reddetmiştir?",
+    options: [
+      "18 Ocak 1927",
+      "6 Ağustos 1923",
+      "24 Temmuz 1923",
+      "1929"
+    ],
+    answer: 0,
+    info: "ABD ile 6 Ağustos 1923'te Lozan'ın kabulüne dair antlaşma imzalanmış ancak ABD Kongresi bunu 18 Ocak 1927'de reddetmiştir."
+  },
+  {
+    category: "1923-1938 Dış Politika",
+    q: "Wilson Prensipleri Cemiyeti'ni kuran aydınlar arasında kimler yer almaktadır?",
+    options: [
+      "Refik Halit, Celal Nuri, Halide Edip, Ahmet Emin",
+      "Mustafa Kemal, İsmet İnönü, Fevzi Çakmak",
+      "Rauf Orbay, Kazım Karabekir, Ali Fuat Cebesoy",
+      "Ziya Gökalp, Mehmet Akif, Yahya Kemal"
+    ],
+    answer: 0,
+    info: "4 Aralık 1918'de bazı aydınlar Wilson Prensipleri Cemiyetini kurmuşlardır: Refik Halit, Celal Nuri, Halide Edip ve Ahmet Emin."
+  },
+  {
+    category: "1923-1938 Dış Politika",
+    q: "Kayseri'de kurulan Tayyare ve Motor Anonim Şirketi'nin uçak fabrikası hangi ülke ortaklığıyla kurulmuştur?",
+    options: [
+      "Almanya",
+      "İtalya",
+      "İngiltere",
+      "Fransa"
+    ],
+    answer: 0,
+    info: "Türk-Alman ortaklığıyla kurulan Tayyare ve Motor Anonim Şirketi, Kayseri'de bir uçak fabrikası kurmuştur. 1930'da ise Berlin-İstanbul uçak seferleri başlamıştır."
+  },
+  {
+    category: "1923-1938 Dış Politika",
+    q: "Türk-İran ilişkilerinde sorun yaratan etkenler arasında hangisi yer ALMAZ?",
+    options: [
+      "Ortak sınır anlaşmazlıkları",
+      "Şii-Sünni çatışması",
+      "Pan-Türkist politikalar",
+      "İngiltere'nin etkisi"
+    ],
+    answer: 0,
+    info: "İki ülke ilişkilerini olumsuz etkileyen faktörler: Şii-Sünni çatışması, Pan-Türkist politikalar, İngiltere'nin etkisi ve Paris Barış Konferansı'nda İran'ın Türkiye'den toprak talebi idi."
+  },
+  // ─── 1930-1938 İlişkiler (Ek) ───
+  {
+    category: "1930-1938 İlişkiler",
+    q: "Karabük Demir Çelik İşletmeleri'nin yapımı hangi firmaya verilmiştir?",
+    options: [
+      "İngiliz Brassert firması (1936)",
+      "Alman Krupp firması",
+      "Fransız Schneider firması",
+      "İtalyan Ansaldo firması"
+    ],
+    answer: 0,
+    info: "1936'da Karabük demir çelik işletmelerinin yapımı İngiliz Brassert firmasına verilmiştir."
+  },
+  {
+    category: "1930-1938 İlişkiler",
+    q: "İngiltere Kralı VIII. Edward Türkiye'yi hangi tarihte ziyaret etmiştir?",
+    options: [
+      "4 Eylül 1936",
+      "20 Temmuz 1936",
+      "9 Şubat 1934",
+      "8 Temmuz 1937"
+    ],
+    answer: 0,
+    info: "İngiltere'nin Montrö Boğazlar Sözleşmesi'nde ılımlı tutumu ilişkileri geliştirmiş, Kral VIII. Edward 4 Eylül 1936'da İstanbul'u ziyaret etmiştir."
+  },
+  {
+    category: "1930-1938 İlişkiler",
+    q: "Atatürk'ün Hatay meselesiyle ilgili Adana-Mersin ziyareti hangi tarihtedir?",
+    options: [
+      "20-24 Mayıs 1938",
+      "29 Mayıs 1937",
+      "23 Haziran 1939",
+      "Temmuz 1938"
+    ],
+    answer: 0,
+    info: "Atatürk'ün 20-24 Mayıs 1938'de Adana-Mersin ziyareti Hatay meselesi açısından önemlidir."
+  },
+  {
+    category: "1930-1938 İlişkiler",
+    q: "Hatay'da cumhurbaşkanı seçilen kişi kimdir?",
+    options: [
+      "Tayfur Sökmen",
+      "İsmet İnönü",
+      "Tevfik Rüştü Aras",
+      "Fethi Okyar"
+    ],
+    answer: 0,
+    info: "Hatay meclisindeki seçimler sonrasında Tayfur Sökmen cumhurbaşkanı seçilmiştir."
+  },
+  {
+    category: "1930-1938 İlişkiler",
+    q: "İsmet İnönü'nün Sovyetlere ziyareti hangi tarihler arasında gerçekleşmiştir?",
+    options: [
+      "25 Nisan - 10 Mayıs 1932",
+      "17 Aralık 1925",
+      "1 Nisan 1929",
+      "16 Mart 1921"
+    ],
+    answer: 0,
+    info: "25 Nisan - 10 Mayıs 1932 tarihlerinde İsmet İnönü Sovyetlere ziyarette bulunmuş, Türkiye'nin ekonomik ve kültürel gelişimi için para, teknoloji ve uzman yardımı görüşülmüştür."
+  },
+  {
+    category: "1930-1938 İlişkiler",
+    q: "Birinci Beş Yıllık Plan hangi ülke uzmanlarının desteği ile hazırlanmıştır?",
+    options: [
+      "Sovyet uzmanlar",
+      "Alman uzmanlar",
+      "İngiliz uzmanlar",
+      "Amerikan uzmanlar"
+    ],
+    answer: 0,
+    info: "Birinci Beş Yıllık Plan Sovyet uzmanların desteği ile hazırlanmıştır."
+  },
+  {
+    category: "1930-1938 İlişkiler",
+    q: "Genelkurmay Başkanı General MacArthur Türkiye'yi hangi tarihte ziyaret etmiştir?",
+    options: [
+      "25-28 Eylül 1932",
+      "1933",
+      "1930",
+      "1929"
+    ],
+    answer: 0,
+    info: "25-28 Eylül 1932 tarihlerinde Genelkurmay Başkanı General MacArthur Türkiye'ye ziyarette bulunmuştur."
+  },
+  {
+    category: "1930-1938 İlişkiler",
+    q: "1930'larda ABD ile ilişkileri hangi konu gerginleştirmiştir?",
+    options: [
+      "Afyon ekimi ve kaçakçılığı",
+      "Musul sorunu",
+      "Boğazlar meselesi",
+      "Kapitülasyonlar"
+    ],
+    answer: 0,
+    info: "1930'da afyon ekimi ve kaçakçılığı konusunda ABD ile ilişkiler gerilmiş, Büyükelçi Joseph C. Grew Türkiye'yi uyarmış ve 1931'de afyon işletme fabrikaları kapanmıştır."
+  },
+  // ─── Paktlar ve Uluslararası Örgütler (Ek) ───
+  {
+    category: "Paktlar ve Uluslararası Örgütler",
+    q: "Balkan Paktı son toplantısını ne zaman ve nerede yapmıştır?",
+    options: [
+      "2-4 Şubat 1940, Belgrat",
+      "9 Şubat 1934, Atina",
+      "1938, Ankara",
+      "1939, Bükreş"
+    ],
+    answer: 0,
+    info: "Pakt 2-4 Şubat 1940'ta Belgrat'ta son toplantısını yaptıktan sonra etkinliğini yitirmiştir."
+  },
+  {
+    category: "Paktlar ve Uluslararası Örgütler",
+    q: "Irak Kralı Faysal Türkiye'yi hangi tarihte ziyaret etmiştir?",
+    options: [
+      "6-8 Temmuz 1931",
+      "8 Temmuz 1937",
+      "2 Ekim 1935",
+      "5 Haziran 1926"
+    ],
+    answer: 0,
+    info: "Irak Kralı Faysal 6-8 Temmuz 1931'de Türkiye'yi ziyaret etmiştir. Sonrasında İran, Irak ve Türkiye arasında yapılan antlaşmalar Sadabat Paktı'na giden süreci başlatmıştır."
+  },
+  {
+    category: "Paktlar ve Uluslararası Örgütler",
+    q: "Sadabat Paktı'nı hangi olay işlevsiz bırakmıştır?",
+    options: [
+      "II. Dünya Savaşı'nda İran'ın işgali",
+      "Irak'ta darbe",
+      "Afganistan'da iç savaş",
+      "Türkiye'nin tarafsızlık politikası"
+    ],
+    answer: 0,
+    info: "II. Dünya Savaşı'nda İran'ın işgali Sadabat Paktı'nı işlevsiz bırakmıştır."
+  },
+  {
+    category: "Paktlar ve Uluslararası Örgütler",
+    q: "Montrö Boğazlar Sözleşmesi talebi ilk olarak hangi konferansta gündeme getirilmiştir?",
+    options: [
+      "1933 Londra Silahların Azaltılması ve Sınırlandırılması Konferansı",
+      "1936 Cenevre Konferansı",
+      "1934 Atina Konferansı",
+      "1932 Milletler Cemiyeti Genel Kurulu"
+    ],
+    answer: 0,
+    info: "Türkiye bu talebini ilk olarak 1933'te Londra'daki 'Silahların Azaltılması ve Sınırlandırılması Konferansı'nda gündeme getirmiştir."
+  },
+  // ─── Atatürk Dönemi Dış Politika İlkeleri ───
+  {
+    category: "1923-1938 Dış Politika",
+    q: "Atatürk dönemi dış politikasının temel ilkeleri arasında hangisi yer ALMAZ?",
+    options: [
+      "Yayılmacı siyaset izleme",
+      "Yurtta sulh, Cihanda sulh",
+      "Egemenlik ve eşitlik",
+      "Uyuşmazlıkların barışçıl yollarla çözümü"
+    ],
+    answer: 0,
+    info: "Atatürk dönemi dış politika ilkeleri: Yurtta sulh Cihanda sulh, gerçekçilik, milli güce dayalılık, egemenlik ve eşitlik, barışçıl çözüm, ittifaklara katılmama ve batılılaşma. Yayılmacılık bu ilkeler arasında yoktur."
+  },
+  {
+    category: "Mudanya ve Lozan",
+    q: "Lozan Antlaşması'nın siyasal hükümleri hangi maddeleri kapsamaktadır?",
+    options: [
+      "1-45. maddeler",
+      "46-63. maddeler",
+      "64-100. maddeler",
+      "101-143. maddeler"
+    ],
+    answer: 0,
+    info: "Lozan Antlaşması'nın yapısı: Siyasal hükümler 1-45, Mali hükümler 46-63, Ekonomik hükümler 64-100, Ulaşım ve sağlık 101-118, Çeşitli hükümler 119-143."
+  },
+  // ─── II. Dünya Savaşı ve Türkiye (Ek) ───
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Şükrü Saraçoğlu hangi yıllar arasında dışişleri bakanlığı yapmıştır?",
+    options: [
+      "1939-1942 (sonra başbakan oldu)",
+      "1933-1939",
+      "1942-1944",
+      "1936-1941"
+    ],
+    answer: 0,
+    info: "Şükrü Saraçoğlu 1939'dan başbakan olduğu 1942'ye kadar dışişleri bakanlığı yapmıştır."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Çakmak'ın 29 Mayıs 1940'taki raporu hangi konuları içermektedir?",
+    options: [
+      "Trakya savunmasındaki güçlükler ve nakliye gemisi eksiklikleri",
+      "Doğu sınırlarının güçlendirilmesi",
+      "Hava kuvvetlerinin modernizasyonu",
+      "Deniz kuvvetlerinin artırılması"
+    ],
+    answer: 0,
+    info: "29 Mayıs 1940'da Çakmak, Savunma Bakanlığı'na ordunun Trakya'yı savunurken karşılaşacağı güçlükleri, özellikle nakliye gemisi eksikliklerini anlatan bir rapor sunmuştur."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Fransızların Mart 1940'ta teklif ettiği Bakü planının amacı neydi?",
+    options: [
+      "Sovyet petrol sahalarını bombalayarak Almanya'nın petrol ithalatını engellemek",
+      "Türkiye'nin savaşa girmesini sağlamak",
+      "İran petrolünü ele geçirmek",
+      "Sovyetler Birliği ile ittifak kurmak"
+    ],
+    answer: 0,
+    info: "Mart 1940'da Fransızlar, Rusya'yı zayıflatmak ve Sovyetlerin Almanya'ya petrol ithalatını engellemek için Bakü'deki Sovyet petrol sahalarını bombalamayı öngörmüştür."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Türkiye 26 Haziran 1940'ta hangi kararı duyurmuştur?",
+    options: [
+      "Savaşa katılmama kararı",
+      "Almanya ile ittifak",
+      "Sovyetler ile anlaşma",
+      "Boğazları kapatma"
+    ],
+    answer: 0,
+    info: "İtalya'nın savaşa girmesinin ardından hükümet 26 Haziran'da savaşa katılmama kararını duyurmuştur."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "27 Eylül 1940'ta imzalanan Üç Devlet Paktı hangi ülkeler arasındadır?",
+    options: [
+      "Almanya, İtalya ve Japonya",
+      "İngiltere, Fransa ve Türkiye",
+      "Almanya, Sovyetler Birliği ve Japonya",
+      "İtalya, Japonya ve Türkiye"
+    ],
+    answer: 0,
+    info: "27 Eylül 1940'ta Almanya, İtalya ve Japonya arasında Üç Devlet Paktı imzalanmıştır."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Hitler, 4 Mart 1941'de İnönü'ye yazdığı mektupta ne bildirmiştir?",
+    options: [
+      "Bulgaristan saldırısının Türkiye'ye yönelik olmadığını, İngilizlere karşı olduğunu",
+      "Türkiye'nin Mihver'e katılmasını istediğini",
+      "Boğazlardan geçiş hakkı talep ettiğini",
+      "Türkiye ile ticaret yapmak istediğini"
+    ],
+    answer: 0,
+    info: "Hitler, İnönü'ye Bulgaristan'a yapılan saldırının Türkiye'ye yönelik olmadığını, Yunanistan'daki İngilizlere karşı bir harekât olduğunu ve kuvvetlerine Türk sınırına 60 km'den fazla yaklaşmamalarını emrettiğini bildirmiştir."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "İngilizler Türkiye'ye işbirliği için Suriye'den hangi toprak teklifinde bulunmuşlardır?",
+    options: [
+      "Halep şehri de dahil olmak üzere Suriye'den toprak",
+      "Hatay Sancağı",
+      "Lazkiye limanı",
+      "Şam ve çevresi"
+    ],
+    answer: 0,
+    info: "1940'da İngilizler, Suriye'de işbirliği yapmaları için Türkiye'ye Halep şehri dahil Suriye'den toprak teklif etmişlerdir. Ancak Türkler ilgi göstermemiştir."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Türkiye'nin Suriye topraklarına göz dikmemesinin sebebi olarak Anthony Eden'e ne söylenmiştir?",
+    options: [
+      "Sınırları dahilinde homojen olmayan bir nüfusa sahip olmak istemediği",
+      "Askeri gücünün yetersiz olduğu",
+      "Almanya'dan korktuğu",
+      "Rusya ile anlaşmazlığa düşeceği"
+    ],
+    answer: 0,
+    info: "18 Mart 1941'de Kıbrıs'ta Anthony Eden'e, Türkiye'nin 'sınırları dahilinde homojen olmayan bir nüfusa sahip olmak istemediği' için Suriye topraklarına göz dikmediği rapor edilmiştir."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Barbarossa Savaşı (Almanya'nın Sovyetler Birliği'ne saldırısı) hangi tarihte başlamıştır?",
+    options: [
+      "22 Haziran 1941",
+      "18 Haziran 1941",
+      "1 Eylül 1939",
+      "7 Aralık 1941"
+    ],
+    answer: 0,
+    info: "Türk-Alman Saldırmazlık Antlaşması imzalandıktan sadece 4 gün sonra, 22 Haziran 1941'de Alman kuvvetleri Sovyetler Birliği'ne saldırmıştır."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Churchill, 1941 yılı Ocak ayında Türkiye ile yapılan antlaşma hakkında ne kararına varmıştır?",
+    options: [
+      "Mevcut şartlarda bağlayıcı olamayacağı",
+      "Hemen uygulanması gerektiği",
+      "Yenilenmesi gerektiği",
+      "Genişletilmesi gerektiği"
+    ],
+    answer: 0,
+    info: "Churchill, 1941 Ocak ayı sonunda 'Türkiye'yle yapılan antlaşmanın mevcut şartlarda bağlayıcı olamayacağı' kararına varmıştır."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Alman savaş plancıları Barbarossa öncesi Rusya'yı kaç ay içinde yeneceklerini umuyordu?",
+    options: [
+      "3 ay",
+      "6 ay",
+      "1 ay",
+      "12 ay"
+    ],
+    answer: 0,
+    info: "Alman arşivleri, Haziran 1941'de Alman savaş plancılarının Rusya'yı 3 ay içinde yeneceklerini umduğunu göstermektedir."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Hitler'in Almanya'yla işbirliği taraftarı olduğunu düşündüğü Berlin büyükelçisi kimdir?",
+    options: [
+      "Hüsrev Gerede",
+      "Numan Menemencioğlu",
+      "Tevfik Rüştü Aras",
+      "Ali Fuat Paşa"
+    ],
+    answer: 0,
+    info: "Hitler, 1941 Eylül'ünde Rusya'nın düşmesinin ardından Türkiye'nin Mihver'e katılacağını ve işbirliği taraftarı olduğunu düşündüğü Berlin büyükelçisi Hüsrev Gerede'nin dışişleri bakanı olacağını ileri sürmüştür."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Lord Halifax, 11 Temmuz 1941'de Lordlar Kamarası'na ne söylemiştir?",
+    options: [
+      "İngiliz hükümetinin Türkiye'nin savaşa girmemesinin nedenlerini takdir ettiğini",
+      "Türkiye'nin derhal savaşa girmesi gerektiğini",
+      "Türkiye ile ittifakın sona erdiğini",
+      "Türkiye'ye ambargo uygulanması gerektiğini"
+    ],
+    answer: 0,
+    info: "Dışişleri Bakanı Lord Halifax, 11 Temmuz 1941'de Lordlar Kamarası'na İngiliz hükümetinin 'Türk Hükümetini savaşa girmekten alıkoyan nedenleri takdir ettiğini' söylemiştir."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Irak'taki İngilizler Raşit Ali'yi hangi tarihte devirmişlerdir?",
+    options: [
+      "30 Mayıs 1941",
+      "3 Mayıs 1941",
+      "8 Haziran 1941",
+      "14 Temmuz 1941"
+    ],
+    answer: 0,
+    info: "İngilizler kuvvetlerini Irak'a göndermiş ve 30 Mayıs'ta Raşit Ali'yi devirmişlerdir."
+  },
+  {
+    category: "II. Dünya Savaşı ve Türkiye",
+    q: "Müttefik güçler Suriye'deki Vichy idaresini hangi tarihte devirmişlerdir?",
+    options: [
+      "14 Temmuz 1941",
+      "8 Haziran 1941",
+      "30 Mayıs 1941",
+      "22 Haziran 1941"
+    ],
+    answer: 0,
+    info: "8 Haziran'da Suriye'ye saldıran İngiliz, Hint, Avusturya, Arap ve bağımsız Fransız kuvvetleri 14 Temmuz'da Vichy idaresini devirmişlerdir."
+  }
+];
+
+// ═══════════════════════════════════════
+// CATEGORIES
+// ═══════════════════════════════════════
+const categories = [
+  { id: "dagılma", name: "Osmanlı Dağılma Dönemi", emoji: "🏛️" },
+  { id: "abdulhamid", name: "II. Abdülhamid ve II. Meşrutiyet", emoji: "👑" },
+  { id: "ww1", name: "I. Dünya Savaşı ve Sonrası", emoji: "⚔️" },
+  { id: "kurtulus", name: "Kurtuluş Savaşı Dönemi", emoji: "🇹🇷" },
+  { id: "sovyet", name: "Sovyet Rusya ve Doğu İlişkileri", emoji: "🤝" },
+  { id: "lozan", name: "Mudanya ve Lozan", emoji: "📝" },
+  { id: "dis1923", name: "1923-1938 Dış Politika", emoji: "🌍" },
+  { id: "paktlar", name: "Paktlar ve Uluslararası Örgütler", emoji: "🏢" },
+  { id: "iliskiler30", name: "1930-1938 İlişkiler", emoji: "🔗" },
+  { id: "ww2", name: "II. Dünya Savaşı ve Türkiye", emoji: "✈️" }
+];
+
+const catMap = {
+  "Osmanlı Dağılma Dönemi": "dagılma",
+  "II. Abdülhamid ve II. Meşrutiyet": "abdulhamid",
+  "I. Dünya Savaşı ve Sonrası": "ww1",
+  "Kurtuluş Savaşı Dönemi": "kurtulus",
+  "Sovyet Rusya ve Doğu İlişkileri": "sovyet",
+  "Mudanya ve Lozan": "lozan",
+  "1923-1938 Dış Politika": "dis1923",
+  "Paktlar ve Uluslararası Örgütler": "paktlar",
+  "1930-1938 İlişkiler": "iliskiler30",
+  "II. Dünya Savaşı ve Türkiye": "ww2"
+};
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let selectedCats = new Set();
+let questionQueue = [];
+let retryQueue = []; // {question, retryAfter}
+let currentQ = null;
+let answered = false;
+let correctTotal = 0;
+let wrongTotal = 0;
+let questionIndex = 0;
+let totalQuestions = 0;
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+function init() {
+  const grid = document.getElementById('categoryGrid');
+  categories.forEach(cat => {
+    const count = allQuestions.filter(q => catMap[q.category] === cat.id).length;
+    const div = document.createElement('div');
+    div.className = 'cat-card';
+    div.dataset.id = cat.id;
+    div.innerHTML = `<span class="cat-emoji">${cat.emoji}</span><div class="cat-name">${cat.name}</div><div class="cat-count">${count} soru</div>`;
+    div.onclick = () => toggleCat(cat.id, div);
+    grid.appendChild(div);
+  });
+}
+
+function toggleCat(id, el) {
+  if (selectedCats.has(id)) {
+    selectedCats.delete(id);
+    el.classList.remove('selected');
+  } else {
+    selectedCats.add(id);
+    el.classList.add('selected');
+  }
+  document.getElementById('startBtn').disabled = selectedCats.size === 0;
+}
+
+function toggleAllCategories() {
+  const cards = document.querySelectorAll('.cat-card');
+  if (selectedCats.size === categories.length) {
+    selectedCats.clear();
+    cards.forEach(c => c.classList.remove('selected'));
+  } else {
+    categories.forEach(cat => selectedCats.add(cat.id));
+    cards.forEach(c => c.classList.add('selected'));
+  }
+  document.getElementById('startBtn').disabled = selectedCats.size === 0;
+}
+
+// ═══════════════════════════════════════
+// QUIZ LOGIC
+// ═══════════════════════════════════════
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function startQuiz() {
+  const filtered = allQuestions.filter(q => selectedCats.has(catMap[q.category]));
+  questionQueue = shuffle([...filtered]);
+  retryQueue = [];
+  correctTotal = 0;
+  wrongTotal = 0;
+  questionIndex = 0;
+  totalQuestions = questionQueue.length;
+
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('quizScreen').classList.remove('hidden');
+  document.getElementById('scoreBar').classList.remove('hidden');
+
+  showQuestion();
+}
+
+function getNextQuestion() {
+  // Check if any retry questions are due
+  for (let i = 0; i < retryQueue.length; i++) {
+    if (questionIndex >= retryQueue[i].retryAfter) {
+      const item = retryQueue.splice(i, 1)[0];
+      return { ...item.question, isRetry: true };
+    }
+  }
+  // Otherwise get from main queue
+  if (questionQueue.length > 0) {
+    return { ...questionQueue.shift(), isRetry: false };
+  }
+  // Check remaining retries
+  if (retryQueue.length > 0) {
+    const item = retryQueue.shift();
+    return { ...item.question, isRetry: true };
+  }
+  return null;
+}
+
+function showQuestion() {
+  currentQ = getNextQuestion();
+  if (!currentQ) {
+    showResults();
+    return;
+  }
+
+  answered = false;
+  questionIndex++;
+
+  const remaining = questionQueue.length + retryQueue.length;
+  document.getElementById('correctCount').textContent = correctTotal;
+  document.getElementById('wrongCount').textContent = wrongTotal;
+  document.getElementById('remainCount').textContent = remaining;
+
+  const progress = ((questionIndex - 1) / (totalQuestions + retryQueue.length + (questionQueue.length === 0 ? 0 : 0))) * 100;
+  document.getElementById('progressBar').style.width = Math.min(progress, 100) + '%';
+
+  document.getElementById('catTag').innerHTML = currentQ.category + (currentQ.isRetry ? '<span class="retry-badge">Tekrar</span>' : '');
+  document.getElementById('qCounter').textContent = `Soru ${questionIndex}`;
+
+  const card = document.getElementById('questionCard');
+  card.style.animation = 'none';
+  card.offsetHeight;
+  card.style.animation = 'fadeUp 0.35s ease';
+
+  document.getElementById('questionText').textContent = currentQ.q;
+
+  // Shuffle options while tracking correct answer
+  const correctText = currentQ.options[currentQ.answer];
+  const shuffledOptions = shuffle([...currentQ.options]);
+  const newCorrectIndex = shuffledOptions.indexOf(correctText);
+
+  const letters = ['A', 'B', 'C', 'D'];
+  const container = document.getElementById('optionsContainer');
+  container.innerHTML = '';
+
+  shuffledOptions.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${opt}</span>`;
+    btn.onclick = () => selectAnswer(btn, i, newCorrectIndex);
+    container.appendChild(btn);
+  });
+
+  document.getElementById('feedbackBox').innerHTML = '';
+  document.getElementById('nextWrap').classList.add('hidden');
+}
+
+function selectAnswer(btn, selected, correct) {
+  if (answered) return;
+  answered = true;
+
+  const allBtns = document.querySelectorAll('.option-btn');
+  allBtns.forEach(b => b.classList.add('disabled'));
+
+  const fb = document.getElementById('feedbackBox');
+
+  if (selected === correct) {
+    btn.classList.add('correct');
+    correctTotal++;
+    fb.innerHTML = `<div class="feedback-box correct-fb"><div class="fb-title">✓ Doğru!</div><div>${currentQ.info}</div></div>`;
+  } else {
+    btn.classList.add('wrong');
+    allBtns[correct].classList.add('correct');
+    wrongTotal++;
+
+    // Add to retry queue (3-5 questions later)
+    const delay = 3 + Math.floor(Math.random() * 3);
+    retryQueue.push({
+      question: {
+        category: currentQ.category,
+        q: currentQ.q,
+        options: currentQ.options,
+        answer: currentQ.answer,
+        info: currentQ.info
+      },
+      retryAfter: questionIndex + delay
+    });
+    totalQuestions++;
+
+    const card = document.getElementById('questionCard');
+    card.classList.add('shake');
+    setTimeout(() => card.classList.remove('shake'), 400);
+
+    fb.innerHTML = `<div class="feedback-box wrong-fb"><div class="fb-title">✗ Yanlış!</div><div>${currentQ.info}<br><small style="color:var(--text-secondary);margin-top:6px;display:block;">Bu soru ${delay} soru sonra tekrar sorulacak.</small></div></div>`;
+  }
+
+  document.getElementById('correctCount').textContent = correctTotal;
+  document.getElementById('wrongCount').textContent = wrongTotal;
+  document.getElementById('remainCount').textContent = questionQueue.length + retryQueue.length;
+
+  document.getElementById('nextWrap').classList.remove('hidden');
+}
+
+function nextQuestion() {
+  showQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ═══════════════════════════════════════
+// RESULTS
+// ═══════════════════════════════════════
+function showResults() {
+  document.getElementById('quizScreen').classList.add('hidden');
+  document.getElementById('scoreBar').classList.add('hidden');
+
+  const total = correctTotal + wrongTotal;
+  const pct = total > 0 ? Math.round((correctTotal / total) * 100) : 0;
+
+  let message = '';
+  let emoji = '';
+  if (pct >= 90) { message = 'Mükemmel!'; emoji = '🏆'; }
+  else if (pct >= 70) { message = 'Çok İyi!'; emoji = '🌟'; }
+  else if (pct >= 50) { message = 'İyi!'; emoji = '👍'; }
+  else { message = 'Tekrar Dene!'; emoji = '📚'; }
+
+  const circumference = 2 * Math.PI * 68;
+  const offset = circumference - (pct / 100) * circumference;
+  const color = pct >= 70 ? 'var(--correct)' : pct >= 50 ? '#ff9500' : 'var(--wrong)';
+
+  const screen = document.getElementById('resultScreen');
+  screen.classList.remove('hidden');
+  screen.innerHTML = `
+    <div class="result-circle">
+      <svg width="160" height="160">
+        <circle cx="80" cy="80" r="68" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="8"/>
+        <circle cx="80" cy="80" r="68" fill="none" stroke="${color}" stroke-width="8"
+          stroke-dasharray="${circumference}" stroke-dashoffset="${circumference}"
+          stroke-linecap="round" id="resultArc"/>
+      </svg>
+      <span class="pct" style="color:${color}">${pct}%</span>
+      <span class="pct-label">Başarı</span>
+    </div>
+    <h2>${emoji} ${message}</h2>
+    <p class="result-subtitle">${total} sorudan ${correctTotal} tanesini doğru yanıtladınız.</p>
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-val" style="color:var(--correct)">${correctTotal}</div>
+        <div class="stat-lbl">Doğru</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color:var(--wrong)">${wrongTotal}</div>
+        <div class="stat-lbl">Yanlış</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color:var(--accent)">${questionIndex}</div>
+        <div class="stat-lbl">Toplam Soru</div>
+      </div>
+    </div>
+    <div class="result-actions">
+      <button class="btn-apple" onclick="restartQuiz()">Tekrar Dene</button>
+      <button class="btn-apple btn-outline" onclick="goHome()">Ana Menü</button>
+    </div>
+  `;
+
+  // Animate arc
+  setTimeout(() => {
+    document.getElementById('resultArc').style.transition = 'stroke-dashoffset 1.2s cubic-bezier(0.25, 0.1, 0.25, 1)';
+    document.getElementById('resultArc').style.strokeDashoffset = offset;
+  }, 100);
+}
+
+function restartQuiz() {
+  document.getElementById('resultScreen').classList.add('hidden');
+  startQuiz();
+}
+
+function goHome() {
+  document.getElementById('resultScreen').classList.add('hidden');
+  document.getElementById('startScreen').classList.remove('hidden');
+}
+
+// INIT
+init();
+</script>
+</body>
+</html>
