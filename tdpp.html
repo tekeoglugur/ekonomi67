@@ -1,0 +1,1839 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Türk Dış Politikası - Quiz</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&family=SF+Pro+Text:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f5f7;
+  --card: #ffffff;
+  --text: #1d1d1f;
+  --text-secondary: #86868b;
+  --accent: #0071e3;
+  --accent-hover: #0077ED;
+  --correct: #34c759;
+  --correct-bg: rgba(52,199,89,0.08);
+  --wrong: #ff3b30;
+  --wrong-bg: rgba(255,59,48,0.08);
+  --border: rgba(0,0,0,0.06);
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
+  --radius: 18px;
+  --radius-sm: 12px;
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  --font-text: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Top Bar */
+.top-bar {
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 0.5px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 14px 0;
+}
+.top-bar h1 {
+  font-size: 17px;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+.top-bar .stats {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 6px;
+  font-family: var(--font-text);
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.top-bar .stats span { font-weight: 500; color: var(--text); }
+
+/* Container */
+.app-container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 24px 20px 100px;
+}
+
+/* Home Screen */
+.home-screen { animation: fadeUp 0.5s ease; }
+
+.hero {
+  text-align: center;
+  padding: 60px 0 40px;
+}
+.hero-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 22px;
+  background: linear-gradient(145deg, #0071e3, #00c7be);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 36px;
+  box-shadow: 0 6px 24px rgba(0,113,227,0.3);
+}
+.hero h2 {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-bottom: 8px;
+}
+.hero p {
+  font-size: 17px;
+  color: var(--text-secondary);
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* Topic Cards */
+.topic-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+.topic-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.topic-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+.topic-card:active { transform: scale(0.985); }
+.topic-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.topic-info { flex: 1; }
+.topic-info h3 {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 3px;
+}
+.topic-info p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+.topic-count {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  background: var(--bg);
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.topic-card .chevron {
+  color: var(--text-secondary);
+  font-size: 18px;
+  opacity: 0.4;
+}
+
+/* Start All */
+.start-all-btn {
+  width: 100%;
+  padding: 16px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 17px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 20px;
+  letter-spacing: -0.01em;
+}
+.start-all-btn:hover { background: var(--accent-hover); }
+.start-all-btn:active { transform: scale(0.98); }
+
+/* Quiz Screen */
+.quiz-screen { display: none; animation: fadeUp 0.4s ease; }
+
+.progress-section {
+  margin-bottom: 28px;
+}
+.progress-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.progress-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-family: var(--font-text);
+}
+.progress-bar-outer {
+  height: 6px;
+  background: rgba(0,0,0,0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-bar-inner {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.question-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+.q-category {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+  font-family: var(--font-text);
+}
+.q-number {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-bottom: 10px;
+  font-family: var(--font-text);
+}
+.q-text {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+}
+
+/* Options */
+.options { display: flex; flex-direction: column; gap: 10px; }
+.option-btn {
+  width: 100%;
+  text-align: left;
+  padding: 16px 18px;
+  background: var(--bg);
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  font-weight: 400;
+  font-family: var(--font-text);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s;
+  line-height: 1.4;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.option-btn:hover:not(.disabled) {
+  background: rgba(0,113,227,0.06);
+  border-color: rgba(0,113,227,0.2);
+}
+.option-btn:active:not(.disabled) { transform: scale(0.985); }
+.option-letter {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.option-btn.correct {
+  background: var(--correct-bg);
+  border-color: var(--correct);
+}
+.option-btn.correct .option-letter {
+  background: var(--correct);
+  color: white;
+}
+.option-btn.wrong {
+  background: var(--wrong-bg);
+  border-color: var(--wrong);
+}
+.option-btn.wrong .option-letter {
+  background: var(--wrong);
+  color: white;
+}
+.option-btn.disabled { pointer-events: none; opacity: 0.55; }
+.option-btn.correct.disabled, .option-btn.wrong.disabled { opacity: 1; }
+
+/* Explanation */
+.explanation {
+  margin-top: 18px;
+  padding: 16px 18px;
+  background: rgba(0,113,227,0.04);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--accent);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+  font-family: var(--font-text);
+  display: none;
+  animation: fadeUp 0.3s ease;
+}
+
+/* Next Button */
+.next-btn {
+  width: 100%;
+  padding: 16px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 17px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: none;
+  letter-spacing: -0.01em;
+}
+.next-btn:hover { background: var(--accent-hover); }
+.next-btn:active { transform: scale(0.98); }
+
+/* Results Screen */
+.results-screen { display: none; animation: fadeUp 0.5s ease; }
+
+.result-hero {
+  text-align: center;
+  padding: 48px 0 32px;
+}
+.result-score {
+  font-size: 72px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  background: linear-gradient(135deg, var(--accent), #00c7be);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.result-label {
+  font-size: 17px;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.result-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.stat-card {
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 18px 14px;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.stat-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-top: 4px;
+  font-family: var(--font-text);
+}
+.stat-card.green .stat-value { color: var(--correct); }
+.stat-card.red .stat-value { color: var(--wrong); }
+
+.result-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.btn-primary-action {
+  padding: 16px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all 0.2s;
+}
+.btn-primary-action:hover { background: var(--accent-hover); }
+.btn-secondary-action {
+  padding: 16px;
+  background: rgba(0,113,227,0.08);
+  color: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all 0.2s;
+}
+.btn-secondary-action:hover { background: rgba(0,113,227,0.14); }
+
+/* Back button */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 15px;
+  color: var(--accent);
+  font-weight: 500;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: var(--font);
+  padding: 8px 0;
+  margin-bottom: 8px;
+  transition: opacity 0.2s;
+}
+.back-btn:hover { opacity: 0.7; }
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .hero h2 { font-size: 28px; }
+  .q-text { font-size: 18px; }
+  .question-card { padding: 22px 18px; }
+  .result-score { font-size: 56px; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="top-bar" id="topBar">
+  <div class="container">
+    <h1 id="topTitle">Türk Dış Politikası</h1>
+    <div class="stats" id="topStats" style="display:none;">
+      <div>Doğru: <span id="statCorrect">0</span></div>
+      <div>Yanlış: <span id="statWrong">0</span></div>
+      <div>Skor: <span id="statScore">0%</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="app-container">
+  <!-- Home Screen -->
+  <div class="home-screen" id="homeScreen">
+    <div class="hero">
+      <div class="hero-icon">📜</div>
+      <h2>Türk Dış Politikası<br>Soru Bankası</h2>
+      <p>Osmanlı'dan Cumhuriyet'e tüm antlaşmalar ve tarihler</p>
+    </div>
+    <div class="topic-grid" id="topicGrid"></div>
+    <button class="start-all-btn" id="startAllBtn">Tüm Soruları Başlat</button>
+  </div>
+
+  <!-- Quiz Screen -->
+  <div class="quiz-screen" id="quizScreen">
+    <button class="back-btn" id="backBtn">‹ Konular</button>
+    <div class="progress-section">
+      <div class="progress-top">
+        <span class="progress-label" id="progressLabel">Soru 1/20</span>
+        <span class="progress-label" id="topicLabel"></span>
+      </div>
+      <div class="progress-bar-outer">
+        <div class="progress-bar-inner" id="progressBar" style="width:0%"></div>
+      </div>
+    </div>
+    <div class="question-card" id="questionCard">
+      <div class="q-category" id="qCategory"></div>
+      <div class="q-text" id="qText"></div>
+      <div class="options" id="optionsContainer"></div>
+      <div class="explanation" id="explanation"></div>
+    </div>
+    <button class="next-btn" id="nextBtn">Sonraki Soru</button>
+  </div>
+
+  <!-- Results Screen -->
+  <div class="results-screen" id="resultsScreen">
+    <div class="result-hero">
+      <div class="result-score" id="finalScore">85%</div>
+      <div class="result-label" id="finalLabel">Tebrikler!</div>
+    </div>
+    <div class="result-stats">
+      <div class="stat-card green">
+        <div class="stat-value" id="finalCorrect">0</div>
+        <div class="stat-label">Doğru</div>
+      </div>
+      <div class="stat-card red">
+        <div class="stat-value" id="finalWrong">0</div>
+        <div class="stat-label">Yanlış</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="finalTotal">0</div>
+        <div class="stat-label">Toplam</div>
+      </div>
+    </div>
+    <div class="result-actions">
+      <button class="btn-primary-action" id="retryWrongBtn">Yanlışları Tekrar Çöz</button>
+      <button class="btn-secondary-action" id="retryAllBtn">Tekrar Başla</button>
+      <button class="btn-secondary-action" id="goHomeBtn">Ana Menü</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// QUESTION BANK — Every treaty, date, event from the PDF
+// ============================================================
+const allQuestions = [
+// ── TOPIC 1: Osmanlı Dağılma Dönemi ──
+{
+  topic: "Osmanlı Dağılma Dönemi",
+  q: "Karlofça Antlaşması hangi yılda imzalanmıştır?",
+  options: ["1683", "1699", "1718", "1739"],
+  answer: 1,
+  explanation: "Karlofça Antlaşması 1699 yılında imzalanmış ve Osmanlı'nın Gerileme Dönemi başlamıştır."
+},
+{
+  topic: "Osmanlı Dağılma Dönemi",
+  q: "Karlofça Antlaşması ile Osmanlı hangi bölgeleri kaybetmiştir?",
+  options: ["Mısır, Suriye, Kıbrıs", "Macaristan, Ukrayna, Mora Yarımadası, Dalmaçya kıyıları", "Balkanlar, Kırım, Kafkasya", "Girit, Tunus, Cezayir"],
+  answer: 1,
+  explanation: "Karlofça Antlaşması ile Osmanlı Macaristan'ın büyük bölümünü, Ukrayna, Mora Yarımadası ve Dalmaçya kıyılarını kaybetmiştir."
+},
+{
+  topic: "Osmanlı Dağılma Dönemi",
+  q: "93 Harbi (Osmanlı-Rus Harbi) hangi yıllar arasında gerçekleşmiştir?",
+  options: ["1853-1856", "1877-1878", "1897-1898", "1870-1871"],
+  answer: 1,
+  explanation: "93 Harbi 1877-1878 yılları arasında gerçekleşmiştir."
+},
+{
+  topic: "Osmanlı Dağılma Dönemi",
+  q: "Berlin Antlaşması hangi tarihte imzalanmıştır?",
+  options: ["3 Mart 1878", "13 Temmuz 1878", "13 Haziran 1878", "28 Haziran 1878"],
+  answer: 1,
+  explanation: "Berlin Antlaşması 13 Temmuz 1878'de imzalanmıştır."
+},
+{
+  topic: "Osmanlı Dağılma Dönemi",
+  q: "Berlin Antlaşması'nın 61. maddesi ile reform yapılması kabul edilen 'Vilayet-i Sitte' hangi vilayetlerdir?",
+  options: ["İstanbul, Edirne, Selanik, Manastır, Yanya, Kosova", "Erzurum, Van, Elazığ, Diyarbakır, Sivas, Bitlis", "Trabzon, Kastamonu, Ankara, Konya, Adana, Halep", "Bağdat, Basra, Musul, Şam, Beyrut, Kudüs"],
+  answer: 1,
+  explanation: "Vilayet-i Sitte: Erzurum, Van, Mamüret'ül Aziz (Elazığ), Diyarbakır, Sivas ve Bitlis'tir."
+},
+{
+  topic: "Osmanlı Dağılma Dönemi",
+  q: "Ayastefanos Antlaşması hangi tarihte imzalanmıştır?",
+  options: ["13 Temmuz 1878", "3 Mart 1878", "3 Mart 1877", "13 Mart 1878"],
+  answer: 1,
+  explanation: "Ayastefanos Antlaşması 3 Mart 1878'de imzalanmıştır."
+},
+{
+  topic: "Osmanlı Dağılma Dönemi",
+  q: "Britanya Mısır'ı hangi yılda işgal etmiştir?",
+  options: ["1878", "1882", "1876", "1885"],
+  answer: 1,
+  explanation: "Britanya 1882'de Mısır'ı işgal etmiştir. Bu, İngiltere'nin Osmanlı politikasındaki değişimin göstergesidir."
+},
+{
+  topic: "Osmanlı Dağılma Dönemi",
+  q: "Ayastefanos Antlaşması hangi ülkeyi rahatsız etmiştir ve neden?",
+  options: ["Fransa - Akdeniz ticareti tehlikeye girdi", "Britanya - Hindistan yolları tehlikeye girdi", "Almanya - Balkan hakimiyeti azaldı", "İtalya - Adriyatik kontrolü zayıfladı"],
+  answer: 1,
+  explanation: "Ayastefanos Antlaşması Britanya'yı rahatsız etmiştir, çünkü Hindistan yolları tehlikeye girmiştir."
+},
+{
+  topic: "Osmanlı Dağılma Dönemi",
+  q: "1844 yılında Osmanlı nüfusu yaklaşık ne kadardı?",
+  options: ["18.500.000", "17.000.000", "26.000.000", "30.000.000"],
+  answer: 2,
+  explanation: "1844 yılında Osmanlı nüfusu yaklaşık 26.000.000 idi ve bunun 2/3'ü Müslüman'dı."
+},
+{
+  topic: "Osmanlı Dağılma Dönemi",
+  q: "1914 yılında Osmanlı nüfusunun yüzde kaçı Müslüman'dı?",
+  options: ["%72", "%66", "%81", "%90"],
+  answer: 2,
+  explanation: "1914'te Osmanlı nüfusu 18.500.000 olup %81'i Müslüman'dı (Balkan savaşlarının etkisi)."
+},
+{
+  topic: "Osmanlı Dağılma Dönemi",
+  q: "Küçük Kaynarca Antlaşması hangi yılda imzalanmıştır?",
+  options: ["1770", "1774", "1783", "1768"],
+  answer: 1,
+  explanation: "1774 Küçük Kaynarca Antlaşması ile Rusya Karadeniz'in kuzeyine ayak basma imkânı bulmuştur."
+},
+{
+  topic: "Osmanlı Dağılma Dönemi",
+  q: "Rusya Kırım'ı hangi yılda topraklarına katmıştır?",
+  options: ["1774", "1783", "1792", "1780"],
+  answer: 1,
+  explanation: "Rusya 1783'te Kırım'ı topraklarına katmıştır. Bu, ilk kez Müslümanların oturduğu bir toprağın elden çıkmasıdır."
+},
+{
+  topic: "Osmanlı Dağılma Dönemi",
+  q: "Navarin'de Mısır-Osmanlı filolarının batırılması hangi yılda gerçekleşmiştir?",
+  options: ["1821", "1827", "1830", "1825"],
+  answer: 1,
+  explanation: "İngiltere, Fransa ve Rusya'nın birleşen filoları 1827 yılının Eylül ayında Navarin limanında Mısır-Osmanlı filolarını batırmıştır."
+},
+{
+  topic: "Osmanlı Dağılma Dönemi",
+  q: "Mehmet Ali Paşa hangi yılda Mısır valisi olmuştur?",
+  options: ["1798", "1805", "1811", "1820"],
+  answer: 1,
+  explanation: "Mehmet Ali Paşa 1805 yılında Mısır valisi olmuştur."
+},
+{
+  topic: "Osmanlı Dağılma Dönemi",
+  q: "Kırım Savaşı hangi yıllar arasında gerçekleşmiştir?",
+  options: ["1850-1852", "1854-1856", "1856-1858", "1853-1855"],
+  answer: 1,
+  explanation: "1854-1856 Kırım Savaşı'nda Avrupa devletlerinin Osmanlı'ya desteği söz konusudur."
+},
+
+// ── TOPIC 2: II. Abdülhamid ve II. Meşrutiyet ──
+{
+  topic: "II. Abdülhamid ve II. Meşrutiyet",
+  q: "Abdülhamit tarafından Almanya'ya verilen ilk ekonomik imtiyaz (İzmit-Ankara demiryolu) hangi yılda verilmiştir?",
+  options: ["1882", "1888", "1890", "1895"],
+  answer: 1,
+  explanation: "Abdülhamit tarafından Almanya'ya ilk ekonomik imtiyaz 1888 yılında İzmit-Ankara demiryolu imtiyazı olarak verilmiştir."
+},
+{
+  topic: "II. Abdülhamid ve II. Meşrutiyet",
+  q: "Bulgaristan hangi yılda bağımsız olmuştur?",
+  options: ["1905", "1908", "1912", "1910"],
+  answer: 1,
+  explanation: "1908'de Bulgaristan bağımsız olmuştur."
+},
+{
+  topic: "II. Abdülhamid ve II. Meşrutiyet",
+  q: "31 Mart Olayı (Vakası) hangi yılda gerçekleşmiştir?",
+  options: ["1908", "1909", "1910", "1911"],
+  answer: 1,
+  explanation: "31 Mart Olayı 1909'da İttihat ve Terakki Cemiyeti'ne muhalefet edenler tarafından gerçekleştirilmiştir."
+},
+{
+  topic: "II. Abdülhamid ve II. Meşrutiyet",
+  q: "Trablusgarp Savaşı hangi yıllar arasında yaşanmıştır?",
+  options: ["1909-1910", "1911-1912", "1912-1913", "1910-1911"],
+  answer: 1,
+  explanation: "1911-1912 Trablusgarp Savaşı sonucunda Uşi Antlaşması imzalanmıştır."
+},
+{
+  topic: "II. Abdülhamid ve II. Meşrutiyet",
+  q: "Balkan Savaşları hangi yıllar arasında gerçekleşmiştir?",
+  options: ["1910-1911", "1911-1912", "1912-1913", "1913-1914"],
+  answer: 2,
+  explanation: "1912-1913 Balkan Savaşları sonucunda Osmanlı, Meriç Irmağı'nın batısındaki tüm topraklarını kaybetmiştir."
+},
+{
+  topic: "II. Abdülhamid ve II. Meşrutiyet",
+  q: "Londra Antlaşması ile hangi bölge Bulgaristan'a bırakılmıştır?",
+  options: ["Batı Trakya", "Selanik", "Edirne", "Makedonya"],
+  answer: 2,
+  explanation: "Londra Antlaşması ile Midye-Enez çizgisinin batısındaki topraklar Balkan devletlerine, Edirne ise Bulgaristan'a bırakılmıştır."
+},
+{
+  topic: "II. Abdülhamid ve II. Meşrutiyet",
+  q: "Bab-ı Ali Baskını hangi yılda gerçekleşmiştir?",
+  options: ["1912", "1913", "1914", "1911"],
+  answer: 1,
+  explanation: "1913 Bab-ı Ali Baskını sonrasında Osmanlı dış ilişkilerinde Almanya yanlısı bir politika izlenmiştir."
+},
+{
+  topic: "II. Abdülhamid ve II. Meşrutiyet",
+  q: "Osmanlı-İngiliz Konvansiyonu hangi tarihte imzalanmıştır?",
+  options: ["19 Temmuz 1913", "19 Haziran 1913", "19 Ağustos 1913", "19 Eylül 1913"],
+  answer: 0,
+  explanation: "Osmanlı ile Britanya arasında 19 Temmuz 1913'te Osmanlı-İngiliz Konvansiyonu imzalanmıştır."
+},
+{
+  topic: "II. Abdülhamid ve II. Meşrutiyet",
+  q: "Osmanlı-Alman ittifakı hangi yılda imzalanmıştır?",
+  options: ["1912", "1913", "1914", "1915"],
+  answer: 2,
+  explanation: "1914 yılında Osmanlı-Alman ittifakı imzalanmıştır."
+},
+
+// ── TOPIC 3: I. Dünya Savaşı ──
+{
+  topic: "I. Dünya Savaşı",
+  q: "I. Dünya Savaşı'nın nedenlerinden biri olarak gösterilen 'Osmanlı Mirası' neyi ifade eder?",
+  options: ["Osmanlı'nın Almanya'ya bıraktığı borçlar", "Osmanlı topraklarının paylaşılması sorunu", "Osmanlı kültürel mirası", "Osmanlı'nın savaş teknolojisi"],
+  answer: 1,
+  explanation: "I. Dünya Savaşı'nın nedenlerinden biri Osmanlı topraklarının paylaşılması meselesidir."
+},
+{
+  topic: "I. Dünya Savaşı",
+  q: "Wilson İlkeleri hangi ülkenin savaşa girmesiyle gündeme gelmiştir?",
+  options: ["İngiltere", "Fransa", "ABD", "Rusya"],
+  answer: 2,
+  explanation: "ABD'nin savaşa girmesiyle Wilson İlkeleri gündeme gelmiştir."
+},
+{
+  topic: "I. Dünya Savaşı",
+  q: "I. Dünya Savaşı sırasında yaşanan hangi 3 olay devletin bundan sonraki dış politikasında etkili olmuştur?",
+  options: ["Çanakkale, Kafkas, Kanal Cephesi", "Tehcir Kanunu, Bolşevik İhtilali, Arapların İhaneti", "Mondros, Sevr, Mudanya", "Galiçya, Romanya, Makedonya Cephesi"],
+  answer: 1,
+  explanation: "Tehcir Kanunu, Bolşevik İhtilali ve Kafkaslarla bağlantının kurulması, Arapların ihaneti I. Dünya Savaşı'nda dış politikayı etkileyen 3 olaydır."
+},
+{
+  topic: "I. Dünya Savaşı",
+  q: "Osmanlı dış politikasında yapılan en büyük hata olarak nitelendirilen olay nedir?",
+  options: ["Trablusgarp Savaşı'na girilmesi", "Balkan ittifakının kurulamaması", "Enver Paşa'nın 1914'te denge politikasından vazgeçmesi", "Almanya ile ittifak imzalanmaması"],
+  answer: 2,
+  explanation: "Osmanlı dış politikasında yapılan en büyük hata, Enver Paşa'nın denge taktiklerinden vazgeçtiği 1914 yılında yaşanmıştır."
+},
+
+// ── TOPIC 4: Kurtuluş Savaşı Dış Politika ──
+{
+  topic: "Kurtuluş Savaşı Dış Politika",
+  q: "Mondros Ateşkes Antlaşması hangi yılda imzalanmıştır?",
+  options: ["1917", "1918", "1919", "1920"],
+  answer: 1,
+  explanation: "1918 Mondros Ateşkes Antlaşması ile Osmanlı siyaseten son bulmuştur."
+},
+{
+  topic: "Kurtuluş Savaşı Dış Politika",
+  q: "Paris Barış Konferansı hangi tarihte başlamıştır?",
+  options: ["19 Ocak 1918", "28 Haziran 1919", "19 Ocak 1919", "11 Kasım 1918"],
+  answer: 0,
+  explanation: "19 Ocak 1918'de (belgede bu tarih belirtilmiştir) 32 devletin katılımıyla Paris Barış Konferansı düzenlenmiştir."
+},
+{
+  topic: "Kurtuluş Savaşı Dış Politika",
+  q: "Paris Barış Konferansı'ndaki 'Beşler Konseyi' hangi ülkelerin liderleri/temsilcilerinden oluşuyordu?",
+  options: ["ABD, İngiltere, Fransa, Almanya, Rusya", "ABD, İngiltere, Fransa, İtalya, Japonya", "ABD, İngiltere, Fransa, Rusya, İtalya", "İngiltere, Fransa, İtalya, Japonya, Çin"],
+  answer: 1,
+  explanation: "Beşler Konseyi: ABD Başkanı Wilson, İngiltere Başbakanı Lloyd George, Fransa Başbakanı Clémenceau, İtalya Başbakanı Orlando ve Japonya Prensi Saionji."
+},
+{
+  topic: "Kurtuluş Savaşı Dış Politika",
+  q: "Almanya ile Versailles Antlaşması hangi tarihte imzalanmıştır?",
+  options: ["28 Haziran 1919", "11 Kasım 1918", "19 Ocak 1919", "10 Ocak 1920"],
+  answer: 0,
+  explanation: "28 Haziran 1919'da Almanya ile Versailles Antlaşması imzalanmıştır."
+},
+{
+  topic: "Kurtuluş Savaşı Dış Politika",
+  q: "M. Kemal Paşa hangi tarihte 9. Ordu Müfettişliği'ne atanmıştır?",
+  options: ["19 Mayıs 1919", "30 Nisan 1919", "15 Mayıs 1919", "23 Nisan 1920"],
+  answer: 1,
+  explanation: "M. Kemal Paşa 30 Nisan 1919'da 9. Ordu Müfettişliği'ne atanmıştır."
+},
+{
+  topic: "Kurtuluş Savaşı Dış Politika",
+  q: "İzmir'in işgali hangi tarihte gerçekleşmiştir?",
+  options: ["30 Nisan 1919", "15 Mayıs 1919", "19 Mayıs 1919", "23 Nisan 1920"],
+  answer: 1,
+  explanation: "15 Mayıs 1919'da İzmir'in işgali millî duyguları harekete geçirmiştir."
+},
+{
+  topic: "Kurtuluş Savaşı Dış Politika",
+  q: "Misak-ı Milli hangi tarihte kabul edilmiştir?",
+  options: ["23 Nisan 1920", "28 Ocak 1920", "12 Ocak 1920", "16 Mart 1920"],
+  answer: 1,
+  explanation: "Meclis-i Mebusan kararı ile 28 Ocak 1920 tarihinde Misak-ı Milli kabul edilmiştir."
+},
+{
+  topic: "Kurtuluş Savaşı Dış Politika",
+  q: "ABD'nin Ermeniler ile ilgili araştırma için Türkiye'ye gönderdiği general kimdir?",
+  options: ["General Harbord", "General Rawlinson", "General Allenby", "General Pershing"],
+  answer: 0,
+  explanation: "ABD Ermeniler ile ilgili araştırma yapmak için General James G. Harbord'u göndermiştir."
+},
+
+// ── TOPIC 5: TBMM Dönemi ──
+{
+  topic: "TBMM Dönemi",
+  q: "İstanbul'un işgali hangi tarihte gerçekleşmiştir?",
+  options: ["28 Ocak 1920", "16 Mart 1920", "23 Nisan 1920", "10 Ağustos 1920"],
+  answer: 1,
+  explanation: "16 Mart 1920'de İstanbul'un işgali ile meclisin Ankara'da açılması gerekliliği ortaya çıkmıştır."
+},
+{
+  topic: "TBMM Dönemi",
+  q: "TBMM hangi tarihte açılmıştır?",
+  options: ["16 Mart 1920", "23 Nisan 1920", "28 Ocak 1920", "1 Kasım 1922"],
+  answer: 1,
+  explanation: "23 Nisan 1920'de TBMM açılmıştır."
+},
+{
+  topic: "TBMM Dönemi",
+  q: "Hariciye Encümeninde doğu ile ilişkilerin geliştirilmesi gerektiğini savunan kimdir?",
+  options: ["Ali Şükrü Bey", "Hulusi Bey", "Ziya Hurşit Bey", "Dr. Emin Bey"],
+  answer: 3,
+  explanation: "Dr. Emin Bey, Rusya ve Japonya'nın yardımı ile doğu ile ilişkilerin geliştirilmesi gerektiğine inanmıştır."
+},
+{
+  topic: "TBMM Dönemi",
+  q: "Hariciye Encümeninde İngiltere ile ilişki kurulmasını isteyen kimdir?",
+  options: ["Ali Şükrü Bey", "Hulusi Bey", "Ziya Hurşit Bey", "Dr. Emin Bey"],
+  answer: 0,
+  explanation: "Ali Şükrü Bey İngiltere ile ilişkiler kurulmasını istemiştir."
+},
+
+// ── TOPIC 6: Sovyet Rusya ile İlişkiler ──
+{
+  topic: "Sovyet Rusya ile İlişkiler",
+  q: "Sovyet Rusya Dışişleri Bakanı Çiçerin Çarlık dönemine ait amaçlardan vazgeçtiklerini hangi tarihte açıklamıştır?",
+  options: ["13 Eylül 1919", "26 Nisan 1920", "24 Temmuz 1920", "16 Mart 1921"],
+  answer: 0,
+  explanation: "Çiçerin 13 Eylül 1919'da Çarlık dönemine ait amaçlardan vazgeçtiklerini açıklamıştır."
+},
+{
+  topic: "Sovyet Rusya ile İlişkiler",
+  q: "Mustafa Kemal Paşa, Lenin'e mektup göndererek ne istemiştir?",
+  options: ["Sadece diplomatik tanınma", "Emperyalistlere karşı silah, cephane ve 5 milyon altın", "Boğazların ortak kontrolü", "Kafkasya'nın Türkiye'ye bırakılması"],
+  answer: 1,
+  explanation: "Mustafa Kemal 26 Nisan 1920'de Lenin'e mektup ile emperyalistlere karşı 5 milyon altın, silah ve cephane istemiştir."
+},
+{
+  topic: "Sovyet Rusya ile İlişkiler",
+  q: "Moskova'ya gönderilen heyetin başkanı kimdir?",
+  options: ["Ali Fuat Paşa", "Bekir Sami Bey", "İsmet Paşa", "Tevfik Rüştü Bey"],
+  answer: 1,
+  explanation: "Dışişleri Bakanı Bekir Sami Bey başkanlığında bir heyet Moskova'ya gönderilmiştir."
+},
+{
+  topic: "Sovyet Rusya ile İlişkiler",
+  q: "Moskova'daki görüşmelerde hangi konu sorun olmuştur?",
+  options: ["Boğazlar meselesi", "Van, Bitlis ve Muş'un Ermenistan'a verilmesi", "Kırım'ın statüsü", "Kars'ın Sovyetlere bırakılması"],
+  answer: 1,
+  explanation: "24 Temmuz 1920'deki görüşmede Van, Bitlis ve Muş'un Ermenistan konusunda sorun yaşanmıştır."
+},
+{
+  topic: "Sovyet Rusya ile İlişkiler",
+  q: "Sovyet Rusya Ankara'da büyükelçilik hangi tarihte açmıştır?",
+  options: ["16 Mart 1921", "9 Kasım 1920", "26 Nisan 1920", "2 Ocak 1922"],
+  answer: 1,
+  explanation: "Sovyet Rusya 9 Kasım 1920'de Ankara'da büyükelçilik açmıştır."
+},
+{
+  topic: "Sovyet Rusya ile İlişkiler",
+  q: "Moskova Antlaşması hangi tarihte imzalanmıştır?",
+  options: ["9 Kasım 1920", "16 Mart 1921", "13 Ekim 1921", "2 Ocak 1922"],
+  answer: 1,
+  explanation: "16 Mart 1921'de Moskova Antlaşması imzalanmıştır."
+},
+{
+  topic: "Sovyet Rusya ile İlişkiler",
+  q: "Sovyetler milliyetçilere yaklaşık ne kadarlık nakit yardımı yapmıştır?",
+  options: ["5.000.000 ruble", "10.000.000 ruble", "15.000.000 ruble", "20.000.000 ruble"],
+  answer: 1,
+  explanation: "Sovyetler milliyetçilere silah, cephane ve yaklaşık 10.000.000 ruble tutarında nakit yardımı yapmıştır."
+},
+{
+  topic: "Sovyet Rusya ile İlişkiler",
+  q: "Ali Fuat Paşa, Stalin ile hangi tarihte görüşmüştür?",
+  options: ["16 Mart 1921", "16-17 Ekim 1921", "9 Kasım 1920", "2 Ocak 1922"],
+  answer: 1,
+  explanation: "Moskova Büyükelçisi Ali Fuat Paşa 16-17 Ekim 1921'de Stalin ile görüşmüştür."
+},
+{
+  topic: "Sovyet Rusya ile İlişkiler",
+  q: "Türkiye-Ukrayna arasında dostluk ve kardeşlik antlaşması hangi tarihte imzalanmıştır?",
+  options: ["16 Mart 1921", "13 Ekim 1921", "2 Ocak 1922", "1 Mart 1921"],
+  answer: 2,
+  explanation: "2 Ocak 1922'de Türkiye-Ukrayna arasında dostluk ve kardeşlik antlaşması imzalanmıştır."
+},
+
+// ── TOPIC 7: Afganistan ve Kafkas İlişkileri ──
+{
+  topic: "Afganistan ve Kafkas İlişkileri",
+  q: "Afganistan hangi tarihte bağımsız olmuştur?",
+  options: ["3 Mart 1919", "18 Ağustos 1920", "1 Mart 1921", "25 Mayıs 1928"],
+  answer: 0,
+  explanation: "Afganistan Emanullah Han liderliğinde 3 Mart 1919'da bağımsız olmuştur."
+},
+{
+  topic: "Afganistan ve Kafkas İlişkileri",
+  q: "TBMM Hükümeti Afganistan'a elçi olarak kimi atamıştır?",
+  options: ["Bekir Sami Bey", "Abdurrahman Bey", "Cami Bey", "Memduh Şevket Bey"],
+  answer: 1,
+  explanation: "TBMM Hükümeti 18 Ağustos 1920'de Afgan kökenli Abdurrahman Bey'i elçi olarak atamıştır."
+},
+{
+  topic: "Afganistan ve Kafkas İlişkileri",
+  q: "Gümrü Antlaşması hangi tarihte imzalanmıştır?",
+  options: ["13 Ekim 1921", "2-3 Aralık 1920", "16 Mart 1921", "12 Ağustos 1920"],
+  answer: 1,
+  explanation: "2-3 Aralık 1920'de Gümrü Antlaşması ile Kars, Sarıkamış, Kağızman, Kulp ve Iğdır geri alınmıştır. Bu TBMM'nin imzaladığı ilk siyasi antlaşmadır."
+},
+{
+  topic: "Afganistan ve Kafkas İlişkileri",
+  q: "Gümrü Antlaşması'nın önemi nedir?",
+  options: ["Sovyetlerle ilk antlaşmadır", "TBMM'nin imzaladığı ilk siyasi antlaşmadır", "İlk ticaret antlaşmasıdır", "İlk saldırmazlık paktıdır"],
+  answer: 1,
+  explanation: "Gümrü Antlaşması TBMM'nin imzaladığı ilk siyasi antlaşma özelliği taşımaktadır."
+},
+{
+  topic: "Afganistan ve Kafkas İlişkileri",
+  q: "Kars Antlaşması hangi tarihte imzalanmıştır?",
+  options: ["16 Mart 1921", "2 Ocak 1922", "13 Ekim 1921", "2-3 Aralık 1920"],
+  answer: 2,
+  explanation: "13 Ekim 1921'de Kafkas Cumhuriyetleri ile Kars Antlaşması imzalanmıştır (Türkiye-Ermenistan-Gürcistan-Azerbaycan)."
+},
+{
+  topic: "Afganistan ve Kafkas İlişkileri",
+  q: "Azerbaycan Cumhuriyeti hangi yılda kurulmuştur?",
+  options: ["1917", "1918", "1919", "1920"],
+  answer: 1,
+  explanation: "1918 yılının Mayıs ayında Rus Çarlığının çökmesi ile Azerbaycan Cumhuriyeti kurulmuştur."
+},
+
+// ── TOPIC 8: İngiltere, Fransa, İtalya ile İlişkiler (Kurtuluş Savaşı) ──
+{
+  topic: "Batılı Devletlerle İlişkiler (Kurtuluş Savaşı)",
+  q: "Sevr Antlaşması kaç maddeden oluşmaktadır ve hangi tarihte imzalanmıştır?",
+  options: ["433 madde, 10 Ağustos 1920", "143 madde, 24 Temmuz 1923", "300 madde, 3 Mart 1878", "200 madde, 30 Ekim 1918"],
+  answer: 0,
+  explanation: "Osmanlı İtilaf Devletleri baskısıyla 10 Ağustos 1920'de 433 maddelik Sevr Antlaşması'nı imzalamıştır."
+},
+{
+  topic: "Batılı Devletlerle İlişkiler (Kurtuluş Savaşı)",
+  q: "Ankara Antlaşması (Türk-Fransız) hangi tarihte imzalanmıştır?",
+  options: ["20 Ekim 1921", "16 Mart 1921", "13 Ekim 1921", "6 Ocak 1921"],
+  answer: 0,
+  explanation: "Sakarya Savaşı'nın ardından 20 Ekim 1921'de Ankara Antlaşması imzalanmıştır."
+},
+{
+  topic: "Batılı Devletlerle İlişkiler (Kurtuluş Savaşı)",
+  q: "Ankara Antlaşması'nı Fransa adına kim imzalamıştır?",
+  options: ["Georges Picot", "Lord Curzon", "Henri Franklin-Bouillon", "Kont Carlo Sforza"],
+  answer: 2,
+  explanation: "Ankara Antlaşması Fransız senatör Henri Franklin-Bouillon ile imzalanmıştır."
+},
+{
+  topic: "Batılı Devletlerle İlişkiler (Kurtuluş Savaşı)",
+  q: "Ankara Antlaşması'nın önemi nedir?",
+  options: ["İlk doğu antlaşmasıdır", "İlk kez batılı bir devlet TBMM'yi tanımıştır", "İlk ticaret antlaşmasıdır", "İlk saldırmazlık paktıdır"],
+  answer: 1,
+  explanation: "Ankara Antlaşması ile ilk kez batılı bir devlet TBMM'yi tanımıştır ve itilaf devletleri arasında ayrılıklar başlamıştır."
+},
+{
+  topic: "Batılı Devletlerle İlişkiler (Kurtuluş Savaşı)",
+  q: "Fransız Yüksek Komiseri Picot, M. Kemal ile görüşmek için Sivas'a hangi tarihte gelmiştir?",
+  options: ["Aralık 1919", "Ocak 1920", "Mart 1920", "Mayıs 1919"],
+  answer: 0,
+  explanation: "Fransız Yüksek Komiseri Georges Picot, Aralık 1919'da Sivas'a gelerek M. Kemal ile görüşmüştür."
+},
+{
+  topic: "Batılı Devletlerle İlişkiler (Kurtuluş Savaşı)",
+  q: "İtalya Anadolu işgaline hangi tarihte son vermiştir?",
+  options: ["5 Temmuz 1921", "20 Ekim 1921", "3 Ekim 1922", "24 Temmuz 1923"],
+  answer: 0,
+  explanation: "İtalya 5 Temmuz 1921'de Anadolu işgaline son vermiştir."
+},
+{
+  topic: "Batılı Devletlerle İlişkiler (Kurtuluş Savaşı)",
+  q: "Avrupa'da açılan ilk TBMM temsilciliği nerededir ve temsilci kimdir?",
+  options: ["Paris - Bekir Sami Bey", "Roma - Cami Bey", "Londra - Ali Şükrü Bey", "Berlin - Kara Vasıf Bey"],
+  answer: 1,
+  explanation: "Cami Bey Eylül 1920'de Roma'ya temsilci olarak gönderilmiştir. Bu Avrupa'da açılan ilk TBMM temsilciliğidir."
+},
+{
+  topic: "Batılı Devletlerle İlişkiler (Kurtuluş Savaşı)",
+  q: "İtalya'da faşistler yönetimi hangi yılda ele geçirmiştir?",
+  options: ["Ekim 1920", "Ekim 1922", "Ekim 1924", "Ekim 1926"],
+  answer: 1,
+  explanation: "İtalya'da Ekim 1922'de faşistlerin yönetimi ele geçirmesiyle İtalya güç kaybına uğramıştır."
+},
+
+// ── TOPIC 9: Mudanya ve Lozan ──
+{
+  topic: "Mudanya ve Lozan",
+  q: "Mudanya Ateşkes Antlaşması hangi tarihte imzalanmıştır?",
+  options: ["3 Ekim 1922", "11 Ekim 1922", "1 Kasım 1922", "24 Temmuz 1923"],
+  answer: 0,
+  explanation: "3 Ekim 1922'de taraflar Mudanya'da bir araya gelmiştir."
+},
+{
+  topic: "Mudanya ve Lozan",
+  q: "Saltanat hangi tarihte kaldırılmıştır?",
+  options: ["3 Ekim 1922", "1 Kasım 1922", "29 Ekim 1923", "20 Kasım 1922"],
+  answer: 1,
+  explanation: "1 Kasım 1922'de Saltanat kaldırılmıştır."
+},
+{
+  topic: "Mudanya ve Lozan",
+  q: "Lozan Barış Antlaşması hangi tarihte imzalanmıştır?",
+  options: ["1 Kasım 1922", "20 Kasım 1922", "24 Temmuz 1923", "4 Şubat 1923"],
+  answer: 2,
+  explanation: "Lozan Barış Antlaşması 24 Temmuz 1923'te imzalanmıştır."
+},
+{
+  topic: "Mudanya ve Lozan",
+  q: "Lozan Konferansı'nda Türk heyetinin başkanı kimdir?",
+  options: ["Bekir Sami Bey", "Tevfik Rüştü Aras", "İsmet Paşa", "Rıza Nur"],
+  answer: 2,
+  explanation: "Konferansa Mudanya'daki başarısından dolayı İsmet Paşa katılmıştır."
+},
+{
+  topic: "Mudanya ve Lozan",
+  q: "Lozan Konferansı'nın açılışı nerede ve hangi tarihte yapılmıştır?",
+  options: ["Mont Bénon Gazinosu, 20 Kasım 1922", "Versailles Sarayı, 24 Temmuz 1923", "Palais des Nations, 1 Kasım 1922", "Beau-Rivage Oteli, 4 Şubat 1923"],
+  answer: 0,
+  explanation: "Konferans 20 Kasım 1922'de Lozan'da Mont Bénon Gazinosu'nda açılmıştır."
+},
+{
+  topic: "Mudanya ve Lozan",
+  q: "Lozan'daki Siyasi Komisyon kimin başkanlığında toplanmıştır?",
+  options: ["Marki Garroni", "George Barrére", "Lord Curzon", "İsmet Paşa"],
+  answer: 2,
+  explanation: "Siyasi Komisyon ve Ülke ve Askerlik İşleri Lord Curzon başkanlığında görüşülmüştür."
+},
+{
+  topic: "Mudanya ve Lozan",
+  q: "Lozan Antlaşması kaç madde ve kaç ek maddeden oluşmaktadır?",
+  options: ["100 madde, 10 ek", "143 madde, 17 ek", "200 madde, 5 ek", "433 madde, 10 ek"],
+  answer: 1,
+  explanation: "Lozan Antlaşması 143 madde ve 17 adet ek maddeden oluşmaktadır."
+},
+{
+  topic: "Mudanya ve Lozan",
+  q: "Lord Curzon Lozan'da hangi tarihte 'Ulusal Ermeni Yurdu' kurulmasını dile getirmiştir?",
+  options: ["20 Kasım 1922", "12 Aralık 1922", "4 Aralık 1922", "4 Şubat 1923"],
+  answer: 1,
+  explanation: "Lord Curzon 12 Aralık 1922'de bir 'Ulusal Ermeni Yurdu' kurulmasını dile getirmiştir."
+},
+{
+  topic: "Mudanya ve Lozan",
+  q: "Yunan ve Türk Halklarının Mübadelesine İlişkin Sözleşme hangi tarihte imzalanmıştır?",
+  options: ["20 Kasım 1922", "12 Aralık 1922", "30 Ocak 1923", "24 Temmuz 1923"],
+  answer: 2,
+  explanation: "30 Ocak 1923'te 'Yunan ve Türk Halklarının Mübadelesine İlişkin Sözleşme ve Protokol' imzalanmıştır."
+},
+{
+  topic: "Mudanya ve Lozan",
+  q: "Lozan Konferansı'nın birinci dönemi hangi tarihler arasında sürmüştür?",
+  options: ["20 Kasım 1922 - 4 Şubat 1923", "21 Kasım 1922 - 4 Şubat 1923", "1 Kasım 1922 - 24 Temmuz 1923", "23 Nisan 1923 - 24 Temmuz 1923"],
+  answer: 1,
+  explanation: "Lozan'ın birinci dönemi 21 Kasım 1922 - 4 Şubat 1923 tarihleri arasıdır."
+},
+{
+  topic: "Mudanya ve Lozan",
+  q: "İzmir İktisat Kongresi hangi tarihler arasında düzenlenmiştir?",
+  options: ["17 Şubat - 4 Mart 1923", "4 Şubat - 17 Şubat 1923", "23 Nisan - 24 Temmuz 1923", "1 Mart - 15 Mart 1923"],
+  answer: 0,
+  explanation: "17 Şubat - 4 Mart 1923 tarihlerinde İzmir İktisat Kongresi ile mesaj verilmiştir."
+},
+{
+  topic: "Mudanya ve Lozan",
+  q: "Lozan'da Türkiye-İran sınırı hangi antlaşmaya göre belirlenmiştir?",
+  options: ["Moskova Antlaşması", "Ankara Antlaşması", "1639 Kasr-ı Şirin Antlaşması", "Kars Antlaşması"],
+  answer: 2,
+  explanation: "Türkiye-İran sınırı 1639 Kasr-ı Şirin Antlaşması'na göre belirlenmiştir."
+},
+{
+  topic: "Mudanya ve Lozan",
+  q: "Lozan'da On İki Ada hangi ülkeye bırakılmıştır?",
+  options: ["Yunanistan", "İtalya", "İngiltere", "Türkiye"],
+  answer: 1,
+  explanation: "On İki Ada Lozan'da İtalya'ya bırakılmıştır."
+},
+{
+  topic: "Mudanya ve Lozan",
+  q: "İmroz, Bozcaada ve Tavşan Adaları Lozan'da hangi ülkeye verilmiştir?",
+  options: ["Yunanistan", "İngiltere", "Türkiye", "İtalya"],
+  answer: 2,
+  explanation: "İmroz, Bozcaada ve Tavşan Adaları Türkiye'ye bırakılmıştır."
+},
+
+// ── TOPIC 10: 1923 Sonrası İlişkiler ──
+{
+  topic: "1923 Sonrası Dış İlişkiler",
+  q: "Haliç Konferansı (Musul sorunu) hangi tarihte başlamıştır?",
+  options: ["19 Mayıs 1924", "6 Ağustos 1924", "5 Haziran 1926", "3 Mart 1924"],
+  answer: 0,
+  explanation: "19 Mayıs 1924'de Haliç'te Musul konusunda bir konferans düzenlenmiştir."
+},
+{
+  topic: "1923 Sonrası Dış İlişkiler",
+  q: "Musul sorunu hangi tarihte Milletler Cemiyeti'ne taşınmıştır?",
+  options: ["19 Mayıs 1924", "6 Ağustos 1924", "5 Haziran 1926", "7 Haziran 1924"],
+  answer: 1,
+  explanation: "Musul sorunu 6 Ağustos 1924'te Milletler Cemiyeti'ne taşınmıştır."
+},
+{
+  topic: "1923 Sonrası Dış İlişkiler",
+  q: "'Türk-Irak Sınırı ve İyi Komşuluk İlişkileri Antlaşması' hangi tarihte imzalanmıştır?",
+  options: ["19 Mayıs 1924", "6 Ağustos 1924", "5 Haziran 1926", "3 Mart 1924"],
+  answer: 2,
+  explanation: "İngiltere, Türkiye ve Irak arasında 5 Haziran 1926'da antlaşma imzalanmıştır. 'Brüksel Hattı' sınır olarak kabul edilmiştir."
+},
+{
+  topic: "1923 Sonrası Dış İlişkiler",
+  q: "Irak, bölgedeki petrol gelirlerinin yüzde kaçını kaç yıl süreyle Türkiye'ye verecekti?",
+  options: ["%5, 20 yıl", "%10, 25 yıl", "%15, 30 yıl", "%20, 10 yıl"],
+  answer: 1,
+  explanation: "Irak bölgedeki petrol gelirlerinin %10'unu 25 yıl süreyle Türkiye'ye verecekti."
+},
+{
+  topic: "1923 Sonrası Dış İlişkiler",
+  q: "Bozkurt-Lotus Davası'nda Lahey Divanı hangi tarihte karar vermiştir?",
+  options: ["Ağustos 1926", "7 Eylül 1927", "Mayıs 1928", "Ocak 1929"],
+  answer: 1,
+  explanation: "Lahey Divanı 7 Eylül 1927'de Bozkurt-Lotus Davası'nda Türkiye'yi haklı bulmuştur."
+},
+{
+  topic: "1923 Sonrası Dış İlişkiler",
+  q: "Türkiye-Fransa Dostluk ve İyi Komşuluk Sözleşmesi (Suriye sınırı) hangi tarihte imzalanmıştır?",
+  options: ["20 Ekim 1921", "30 Mayıs 1926", "3 Mayıs 1930", "5 Haziran 1926"],
+  answer: 1,
+  explanation: "30 Mayıs 1926'da Türkiye-Fransa Dostluk ve İyi Komşuluk Sözleşmesi imzalanmıştır."
+},
+{
+  topic: "1923 Sonrası Dış İlişkiler",
+  q: "Osmanlı borçlarının son ödemesi hangi yıla kadar devam etmiştir?",
+  options: ["1945", "1950", "1954", "1960"],
+  answer: 2,
+  explanation: "1933'te yapılan düzenleme ile borç ödemesi 1954'e kadar devam etmiştir."
+},
+{
+  topic: "1923 Sonrası Dış İlişkiler",
+  q: "Türk-Alman Dostluk Antlaşması hangi tarihte imzalanmıştır?",
+  options: ["30 Ekim 1918", "3 Mart 1924", "12 Ocak 1927", "16 Mayıs 1929"],
+  answer: 1,
+  explanation: "3 Mart 1924'te Ankara'da Türk-Alman Dostluk Antlaşması imzalanmıştır."
+},
+{
+  topic: "1923 Sonrası Dış İlişkiler",
+  q: "Türkiye-İtalya Tarafsızlık, Uzlaştırma Antlaşması hangi tarihte imzalanmıştır?",
+  options: ["30 Mayıs 1926", "30 Mayıs 1928", "4 Kasım 1932", "5 Temmuz 1921"],
+  answer: 1,
+  explanation: "Roma'da 30 Mayıs 1928'de Türkiye-İtalya Tarafsızlık, Uzlaştırma Antlaşması imzalanmıştır."
+},
+{
+  topic: "1923 Sonrası Dış İlişkiler",
+  q: "Türkiye-Yunanistan arasında Ankara Sözleşmesi (mübadele çözümü) hangi tarihte imzalanmıştır?",
+  options: ["21 Haziran 1925", "Aralık 1926", "10 Haziran 1930", "30 Ekim 1930"],
+  answer: 2,
+  explanation: "1928 sonrası ilişkiler yumuşamış ve 10 Haziran 1930'da Ankara Sözleşmesi imzalanmıştır."
+},
+{
+  topic: "1923 Sonrası Dış İlişkiler",
+  q: "Türkiye-ABD arasında Lozan'ın kabulüne dair antlaşma hangi tarihte imzalanmıştır?",
+  options: ["24 Temmuz 1923", "6 Ağustos 1923", "18 Ocak 1927", "Ekim 1929"],
+  answer: 1,
+  explanation: "ABD ile 6 Ağustos 1923'te Lozan'ın kabulüne dair bir antlaşma imzalanmış ancak ABD Kongresi 18 Ocak 1927'de reddetmiştir."
+},
+{
+  topic: "1923 Sonrası Dış İlişkiler",
+  q: "TBMM Briand-Kellog Paktı'na hangi tarihte katılmıştır?",
+  options: ["27 Ağustos 1928", "19 Ocak 1929", "1 Nisan 1929", "17 Aralık 1929"],
+  answer: 1,
+  explanation: "TBMM 19 Ocak 1929 tarihinde Briand-Kellog Paktı'na katılmıştır."
+},
+{
+  topic: "1923 Sonrası Dış İlişkiler",
+  q: "Briand-Kellog Paktı hangi tarihte imzalanmıştır?",
+  options: ["27 Ağustos 1928", "1 Aralık 1925", "19 Ocak 1929", "28 Nisan 1919"],
+  answer: 0,
+  explanation: "27 Ağustos 1928'de Briand-Kellog Paktı imzalanmıştır."
+},
+{
+  topic: "1923 Sonrası Dış İlişkiler",
+  q: "Türk-Sovyet Dostluk ve Tarafsızlık Antlaşması hangi tarihte imzalanmıştır?",
+  options: ["16 Mart 1921", "17 Aralık 1925", "16 Ekim 1925", "1 Nisan 1929"],
+  answer: 1,
+  explanation: "17 Aralık 1925'te Paris'te Türk-Sovyet Dostluk ve Tarafsızlık Antlaşması imzalanmıştır."
+},
+{
+  topic: "1923 Sonrası Dış İlişkiler",
+  q: "Türkiye-İran Dostluk ve Güvenlik Antlaşması hangi tarihte imzalanmıştır?",
+  options: ["21 Haziran 1921", "22 Haziran 1922", "22 Nisan 1926", "Aralık 1932"],
+  answer: 2,
+  explanation: "22 Nisan 1926'da Türkiye-İran Dostluk ve Güvenlik Antlaşması yapılmıştır."
+},
+{
+  topic: "1923 Sonrası Dış İlişkiler",
+  q: "Afgan Kralı Amanullah Han Türkiye'yi hangi yılda ziyaret etmiştir?",
+  options: ["1926", "1928", "1930", "1932"],
+  answer: 1,
+  explanation: "Afgan Kralı 1928 Mayıs ayında Türkiye'yi ziyaret etmiş ve 25 Mayıs 1928'de Dostluk ve İşbirliği Antlaşması imzalanmıştır."
+},
+{
+  topic: "1923 Sonrası Dış İlişkiler",
+  q: "Locarno Antlaşması hangi tarihte imzalanmıştır?",
+  options: ["28 Nisan 1919", "27 Ağustos 1928", "1 Aralık 1925", "28 Haziran 1919"],
+  answer: 2,
+  explanation: "Locarno Antlaşması 1 Aralık 1925'te imzalanmıştır."
+},
+{
+  topic: "1923 Sonrası Dış İlişkiler",
+  q: "Patrik Konstantinos hangi tarihte istifa etmiştir?",
+  options: ["10 Temmuz 1923", "17 Aralık 1924", "22 Mayıs 1925", "11 Şubat 1925"],
+  answer: 2,
+  explanation: "22 Mayıs 1925'te Patrik Konstantinos görevinden istifa etmiş ve III. Vasilios getirilmiştir."
+},
+
+// ── TOPIC 11: 1930-1938 Dönemi ──
+{
+  topic: "1930-1938 Dönemi",
+  q: "Türkiye Milletler Cemiyeti'ne hangi tarihte üye olmuştur?",
+  options: ["6 Temmuz 1932", "18 Temmuz 1932", "9 Temmuz 1932", "1 Ocak 1933"],
+  answer: 1,
+  explanation: "Milletler Cemiyeti 6 Temmuz 1932'de Türkiye'yi davet etmiş, Türkiye 9 Temmuz'da kabul etmiş ve 18 Temmuz'da üyelik tamamlanmıştır."
+},
+{
+  topic: "1930-1938 Dönemi",
+  q: "Balkan Paktı hangi tarihte imzalanmıştır?",
+  options: ["14 Eylül 1933", "9 Şubat 1934", "8 Temmuz 1937", "6 Temmuz 1932"],
+  answer: 1,
+  explanation: "9 Şubat 1934'te Atina'da Balkan Paktı imzalanmıştır (Yunanistan, Romanya, Türkiye, Yugoslavya)."
+},
+{
+  topic: "1930-1938 Dönemi",
+  q: "Sadabat Paktı hangi tarihte imzalanmıştır?",
+  options: ["9 Şubat 1934", "2 Ekim 1935", "8 Temmuz 1937", "22 Nisan 1926"],
+  answer: 2,
+  explanation: "8 Temmuz 1937'de Sadabat Paktı imzalanmıştır (Türkiye, İran, Irak, Afganistan)."
+},
+{
+  topic: "1930-1938 Dönemi",
+  q: "Montrö Boğazlar Sözleşmesi hangi tarihte imzalanmıştır?",
+  options: ["10 Nisan 1936", "20 Temmuz 1936", "17 Nisan 1935", "4 Eylül 1936"],
+  answer: 1,
+  explanation: "20 Temmuz 1936'da Montreux Boğazlar Sözleşmesi imzalanmıştır (29 madde, 4 ek, 1 protokol)."
+},
+{
+  topic: "1930-1938 Dönemi",
+  q: "Montrö Boğazlar Sözleşmesi kaç madde, kaç ek ve kaç protokolden oluşmaktadır?",
+  options: ["20 madde, 2 ek, 1 protokol", "29 madde, 4 ek, 1 protokol", "35 madde, 3 ek, 2 protokol", "25 madde, 5 ek, 1 protokol"],
+  answer: 1,
+  explanation: "Montrö Boğazlar Sözleşmesi 29 madde, 4 ek ve 1 protokolden oluşmaktadır."
+},
+{
+  topic: "1930-1938 Dönemi",
+  q: "İsmet İnönü'nün Sovyetlere ziyareti hangi tarihler arasında gerçekleşmiştir?",
+  options: ["25 Nisan - 10 Mayıs 1932", "17 Mart 1931", "21 Ocak 1934", "1937"],
+  answer: 0,
+  explanation: "25 Nisan - 10 Mayıs 1932 tarihlerinde İsmet İnönü Sovyetlere ziyarette bulunmuştur."
+},
+{
+  topic: "1930-1938 Dönemi",
+  q: "Sovyetler Türkiye'ye ne kadarlık faizsiz kredi sağlamıştır ve geri ödeme süresi nedir?",
+  options: ["5 milyon dolar, 15 yıl", "8 milyon dolar, 20 yıl", "10 milyon dolar, 25 yıl", "12 milyon dolar, 30 yıl"],
+  answer: 1,
+  explanation: "21 Ocak 1934'te yapılan anlaşmaya göre Sovyetler 8 milyon dolarlık faizsiz kredi sağlayacaktı, 20 yıl içerisinde tarım ürünleriyle geri ödemeli."
+},
+{
+  topic: "1930-1938 Dönemi",
+  q: "Kayseri ve Nazilli'deki dokuma fabrikaları hangi yıllarda kurulmuştur?",
+  options: ["1932 ve 1933", "1934 ve 1935", "1936 ve 1937", "1930 ve 1931"],
+  answer: 1,
+  explanation: "1934'te Kayseri, 1935'te Nazilli'de dokuma fabrikaları Sovyet desteğiyle kurulmuştur."
+},
+{
+  topic: "1930-1938 Dönemi",
+  q: "Hatay Sancağı'nda yapılan seçimlerde meclisteki sandalye dağılımında Türkler kaç sandalye kazanmıştır?",
+  options: ["18", "20", "22", "25"],
+  answer: 2,
+  explanation: "40 sandalyeli mecliste Türkler 22 sandalye kazanmıştır."
+},
+{
+  topic: "1930-1938 Dönemi",
+  q: "Hatay'ın Cumhurbaşkanı kim seçilmiştir?",
+  options: ["Tayfur Sökmen", "Abdülgani Türkmen", "İsmail Habip Sevük", "Şükrü Saraçoğlu"],
+  answer: 0,
+  explanation: "Tayfur Sökmen Hatay Cumhurbaşkanı seçilmiştir."
+},
+{
+  topic: "1930-1938 Dönemi",
+  q: "Fransa Hatay'ın Türkiye'ye katılmasını hangi tarihte kabul etmiştir?",
+  options: ["29 Mayıs 1937", "Temmuz 1938", "23 Haziran 1939", "10 Nisan 1936"],
+  answer: 2,
+  explanation: "Fransa 23 Haziran 1939'da Hatay'ın Türkiye'ye katılmasını kabul etmiştir."
+},
+{
+  topic: "1930-1938 Dönemi",
+  q: "Türkiye ile Yunanistan arasında 'Samimi Anlaşma' belgesi hangi tarihte imzalanmıştır?",
+  options: ["30 Ekim 1930", "5 Ekim 1931", "14 Eylül 1933", "9 Şubat 1934"],
+  answer: 2,
+  explanation: "14 Eylül 1933'te 'Türkiye ile Yunanistan Arasında Samimi Anlaşma' belgesi imzalanmıştır."
+},
+{
+  topic: "1930-1938 Dönemi",
+  q: "Venizelos hangi yılda Türkiye'yi ziyaret etmiştir?",
+  options: ["1928", "1930", "1932", "1934"],
+  answer: 1,
+  explanation: "1930'da Venizelos Türkiye'yi ziyaret etmiş ve Dostluk, Tarafsızlık, Uzlaşma ve Hakemlik Antlaşması imzalanmıştır."
+},
+{
+  topic: "1930-1938 Dönemi",
+  q: "Kara Ada ve çevresindeki kayalıkların Türkiye'ye, Meis Adası'nın İtalya'ya bırakılmasına dair antlaşma hangi tarihte imzalanmıştır?",
+  options: ["30 Mayıs 1928", "4 Kasım 1932", "5 Temmuz 1921", "Ekim 1922"],
+  answer: 1,
+  explanation: "4 Kasım 1932'de Ankara'da yapılan antlaşma ile Kara Ada Türkiye'ye, Meis Adası İtalya'ya bırakılmıştır."
+},
+{
+  topic: "1930-1938 Dönemi",
+  q: "İngiltere Karabük demir çelik işletmelerinin yapımını hangi firmaya vermiştir?",
+  options: ["Vickers", "Krupp", "Brassert", "Armstrong"],
+  answer: 2,
+  explanation: "1936'da Karabük demir çelik işletmelerinin yapımı İngiliz Brassert firmasına verilmiştir."
+},
+{
+  topic: "1930-1938 Dönemi",
+  q: "İngiltere Alman etkisini azaltmak için Türkiye'ye ne kadarlık kredi sağlamıştır?",
+  options: ["10 milyon Sterlin", "16 milyon Sterlin", "20 milyon Sterlin", "25 milyon Sterlin"],
+  answer: 1,
+  explanation: "Mayıs 1938'de İngiltere Türkiye'ye 16 milyon Sterlinlik bir kredi sağlamıştır."
+},
+{
+  topic: "1930-1938 Dönemi",
+  q: "1936 yılında Almanya'nın Türkiye ithalatındaki payı ne kadardı?",
+  options: ["%30", "%40", "%45", "%51"],
+  answer: 2,
+  explanation: "1936 yılında Almanya'nın Türkiye genel ithalatındaki payı %45, ihracatındaki payı %51 idi."
+},
+
+// ── TOPIC 12: II. Dünya Savaşı ──
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Almanya Polonya'ya hangi tarihte saldırmıştır?",
+  options: ["23 Ağustos 1939", "1 Eylül 1939", "3 Eylül 1939", "17 Eylül 1939"],
+  answer: 1,
+  explanation: "Almanya 1 Eylül 1939'da Polonya'ya saldırmıştır."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "İngiltere ve Fransa Almanya'ya savaş ilanını hangi tarihte yapmıştır?",
+  options: ["1 Eylül 1939", "3 Eylül 1939", "17 Eylül 1939", "10 Mayıs 1940"],
+  answer: 1,
+  explanation: "İngiltere ve Fransa 3 Eylül 1939'da Almanya'ya savaş ilan etmiştir."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Türkiye İngiltere ile deklarasyon hangi tarihte imzalamıştır?",
+  options: ["19 Ekim 1939", "12 Mayıs 1939", "23 Haziran 1939", "25 Eylül 1939"],
+  answer: 1,
+  explanation: "Türkiye Mihver Devletlere karşı 12 Mayıs 1939'da İngiltere ile bir deklarasyon imzalamıştır."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Türkiye Fransa ile deklarasyon hangi tarihte imzalamıştır?",
+  options: ["12 Mayıs 1939", "23 Haziran 1939", "19 Ekim 1939", "25 Eylül 1939"],
+  answer: 1,
+  explanation: "23 Haziran 1939'da Fransa ile deklarasyon imzalanmıştır."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Ankara Paktı (Üçlü İttifak) hangi tarihte imzalanmıştır?",
+  options: ["12 Mayıs 1939", "23 Haziran 1939", "19 Ekim 1939", "25 Mart 1941"],
+  answer: 2,
+  explanation: "Türk-İngiliz-Fransız arasında 19 Ekim 1939'da Ankara'da Üçlü İttifak (Ankara Paktı) imzalanmıştır."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Almanya SSCB'ye hangi tarihte saldırmıştır?",
+  options: ["10 Mayıs 1940", "22 Haziran 1941", "7 Aralık 1941", "1 Eylül 1939"],
+  answer: 1,
+  explanation: "Almanya 22 Haziran 1941'de SSCB'ye saldırmıştır ancak Stalingrad'da durdurulmuştur."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Japonya Pearl Harbor'a hangi tarihte saldırmıştır?",
+  options: ["22 Haziran 1941", "7 Aralık 1941", "6 Haziran 1944", "6 Ağustos 1945"],
+  answer: 1,
+  explanation: "Japonya 7 Aralık 1941'de ABD'nin Pearl Harbor üssüne saldırmış ve ABD savaşa dahil olmuştur."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Türk-Alman Dostluk Antlaşması (II. Dünya Savaşı dönemi) hangi tarihte imzalanmıştır?",
+  options: ["25 Temmuz 1940", "12 Haziran 1940", "18 Haziran 1941", "25 Mart 1941"],
+  answer: 2,
+  explanation: "18 Haziran 1941'de Ankara'da Türk-Alman Dostluk Antlaşması imzalanmıştır."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Türkiye ve SSCB 'Saldırmazlık Bildirisi'ni hangi tarihte yayınlamıştır?",
+  options: ["25 Mart 1941", "18 Haziran 1941", "19 Ekim 1939", "22 Haziran 1941"],
+  answer: 0,
+  explanation: "Türkiye ve Sovyetler Birliği 25 Mart 1941'de bir Saldırmazlık Bildirisi yayınlamıştır."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Casablanca Konferansı hangi tarihte yapılmıştır?",
+  options: ["30 Ocak 1943", "14 Ocak 1943", "Ağustos 1943", "Kasım 1943"],
+  answer: 1,
+  explanation: "14 Ocak 1943'te Roosevelt ve Churchill Casablanca'da bir araya gelmiştir."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Adana'da İnönü-Churchill görüşmesi hangi tarihler arasında yapılmıştır?",
+  options: ["14 Ocak 1943", "30 Ocak - 1 Şubat 1943", "5-6 Kasım 1943", "4-8 Aralık 1943"],
+  answer: 1,
+  explanation: "Adana'da 30 Ocak - 1 Şubat 1943'te İnönü ve Churchill arasında görüşme yapılmıştır."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Tahran Konferansı hangi tarihler arasında yapılmıştır?",
+  options: ["14 Ocak 1943", "11-24 Ağustos 1943", "28 Kasım - 1 Aralık 1943", "4-8 Aralık 1943"],
+  answer: 2,
+  explanation: "28 Kasım - 1 Aralık 1943 tarihleri arasında Tahran Konferansı yapılmıştır (Roosevelt, Churchill, Stalin)."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Kahire'de İnönü, Churchill ve Roosevelt görüşmesi hangi tarihler arasında yapılmıştır?",
+  options: ["28 Kasım-1 Aralık 1943", "4-8 Aralık 1943", "5-6 Kasım 1943", "14 Ocak 1943"],
+  answer: 1,
+  explanation: "4-8 Aralık 1943'te Kahire'de İnönü, Churchill ve Roosevelt görüşmesi yapılmıştır."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Türkiye Almanya'ya krom sevkiyatını hangi tarihte durdurmuştur?",
+  options: ["2 Mart 1944", "20 Nisan 1944", "23 Şubat 1945", "7 Mayıs 1945"],
+  answer: 1,
+  explanation: "Türkiye 20 Nisan 1944'te Almanya'ya krom sevkiyatını durdurmuştur."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Yalta Konferansı hangi tarihler arasında yapılmıştır?",
+  options: ["28 Kasım-1 Aralık 1943", "4-11 Şubat 1945", "17 Temmuz-2 Ağustos 1945", "9 Ekim 1944"],
+  answer: 1,
+  explanation: "4-11 Şubat 1945'te Yalta'da Churchill, Stalin ve Roosevelt savaş sonrası durumu belirlemek için bir araya gelmiştir."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Türkiye Almanya ve Japonya'ya savaş ilanını hangi tarihte yapmıştır?",
+  options: ["20 Nisan 1944", "4 Şubat 1945", "23 Şubat 1945", "7 Mayıs 1945"],
+  answer: 2,
+  explanation: "BM kurucu üyesi olmak için Türkiye 23 Şubat 1945'te Almanya ve Japonya'ya savaş ilan etmiştir."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Potsdam Konferansı hangi tarihler arasında düzenlenmiştir?",
+  options: ["4-11 Şubat 1945", "17 Temmuz-2 Ağustos 1945", "28 Kasım-1 Aralık 1943", "6-9 Ağustos 1945"],
+  answer: 1,
+  explanation: "17 Temmuz - 2 Ağustos 1945 tarihleri arasında Potsdam Konferansı düzenlenmiştir."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Almanya hangi tarihte teslim olmuştur?",
+  options: ["6 Haziran 1944", "30 Nisan 1945", "7 Mayıs 1945", "2 Eylül 1945"],
+  answer: 2,
+  explanation: "Almanya 7 Mayıs 1945'te teslim olmuştur."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Hiroşima'ya atom bombası hangi tarihte atılmıştır?",
+  options: ["7 Mayıs 1945", "6 Ağustos 1945", "9 Ağustos 1945", "2 Eylül 1945"],
+  answer: 1,
+  explanation: "6 Ağustos 1945'te Hiroşima'ya atom bombası atılmıştır."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Japonya hangi tarihte teslim olmuş ve II. Dünya Savaşı sona ermiştir?",
+  options: ["9 Ağustos 1945", "15 Ağustos 1945", "2 Eylül 1945", "6 Ağustos 1945"],
+  answer: 2,
+  explanation: "Japonya 2 Eylül 1945'te teslim olmuş ve II. Dünya Savaşı sona ermiştir."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Normandiya Çıkarması hangi tarihte yapılmıştır?",
+  options: ["6 Haziran 1944", "7 Aralık 1941", "14 Ocak 1943", "22 Haziran 1941"],
+  answer: 0,
+  explanation: "6 Haziran 1944'te Normandiya kıyılarına çıkarma yapılmıştır."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Almanya-SSCB Saldırmazlık Paktı hangi tarihte imzalanmıştır?",
+  options: ["1 Eylül 1939", "23 Ağustos 1939", "17 Eylül 1939", "22 Haziran 1941"],
+  answer: 1,
+  explanation: "23 Ağustos 1939'da Almanya-SSCB Saldırmazlık Paktı imzalanmıştır."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "SSCB Yalta Konferansı'nda Türkiye ile ilgili ne talep etmiştir?",
+  options: ["Türkiye'nin savaşa girmesi", "Montreux Sözleşmesi'nin değişmesi", "Doğu Anadolu'nun işgali", "Boğazların kapatılması"],
+  answer: 1,
+  explanation: "Stalin Yalta'da Montreux Sözleşmesi'nin değişmesini talep etmiştir."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Sovyetler 1925 tarihli Türk-Sovyet paktını feshettikten sonra ittifakın yenilenmesi için ne istemiştir?",
+  options: ["Boğazlarda ortak kontrol ve Musul'un verilmesi", "Kars ve Ardahan'ın verilmesi ve Boğazlarda üs verilmesi", "Trabzon'un verilmesi ve krom ihracı", "İstanbul'un uluslararası yönetimi"],
+  answer: 1,
+  explanation: "Sovyetler, Kars ve Ardahan'ın SSCB'ye verilmesi ve Boğazlarda Sovyetlere üs verilmesini istemiştir."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Hitler zorunlu askerlik ve yeni hava gücü hazırlığına hangi tarihte girişmiştir?",
+  options: ["30 Ocak 1933", "16 Mart 1935", "7 Mart 1936", "12 Mart 1938"],
+  answer: 1,
+  explanation: "16 Mart 1935'te Hitler Versailles Antlaşması'na aykırı bir şekilde zorunlu askerlik ve yeni hava gücü hazırlığına girişmiştir."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "Münih Konferansı hangi yılda düzenlenmiştir?",
+  options: ["1936", "1937", "1938", "1939"],
+  answer: 2,
+  explanation: "Eylül 1938'de Münih Konferansı düzenlenmiş ve Südetler bölgesi Almanya'ya verilmiştir."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "İtalya Habeşistan'a hangi tarihte saldırmıştır?",
+  options: ["1933", "1935", "1937", "1939"],
+  answer: 1,
+  explanation: "İtalya 5 Ekim 1935'te Habeşistan'a saldırmıştır."
+},
+{
+  topic: "II. Dünya Savaşı Dönemi",
+  q: "İtalya Arnavutluk'u hangi yılda işgal etmiştir?",
+  options: ["1935", "1937", "1938", "1939"],
+  answer: 3,
+  explanation: "İtalya 1939'da Arnavutluk'u işgal etmiştir. Bu durum Türkiye'yi İngiltere ve Fransa'ya yaklaştırmıştır."
+}
+];
+
+// ============================================================
+// APP LOGIC
+// ============================================================
+const topicMeta = {
+  "Osmanlı Dağılma Dönemi": { icon: "🏰", color: "#8B5CF6", bg: "rgba(139,92,246,0.1)" },
+  "II. Abdülhamid ve II. Meşrutiyet": { icon: "👑", color: "#EC4899", bg: "rgba(236,72,153,0.1)" },
+  "I. Dünya Savaşı": { icon: "⚔️", color: "#EF4444", bg: "rgba(239,68,68,0.1)" },
+  "Kurtuluş Savaşı Dış Politika": { icon: "🗺️", color: "#F59E0B", bg: "rgba(245,158,11,0.1)" },
+  "TBMM Dönemi": { icon: "🏛️", color: "#10B981", bg: "rgba(16,185,129,0.1)" },
+  "Sovyet Rusya ile İlişkiler": { icon: "☭", color: "#DC2626", bg: "rgba(220,38,38,0.1)" },
+  "Afganistan ve Kafkas İlişkileri": { icon: "🤝", color: "#8B5CF6", bg: "rgba(139,92,246,0.1)" },
+  "Batılı Devletlerle İlişkiler (Kurtuluş Savaşı)": { icon: "🌍", color: "#3B82F6", bg: "rgba(59,130,246,0.1)" },
+  "Mudanya ve Lozan": { icon: "📝", color: "#0EA5E9", bg: "rgba(14,165,233,0.1)" },
+  "1923 Sonrası Dış İlişkiler": { icon: "🇹🇷", color: "#059669", bg: "rgba(5,150,105,0.1)" },
+  "1930-1938 Dönemi": { icon: "🏗️", color: "#7C3AED", bg: "rgba(124,58,237,0.1)" },
+  "II. Dünya Savaşı Dönemi": { icon: "💣", color: "#B91C1C", bg: "rgba(185,28,28,0.1)" }
+};
+
+let currentQuestions = [];
+let currentIndex = 0;
+let correctCount = 0;
+let wrongCount = 0;
+let wrongQueue = []; // questions answered wrong, to re-show after 3-5 Qs
+let pendingRetries = []; // {question, showAfter}
+let answered = false;
+let currentTopicFilter = null;
+
+function getTopics() {
+  const topics = {};
+  allQuestions.forEach(q => {
+    if (!topics[q.topic]) topics[q.topic] = 0;
+    topics[q.topic]++;
+  });
+  return topics;
+}
+
+function renderHome() {
+  document.getElementById('homeScreen').style.display = 'block';
+  document.getElementById('quizScreen').style.display = 'none';
+  document.getElementById('resultsScreen').style.display = 'none';
+  document.getElementById('topStats').style.display = 'none';
+  document.getElementById('topTitle').textContent = 'Türk Dış Politikası';
+
+  const topics = getTopics();
+  const grid = document.getElementById('topicGrid');
+  grid.innerHTML = '';
+
+  const topicOrder = [
+    "Osmanlı Dağılma Dönemi",
+    "II. Abdülhamid ve II. Meşrutiyet",
+    "I. Dünya Savaşı",
+    "Kurtuluş Savaşı Dış Politika",
+    "TBMM Dönemi",
+    "Sovyet Rusya ile İlişkiler",
+    "Afganistan ve Kafkas İlişkileri",
+    "Batılı Devletlerle İlişkiler (Kurtuluş Savaşı)",
+    "Mudanya ve Lozan",
+    "1923 Sonrası Dış İlişkiler",
+    "1930-1938 Dönemi",
+    "II. Dünya Savaşı Dönemi"
+  ];
+
+  topicOrder.forEach(name => {
+    if (!topics[name]) return;
+    const meta = topicMeta[name] || { icon: "📄", color: "#6B7280", bg: "rgba(107,114,128,0.1)" };
+    const card = document.createElement('div');
+    card.className = 'topic-card';
+    card.innerHTML = `
+      <div class="topic-icon" style="background:${meta.bg};color:${meta.color}">${meta.icon}</div>
+      <div class="topic-info">
+        <h3>${name}</h3>
+        <p>${topics[name]} soru</p>
+      </div>
+      <span class="chevron">›</span>
+    `;
+    card.onclick = () => startQuiz(name);
+    grid.appendChild(card);
+  });
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz(topicName) {
+  currentTopicFilter = topicName;
+  let qs;
+  if (topicName === '__all__') {
+    qs = shuffle(allQuestions);
+  } else if (topicName === '__wrong__') {
+    qs = shuffle(wrongQueue);
+    wrongQueue = [];
+  } else {
+    qs = shuffle(allQuestions.filter(q => q.topic === topicName));
+  }
+  currentQuestions = qs;
+  currentIndex = 0;
+  correctCount = 0;
+  wrongCount = 0;
+  pendingRetries = [];
+  answered = false;
+
+  document.getElementById('homeScreen').style.display = 'none';
+  document.getElementById('quizScreen').style.display = 'block';
+  document.getElementById('quizScreen').style.animation = 'none';
+  void document.getElementById('quizScreen').offsetHeight;
+  document.getElementById('quizScreen').style.animation = 'fadeUp 0.4s ease';
+  document.getElementById('resultsScreen').style.display = 'none';
+  document.getElementById('topStats').style.display = 'flex';
+
+  const label = topicName === '__all__' ? 'Tüm Sorular' : topicName === '__wrong__' ? 'Yanlış Cevaplar' : topicName;
+  document.getElementById('topTitle').textContent = label;
+  document.getElementById('topicLabel').textContent = label;
+
+  updateStats();
+  renderQuestion();
+}
+
+function getNextQuestion() {
+  // Check if any pending retry should be shown
+  for (let i = 0; i < pendingRetries.length; i++) {
+    if (currentIndex >= pendingRetries[i].showAfter) {
+      const retry = pendingRetries.splice(i, 1)[0];
+      return retry.question;
+    }
+  }
+  if (currentIndex < currentQuestions.length) {
+    return currentQuestions[currentIndex];
+  }
+  // Check remaining retries
+  if (pendingRetries.length > 0) {
+    return pendingRetries.shift().question;
+  }
+  return null;
+}
+
+function renderQuestion() {
+  const q = getNextQuestion();
+  if (!q) {
+    showResults();
+    return;
+  }
+
+  answered = false;
+  const total = currentQuestions.length + pendingRetries.length;
+  const progress = ((currentIndex) / Math.max(total, currentQuestions.length)) * 100;
+
+  document.getElementById('progressLabel').textContent = `Soru ${currentIndex + 1}`;
+  document.getElementById('progressBar').style.width = Math.min(progress, 100) + '%';
+
+  const meta = topicMeta[q.topic] || { icon: "📄", color: "#6B7280" };
+  document.getElementById('qCategory').textContent = q.topic;
+  document.getElementById('qCategory').style.color = meta.color;
+  document.getElementById('qText').textContent = q.q;
+
+  const container = document.getElementById('optionsContainer');
+  container.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${opt}</span>`;
+    btn.onclick = () => handleAnswer(i, q);
+    container.appendChild(btn);
+  });
+
+  document.getElementById('explanation').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'none';
+
+  // Animate card
+  const card = document.getElementById('questionCard');
+  card.style.animation = 'none';
+  void card.offsetHeight;
+  card.style.animation = 'fadeUp 0.35s ease';
+}
+
+function handleAnswer(selected, question) {
+  if (answered) return;
+  answered = true;
+
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach((btn, i) => {
+    btn.classList.add('disabled');
+    if (i === question.answer) btn.classList.add('correct');
+    if (i === selected && selected !== question.answer) btn.classList.add('wrong');
+  });
+
+  if (selected === question.answer) {
+    correctCount++;
+  } else {
+    wrongCount++;
+    wrongQueue.push(question);
+    // Schedule retry after 3-5 questions
+    const retryAfter = currentIndex + 3 + Math.floor(Math.random() * 3);
+    pendingRetries.push({ question, showAfter: retryAfter });
+  }
+
+  const exp = document.getElementById('explanation');
+  exp.textContent = question.explanation;
+  exp.style.display = 'block';
+
+  document.getElementById('nextBtn').style.display = 'block';
+  currentIndex++;
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('statCorrect').textContent = correctCount;
+  document.getElementById('statWrong').textContent = wrongCount;
+  const total = correctCount + wrongCount;
+  const pct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+  document.getElementById('statScore').textContent = pct + '%';
+}
+
+function showResults() {
+  document.getElementById('quizScreen').style.display = 'none';
+  document.getElementById('resultsScreen').style.display = 'block';
+  document.getElementById('resultsScreen').style.animation = 'none';
+  void document.getElementById('resultsScreen').offsetHeight;
+  document.getElementById('resultsScreen').style.animation = 'fadeUp 0.5s ease';
+
+  const total = correctCount + wrongCount;
+  const pct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+
+  document.getElementById('finalScore').textContent = pct + '%';
+  document.getElementById('finalCorrect').textContent = correctCount;
+  document.getElementById('finalWrong').textContent = wrongCount;
+  document.getElementById('finalTotal').textContent = total;
+
+  let label = '';
+  if (pct >= 90) label = 'Mükemmel! 🎉';
+  else if (pct >= 70) label = 'Çok İyi! 👏';
+  else if (pct >= 50) label = 'İyi, ama daha çalışmalısın! 📚';
+  else label = 'Daha fazla çalışman gerekiyor! 💪';
+  document.getElementById('finalLabel').textContent = label;
+
+  const retryBtn = document.getElementById('retryWrongBtn');
+  if (wrongQueue.length > 0) {
+    retryBtn.style.display = 'block';
+    retryBtn.textContent = `Yanlışları Tekrar Çöz (${wrongQueue.length})`;
+  } else {
+    retryBtn.style.display = 'none';
+  }
+}
+
+// Event listeners
+document.getElementById('nextBtn').onclick = renderQuestion;
+document.getElementById('backBtn').onclick = renderHome;
+document.getElementById('startAllBtn').onclick = () => startQuiz('__all__');
+document.getElementById('retryWrongBtn').onclick = () => startQuiz('__wrong__');
+document.getElementById('retryAllBtn').onclick = () => {
+  if (currentTopicFilter && currentTopicFilter !== '__wrong__') {
+    startQuiz(currentTopicFilter);
+  } else {
+    startQuiz('__all__');
+  }
+};
+document.getElementById('goHomeBtn').onclick = renderHome;
+
+// Keyboard support
+document.addEventListener('keydown', (e) => {
+  if (document.getElementById('quizScreen').style.display === 'none') return;
+  if (!answered) {
+    const map = { '1': 0, '2': 1, '3': 2, '4': 3, 'a': 0, 'b': 1, 'c': 2, 'd': 3 };
+    if (map[e.key.toLowerCase()] !== undefined) {
+      const btns = document.querySelectorAll('.option-btn');
+      if (btns[map[e.key.toLowerCase()]]) btns[map[e.key.toLowerCase()]].click();
+    }
+  } else {
+    if (e.key === 'Enter' || e.key === ' ') {
+      document.getElementById('nextBtn').click();
+    }
+  }
+});
+
+// Init
+renderHome();
+</script>
+</body>
+</html>
