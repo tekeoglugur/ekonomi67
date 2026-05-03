@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Türkiye Dış Politikası Sınavı</title>
+<link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F2F2F7;
+    --card: #FFFFFF;
+    --card2: #F9F9FB;
+    --primary: #007AFF;
+    --primary-light: #E8F1FF;
+    --green: #34C759;
+    --green-light: #E8FAE8;
+    --red: #FF3B30;
+    --red-light: #FFECEB;
+    --orange: #FF9500;
+    --purple: #AF52DE;
+    --label: #1C1C1E;
+    --label2: #3A3A3C;
+    --label3: #636366;
+    --label4: #8E8E93;
+    --separator: #E5E5EA;
+    --separator2: #C6C6C8;
+    --blur: rgba(242,242,247,0.85);
+    --shadow: 0 2px 16px rgba(0,0,0,0.08);
+    --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --radius-xs: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    background: var(--bg);
+    color: var(--label);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; min-height: 100vh; flex-direction: column; }
+  .screen.active { display: flex; }
+
+  /* ── HOME SCREEN ── */
+  #home {
+    background: linear-gradient(160deg, #1C3A6E 0%, #0A1929 55%, #0F2A4A 100%);
+    position: relative; overflow: hidden;
+  }
+  #home::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 20%, rgba(0,122,255,0.3) 0%, transparent 60%),
+                radial-gradient(ellipse at 75% 75%, rgba(175,82,222,0.2) 0%, transparent 55%);
+    pointer-events: none;
+  }
+  .home-header {
+    padding: 70px 28px 0;
+    position: relative; z-index: 1;
+  }
+  .home-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px; padding: 5px 12px; margin-bottom: 22px;
+    font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85);
+    letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .home-badge span { font-size: 14px; }
+  .home-title {
+    font-size: 36px; font-weight: 700; color: #fff;
+    line-height: 1.15; margin-bottom: 10px;
+    letter-spacing: -0.5px;
+  }
+  .home-title em { color: #5AC8FA; font-style: normal; }
+  .home-subtitle {
+    font-size: 16px; color: rgba(255,255,255,0.65);
+    line-height: 1.5; margin-bottom: 36px;
+  }
+  .periods-label {
+    font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.45);
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
+  }
+  .period-cards {
+    display: flex; flex-direction: column; gap: 10px;
+    padding: 0 28px 28px;
+    position: relative; z-index: 1;
+    flex: 1; overflow-y: auto;
+  }
+  .period-card {
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    display: flex; align-items: center; gap: 16px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    position: relative; overflow: hidden;
+  }
+  .period-card::after {
+    content: '›';
+    position: absolute; right: 18px;
+    font-size: 22px; color: rgba(255,255,255,0.35);
+    font-weight: 300;
+  }
+  .period-card:active { transform: scale(0.97); background: rgba(255,255,255,0.14); }
+  .period-icon {
+    width: 48px; height: 48px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .period-info { flex: 1; }
+  .period-name { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 3px; }
+  .period-count { font-size: 13px; color: rgba(255,255,255,0.5); }
+  .all-card {
+    background: linear-gradient(135deg, #007AFF, #5856D6);
+    border: none;
+  }
+  .all-card .period-name { color: #fff; }
+
+  /* ── QUIZ SCREEN ── */
+  #quiz { background: var(--bg); }
+
+  .quiz-navbar {
+    background: var(--blur);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--separator);
+    padding: 12px 20px 10px;
+    display: flex; align-items: center; gap: 12px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-back {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--primary-light); border: none;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--primary); font-size: 16px;
+    transition: all 0.15s; flex-shrink: 0;
+  }
+  .nav-back:active { transform: scale(0.9); }
+  .nav-info { flex: 1; }
+  .nav-period { font-size: 13px; font-weight: 600; color: var(--label); }
+  .nav-progress-text { font-size: 11px; color: var(--label4); margin-top: 1px; }
+  .nav-score-badge {
+    background: var(--primary-light);
+    color: var(--primary);
+    font-size: 12px; font-weight: 700;
+    padding: 5px 10px; border-radius: 20px;
+    flex-shrink: 0;
+  }
+
+  .progress-bar-wrap {
+    height: 4px; background: var(--separator);
+    position: relative;
+  }
+  .progress-bar-fill {
+    height: 100%; background: var(--primary);
+    transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+    border-radius: 0 2px 2px 0;
+  }
+
+  .quiz-body {
+    padding: 20px 20px 100px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .q-number-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .q-number {
+    font-size: 12px; font-weight: 700; color: var(--primary);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    background: var(--primary-light); padding: 4px 10px; border-radius: 20px;
+  }
+  .q-period-tag {
+    font-size: 11px; color: var(--label4);
+    background: var(--separator); padding: 4px 10px; border-radius: 20px;
+  }
+
+  .question-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 22px 20px 18px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow-card);
+  }
+  .question-text {
+    font-size: 16px; font-weight: 500;
+    color: var(--label); line-height: 1.55;
+  }
+
+  .options-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .option-btn {
+    background: var(--card);
+    border: 1.5px solid var(--separator);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 12px;
+    transition: all 0.15s ease;
+    box-shadow: var(--shadow-card);
+    text-align: left;
+    -webkit-appearance: none;
+    width: 100%;
+  }
+  .option-btn:active:not([disabled]) { transform: scale(0.98); }
+  .option-letter {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--primary-light);
+    color: var(--primary);
+    font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.15s;
+  }
+  .option-text {
+    font-size: 14px; color: var(--label2);
+    line-height: 1.4; flex: 1;
+    font-weight: 400;
+  }
+  .option-icon {
+    font-size: 16px; flex-shrink: 0; opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  /* States */
+  .option-btn.correct {
+    background: var(--green-light);
+    border-color: var(--green);
+  }
+  .option-btn.correct .option-letter { background: var(--green); color: #fff; }
+  .option-btn.correct .option-text { color: #1a5c2a; font-weight: 500; }
+  .option-btn.correct .option-icon { opacity: 1; }
+
+  .option-btn.wrong {
+    background: var(--red-light);
+    border-color: var(--red);
+  }
+  .option-btn.wrong .option-letter { background: var(--red); color: #fff; }
+  .option-btn.wrong .option-text { color: #7a1f1a; font-weight: 500; }
+  .option-btn.wrong .option-icon { opacity: 1; }
+
+  .option-btn.dimmed { opacity: 0.4; }
+  .option-btn[disabled] { cursor: default; pointer-events: none; }
+
+  /* Explanation */
+  .explanation-card {
+    background: var(--card2);
+    border: 1.5px solid var(--separator);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-top: 14px;
+    display: none;
+    animation: slideIn 0.25s ease;
+  }
+  .explanation-card.show { display: block; }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .explanation-label {
+    font-size: 11px; font-weight: 700; color: var(--green);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
+  }
+  .explanation-text {
+    font-size: 13px; color: var(--label3); line-height: 1.5;
+  }
+
+  /* Next button */
+  .next-btn-wrap {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    padding: 16px 20px 32px;
+    background: var(--blur);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--separator);
+    z-index: 50;
+  }
+  .next-btn {
+    width: 100%; padding: 16px;
+    background: var(--primary);
+    color: #fff; font-size: 16px; font-weight: 600;
+    border: none; border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: none;
+  }
+  .next-btn.show { display: block; }
+  .next-btn:active { transform: scale(0.98); background: #0064d6; }
+
+  /* ── RESULT SCREEN ── */
+  #result { background: var(--bg); }
+
+  .result-header {
+    background: linear-gradient(160deg, #1C3A6E 0%, #0A1929 100%);
+    padding: 60px 28px 40px;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .result-header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 30%, rgba(0,122,255,0.35) 0%, transparent 70%);
+  }
+  .result-emoji { font-size: 56px; margin-bottom: 16px; position: relative; }
+  .result-title {
+    font-size: 26px; font-weight: 700; color: #fff;
+    margin-bottom: 6px; position: relative;
+  }
+  .result-subtitle {
+    font-size: 15px; color: rgba(255,255,255,0.6);
+    position: relative;
+  }
+
+  .result-score-row {
+    display: flex; gap: 12px;
+    padding: 20px 20px 0;
+  }
+  .score-box {
+    flex: 1; background: var(--card);
+    border-radius: var(--radius); padding: 18px 16px;
+    text-align: center; box-shadow: var(--shadow-card);
+  }
+  .score-box-val {
+    font-size: 28px; font-weight: 700; color: var(--label);
+    margin-bottom: 4px;
+  }
+  .score-box-label { font-size: 12px; color: var(--label4); font-weight: 500; }
+  .score-pct { color: var(--primary); }
+  .score-correct { color: var(--green); }
+  .score-wrong { color: var(--red); }
+
+  .result-actions {
+    padding: 20px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .btn-primary {
+    width: 100%; padding: 16px;
+    background: var(--primary); color: #fff;
+    font-size: 16px; font-weight: 600;
+    border: none; border-radius: var(--radius-sm);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-secondary {
+    width: 100%; padding: 16px;
+    background: var(--card); color: var(--primary);
+    font-size: 16px; font-weight: 600;
+    border: 1.5px solid var(--separator);
+    border-radius: var(--radius-sm);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .btn-secondary:active { transform: scale(0.98); }
+
+  .review-list { padding: 0 20px 40px; }
+  .review-header {
+    font-size: 11px; font-weight: 700; color: var(--label4);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin: 20px 0 12px;
+  }
+  .review-item {
+    background: var(--card); border-radius: var(--radius-sm);
+    padding: 14px 16px; margin-bottom: 8px;
+    display: flex; align-items: flex-start; gap: 12px;
+    box-shadow: var(--shadow-card);
+  }
+  .review-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .review-q { font-size: 13px; color: var(--label2); line-height: 1.4; flex: 1; }
+  .review-ans {
+    font-size: 12px; margin-top: 4px; font-weight: 500;
+  }
+  .review-ans.ok { color: var(--green); }
+  .review-ans.no { color: var(--red); }
+
+  /* Animations */
+  @keyframes popIn {
+    0% { opacity: 0; transform: scale(0.92) translateY(10px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .question-card { animation: popIn 0.25s ease; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ HOME SCREEN ═══════════════ -->
+<div id="home" class="screen active">
+  <div class="home-header">
+    <div class="home-badge"><span>🇹🇷</span> Çalışma Kartları</div>
+    <div class="home-title">Türkiye <em>Dış Politikası</em></div>
+    <div class="home-subtitle">1950–1990 arası önemli gelişmeleri test et. Her soruda şıklar rastgele karışır.</div>
+    <div class="periods-label">Dönem Seç</div>
+  </div>
+  <div class="period-cards" id="periodCards"></div>
+</div>
+
+<!-- ═══════════════ QUIZ SCREEN ═══════════════ -->
+<div id="quiz" class="screen">
+  <div class="quiz-navbar">
+    <button class="nav-back" onclick="goHome()">‹</button>
+    <div class="nav-info">
+      <div class="nav-period" id="navPeriod"></div>
+      <div class="nav-progress-text" id="navProgressText"></div>
+    </div>
+    <div class="nav-score-badge" id="navScore">0 / 0</div>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+  </div>
+  <div class="quiz-body">
+    <div class="q-number-row">
+      <div class="q-number" id="qNumber">Soru 1</div>
+      <div class="q-period-tag" id="qPeriodTag"></div>
+    </div>
+    <div class="question-card">
+      <div class="question-text" id="questionText"></div>
+    </div>
+    <div class="options-list" id="optionsList"></div>
+    <div class="explanation-card" id="explanationCard">
+      <div class="explanation-label">💡 Doğru Cevap</div>
+      <div class="explanation-text" id="explanationText"></div>
+    </div>
+  </div>
+  <div class="next-btn-wrap">
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Sonraki Soru →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ RESULT SCREEN ═══════════════ -->
+<div id="result" class="screen">
+  <div class="result-header">
+    <div class="result-emoji" id="resultEmoji">🎉</div>
+    <div class="result-title" id="resultTitle">Tebrikler!</div>
+    <div class="result-subtitle" id="resultSubtitle"></div>
+  </div>
+  <div class="result-score-row">
+    <div class="score-box">
+      <div class="score-box-val score-pct" id="scorePct">—</div>
+      <div class="score-box-label">Başarı</div>
+    </div>
+    <div class="score-box">
+      <div class="score-box-val score-correct" id="scoreCorrect">—</div>
+      <div class="score-box-label">Doğru</div>
+    </div>
+    <div class="score-box">
+      <div class="score-box-val score-wrong" id="scoreWrong">—</div>
+      <div class="score-box-label">Yanlış</div>
+    </div>
+  </div>
+  <div class="result-actions">
+    <button class="btn-primary" id="retryBtn" onclick="retryQuiz()">Tekrar Dene</button>
+    <button class="btn-secondary" onclick="goHome()">Ana Menüye Dön</button>
+  </div>
+  <div class="review-list" id="reviewList"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  QUESTION BANK
+// ═══════════════════════════════════════════════════════
+const PERIODS = [
+  { id: 'p1950', name: '1950–1960 Dönemi', icon: '🏛️', color: '#5856D6', bg: 'rgba(88,86,214,0.18)' },
+  { id: 'p1960', name: '1960–1970 Dönemi', icon: '🌐', color: '#007AFF', bg: 'rgba(0,122,255,0.18)' },
+  { id: 'p1970', name: '1970–1980 Dönemi', icon: '✈️', color: '#FF9500', bg: 'rgba(255,149,0,0.18)' },
+  { id: 'p1980', name: '1980–1989 Dönemi', icon: '🛡️', color: '#34C759', bg: 'rgba(52,199,89,0.18)' },
+  { id: 'p1990', name: '1990 Sonrası',      icon: '🌍', color: '#AF52DE', bg: 'rgba(175,82,222,0.18)' },
+  { id: 'all',   name: 'Tüm Sorular',       icon: '⭐', color: '#fff',   bg: 'transparent', isAll: true },
+];
+
+const QUESTIONS = [
+  // ── 1950–1960 ──────────────────────────────────────────────────────────
+  { period:'p1950', q:'II. Dünya Savaşı sonrası ABD ile SSCB arasında başlayan çatışma hangi kavramla adlandırılır?', correct:'Soğuk Savaş', wrong:['Birinci Dünya Savaşı','Kore Savaşı','Süveyş Krizi','Berlin Krizi'] },
+  { period:'p1950', q:'1947 yılında ilan edilen Truman Doktrini\'nin temel amacı nedir?', correct:'Komünizm tehdidine karşı askeri ve ekonomik yardım sağlamak', wrong:['Avrupa\'yı ekonomik olarak kalkındırmak','NATO\'yu kurmak','Kore\'ye müdahale etmek','SSCB ile antlaşma imzalamak'] },
+  { period:'p1950', q:'Marshall Planı hangi yıllar arasında Truman Doktrini ile birlikte uygulanmıştır?', correct:'1948–1951', wrong:['1945–1948','1950–1953','1952–1955','1946–1950'] },
+  { period:'p1950', q:'Marshall Planı kaç ülkeyi kapsıyordu?', correct:'16 ülke', wrong:['12 ülke','20 ülke','8 ülke','24 ülke'] },
+  { period:'p1950', q:'NATO hangi yıl kurulmuştur?', correct:'1949', wrong:['1945','1951','1947','1953'] },
+  { period:'p1950', q:'14 Mayıs 1950 seçimleriyle iktidarı hangi parti devraldı?', correct:'Demokrat Parti (DP)', wrong:['Cumhuriyet Halk Partisi','Millet Partisi','Adalet Partisi','Türkiye Partisi'] },
+  { period:'p1950', q:'Türkiye, NATO\'ya ilk başvurusunu hangi tarihte yaptı?', correct:'1950', wrong:['1949','1951','1952','1948'] },
+  { period:'p1950', q:'Türkiye\'nin ilk NATO üyelik başvurusunu yapan hükümet hangisidir?', correct:'Şemsettin Günaltay Hükümeti', wrong:['Adnan Menderes Hükümeti','İsmet İnönü Hükümeti','Celal Bayar Hükümeti','Refik Şevket İnce Hükümeti'] },
+  { period:'p1950', q:'Türkiye\'nin ilk NATO başvurusunun reddedilmesinin gerekçesi neydi?', correct:'Yetersiz demokrasi', wrong:['Ekonomik yetersizlik','Askeri zayıflık','Coğrafi konum uygunsuzluğu','Komünist tehdidin bulunmaması'] },
+  { period:'p1950', q:'NATO\'nun Türkiye ve Yunanistan\'ın katılımını onayladığı toplantı hangisidir?', correct:'Ottawa\'da 15–21 Eylül 1951 toplanan NATO Bakanlar Konseyi', wrong:['Londra Konferansı 1950','Paris Zirvesi 1952','BM Güvenlik Konseyi 1951','Brüksel Konferansı 1951'] },
+  { period:'p1950', q:'Türkiye\'nin NATO üyeliğine muhalefet eden ülke hangisidir?', correct:'İngiltere', wrong:['Fransa','ABD','Almanya','Belçika'] },
+  { period:'p1950', q:'Türkiye ve Yunanistan NATO\'ya hangi yılda resmen kabul edilmiştir?', correct:'1952', wrong:['1950','1951','1953','1954'] },
+  { period:'p1950', q:'Kore Savaşı\'nın Türkiye\'nin NATO üyeliğine etkisi ne olmuştur?', correct:'NATO\'nun kapılarını Türkiye\'ye açmıştır', wrong:['Türkiye\'nin başvurusunu geciktirmiştir','Türkiye\'yi SSCB\'ye yaklaştırmıştır','NATO üyeliğini tamamen engellemiştir','Türkiye\'ye ekonomik ambargo uygulanmasına yol açmıştır'] },
+  { period:'p1950', q:'1953 yılında ABD ve NATO\'nun ilan ettiği doktrin hangisidir?', correct:'Kitlesel Karşılık Doktrini', wrong:['Truman Doktrini','Eisenhower Doktrini','Marshall Planı','Esnek Karşılık Doktrini'] },
+  { period:'p1950', q:'Kitlesel Karşılık Doktrini\'ni kim öncülük ederek ilan etti?', correct:'ABD Başkanı Dwight D. Eisenhower', wrong:['ABD Başkanı Harry Truman','ABD Başkanı John F. Kennedy','ABD Başkanı Lyndon Johnson','ABD Başkanı Richard Nixon'] },
+  { period:'p1950', q:'Kitlesel Karşılık Doktrini\'ne göre SSCB ile bir çatışmada ne kullanılacaktı?', correct:'Nükleer silahlar', wrong:['Konvansiyonel kara kuvvetleri','Deniz ablukası','Biyolojik silahlar','Casusluk ağı'] },
+  { period:'p1950', q:'ABD\'nin Batı ittifakını sarsan Sputnik uydusu hangi ülke tarafından fırlatıldı?', correct:'Sovyetler Birliği', wrong:['ABD','Çin','İngiltere','Fransa'] },
+  { period:'p1950', q:'Sputnik uydusu hangi yıl uzaya fırlatıldı?', correct:'1957', wrong:['1955','1959','1961','1963'] },
+  { period:'p1950', q:'Türkiye\'nin Jupiter füzelerini konuşlandırmayı kabul ettiği antlaşma hangi tarihte imzalanmıştır?', correct:'25 Ekim 1959', wrong:['7 Ocak 1952','23 Haziran 1954','5 Mart 1959','15 Mart 1960'] },
+  { period:'p1950', q:'Jupiter füzeleri Türkiye\'de nereye konuşlandırılmıştır?', correct:'İzmir–Çiğli\'deki ABD üssü', wrong:['Ankara–İncirlik Üssü','İstanbul Boğazı çevresi','Trabzon Hava Üssü','Adana–Merkez Üssü'] },
+  { period:'p1950', q:'Türkiye ile ABD arasında 7 Ocak 1952\'de imzalanan antlaşma nedir?', correct:'Karşılıklı Güvenliğe İlişkin Anlaşma', wrong:['Askerî Tesisler Anlaşması','NATO Kuvvetler Statüsü Antlaşması','Türk-Amerikan Güvenlik ve İş birliği Anlaşması','Ortak Savunma İşbirliği Antlaşması'] },
+  { period:'p1950', q:'25 Ağustos 1952\'de Türkiye\'nin imzaladığı antlaşma hangisidir?', correct:'NATO Kuvvetler Statüsü Antlaşması', wrong:['Karşılıklı Güvenliğe İlişkin Anlaşma','Askerî Tesisler Anlaşması','Türk-Amerikan Güvenlik Anlaşması','Balkan Paktı'] },
+  { period:'p1950', q:'İncirlik Üssü hangi antlaşmayla ABD\'ye askeri amaçlı kullanım için verilmiştir?', correct:'23 Haziran 1954 tarihli Askerî Tesisler Anlaşması', wrong:['7 Ocak 1952 Karşılıklı Güvenlik Anlaşması','25 Ağustos 1952 NATO Kuvvetler Statüsü Antlaşması','5 Mart 1959 Güvenlik ve İş birliği Anlaşması','25 Ekim 1959 Jupiter Anlaşması'] },
+  { period:'p1950', q:'5 Mart 1959\'da imzalanan Türk-Amerikan anlaşmasının adı nedir?', correct:'Türk-Amerikan Güvenlik ve İş birliği Anlaşması', wrong:['Karşılıklı Güvenliğe İlişkin Anlaşma','Askerî Tesisler Anlaşması','NATO Kuvvetler Statüsü Antlaşması','Ortak Savunma İşbirliği Antlaşması'] },
+  { period:'p1950', q:'Türkiye\'yi Batı blokuna yaklaştıran temel neden neydi?', correct:'Askeri ve ekonomik güçsüzlük', wrong:['Komünist partinin iktidara gelmesi','Yunanistan ile çatışma','Kore Savaşı\'na katılım','İngiltere ile ittifak isteği'] },
+  { period:'p1950', q:'Balkan Paktı hangi tarihte ve nerede imzalanmıştır?', correct:'28 Şubat 1953\'te Ankara\'da', wrong:['15 Şubat 1953\'te Belgrad\'da','9 Ağustos 1954\'te Atina\'da','20 Ocak 1953\'te Belgrat\'ta','5 Mart 1952\'de İstanbul\'da'] },
+  { period:'p1950', q:'Balkan Paktı hangi ülkeler arasında imzalanmıştır?', correct:'Yugoslavya, Türkiye ve Yunanistan', wrong:['Türkiye, İtalya ve Yunanistan','Türkiye, Bulgaristan ve Romanya','Türkiye, İngiltere ve Yunanistan','Yugoslavya, SSCB ve Türkiye'] },
+  { period:'p1950', q:'Balkan Paktı 9 Ağustos 1954\'te hangi antlaşmaya dönüşmüştür?', correct:'İttifak, Siyasi İşbirliği ve Karşılıklı Yardım Antlaşması', wrong:['Dostluk ve İş birliği Antlaşması','Karşılıklı Güvenlik Antlaşması','Ortak Savunma Paktı','Ekonomik İşbirliği Antlaşması'] },
+  { period:'p1950', q:'Yugoslavya Devlet Başkanı Tito\'nun Stalin ile sorun yaşaması hangi yıl olmuştur?', correct:'1948', wrong:['1945','1950','1953','1955'] },
+  { period:'p1950', q:'Türkiye Dışişleri Bakanı Fuat Köprülü\'nün Yugoslavya ziyareti hangi tarihte gerçekleşmiştir?', correct:'20–25 Ocak 1953', wrong:['5–10 Mart 1952','15–20 Şubat 1953','10–15 Nisan 1953','1–5 Kasım 1952'] },
+  { period:'p1950', q:'SSCB\'nin Yugoslavya ile ilişkilerini düzeltmeye çalışması Balkan Paktı üzerinde ne etkisi yaratmıştır?', correct:'İttifak zayıflamıştır', wrong:['İttifak güçlenmiştir','Yeni üyeler ittifaka katılmıştır','Türkiye pakttan çekilmiştir','İngiltere pakta dahil edilmiştir'] },
+  { period:'p1950', q:'Romanya Devlet Başkanı Chivu Stoica\'nın 1957\'de önerdiği iş birliği planı hangi ülkeleri kapsıyordu?', correct:'Türkiye, Yunanistan, Arnavutluk, Bulgaristan ve Yugoslavya', wrong:['Türkiye, İran, Pakistan ve Irak','Türkiye, Suriye, Lübnan ve Ürdün','Türkiye, Bulgaristan, Romanya ve Çekya','Türkiye, İtalya, Yunanistan ve Yugoslavya'] },
+  { period:'p1950', q:'Stoica Planı\'na Türkiye\'nin tutumu ne olmuştur?', correct:'Türkiye kabul etmemiştir', wrong:['Türkiye planı desteklemiştir','Türkiye plana modifikasyon önermiştir','Türkiye planı BM\'ye taşımıştır','Türkiye planı Balkan Paktı\'na entegre etmiştir'] },
+  { period:'p1950', q:'ABD Dışişleri Bakanı Dulles\'ın 1953\'te Ortadoğu\'ya yaptığı ziyaret hangi amacı taşıyordu?', correct:'Sovyetlere karşı ittifaklar kurulmasını önermek', wrong:['Arap-İsrail barışını sağlamak','Marshall Planı\'nı genişletmek','Kore Savaşı\'nı sona erdirmek','BM Güvenlik Konseyi\'nde karar almak'] },
+  { period:'p1950', q:'Türkiye ile Pakistan arasında Dostluk ve İş birliği Antlaşması hangi tarihte imzalandı?', correct:'2 Nisan 1954', wrong:['5 Mart 1952','24 Şubat 1955','7 Ocak 1955','1 Mart 1953'] },
+  { period:'p1950', q:'Bağdat Paktı hangi tarihte ve hangi ülkeler arasında imzalandı?', correct:'24 Şubat 1955\'te Irak ve Türkiye arasında', wrong:['2 Nisan 1954\'te Türkiye ve Pakistan arasında','5 Mart 1952\'de Türkiye ve ABD arasında','28 Şubat 1953\'te Türkiye ve Yugoslavya arasında','9 Ağustos 1954\'te Türkiye ve Yunanistan arasında'] },
+  { period:'p1950', q:'Bağdat Paktı\'na sonradan katılan ülkeler hangileridir?', correct:'İngiltere ve İran', wrong:['Fransa ve Pakistan','ABD ve Suriye','Lübnan ve Ürdün','Mısır ve Libya'] },
+  { period:'p1950', q:'Süveyş Kanalı hangi yıl ve kim tarafından inşa edildi?', correct:'1859\'da İngiltere tarafından', wrong:['1869\'da Fransa tarafından','1875\'te Mısır tarafından','1848\'de Osmanlı tarafından','1900\'de İtalya tarafından'] },
+  { period:'p1950', q:'Mısır Süveyş Kanalı\'nı hangi tarihte millîleştirdi?', correct:'26 Temmuz 1956', wrong:['5 Ocak 1957','29 Ekim 1956','16 Ağustos 1956','1 Eylül 1955'] },
+  { period:'p1950', q:'Süveyş Krizi\'nde kanalı işgal eden ülkeler hangileridir?', correct:'İngiltere, Fransa ve İsrail', wrong:['ABD, İngiltere ve Fransa','Türkiye, İngiltere ve İsrail','Irak, İngiltere ve İsrail','Mısır, Fransa ve İsrail'] },
+  { period:'p1950', q:'5 Ocak 1957\'de ilan edilen Eisenhower Doktrini ne öngörüyordu?', correct:'Komünist tehdide karşı Orta Doğu ülkelerine askeri ve ekonomik yardım', wrong:['SSCB ile uzlaşma politikası','Nükleer silahların azaltılması','Arap-İsrail barış süreci','Ortadoğu ülkelerinin ticaretini serbestleştirme'] },
+  { period:'p1950', q:'Eisenhower Doktrinini olumlu karşılayan ülkeler hangileridir?', correct:'İran, Irak, Pakistan ve Türkiye', wrong:['Mısır, Suriye, Ürdün ve Lübnan','Irak, Suriye, Mısır ve Libya','Türkiye, İsrail, Suudi Arabistan ve Yemen','Yunanistan, İtalya, İspanya ve Portekiz'] },
+  { period:'p1950', q:'Avrupa Ekonomik Topluluğu (AET) hangi antlaşmayla ve hangi yılda kurulmuştur?', correct:'Roma Anlaşması ile 27 Mart 1957\'de', wrong:['Maastricht Anlaşması ile 1992\'de','Paris Antlaşması ile 1951\'de','Lizbon Antlaşması ile 2007\'de','Brüksel Antlaşması ile 1965\'te'] },
+  { period:'p1950', q:'AET\'yi kuran 6 ülke hangileridir?', correct:'Belçika, Fransa, Almanya, İtalya, Hollanda ve Lüksemburg', wrong:['İngiltere, Fransa, Almanya, İtalya, Hollanda ve Belçika','Türkiye, Yunanistan, Fransa, Almanya, İtalya ve Belçika','Danimarka, Norveç, İsveç, Hollanda, Belçika ve Lüksemburg','ABD, İngiltere, Fransa, Almanya, İtalya ve İspanya'] },
+  { period:'p1950', q:'Türkiye AET\'ye ortaklık için hangi tarihte başvurmuştur?', correct:'31 Temmuz 1959', wrong:['27 Mart 1957','11 Eylül 1959','14 Nisan 1987','Aralık 1964'] },
+  { period:'p1950', q:'Türkiye\'nin AET ortaklık anlaşmasını imzalaması neden gecikmiştir?', correct:'1960 darbesinden dolayı', wrong:['Yunanistan\'ın vetosundan dolayı','Ekonomik yetersizlikten dolayı','Kıbrıs sorunundan dolayı','İngiltere\'nin muhalefetinden dolayı'] },
+  { period:'p1950', q:'Türkiye AET ile ortaklık anlaşmasını ne zaman imzalayabilmiştir?', correct:'Aralık 1964', wrong:['1960','1962','1966','1968'] },
+  { period:'p1950', q:'Osmanlı Devleti Kıbrıs\'ı hangi yıl almış ve kaç yıl hüküm sürmüştür?', correct:'1571\'de almış, üç yüz yıl hüküm sürmüştür', wrong:['1453\'te almış, iki yüz yıl hüküm sürmüştür','1683\'te almış, iki yüz yıl hüküm sürmüştür','1600\'de almış, iki yüz elli yıl hüküm sürmüştür','1699\'da almış, yüz elli yıl hüküm sürmüştür'] },
+  { period:'p1950', q:'Kıbrıs İngilizlere hangi amaçla ve hangi savaş sonrasında kiralanmıştır?', correct:'Osmanlı-Rus savaşında İngilizlerin yardımını almak için 1878\'de', wrong:['Birinci Dünya Savaşı\'nda 1914\'te','İkinci Dünya Savaşı\'nda 1940\'ta','Balkan Savaşlarında 1912\'de','Kırım Savaşı\'nda 1856\'da'] },
+  { period:'p1950', q:'İngiltere Kıbrıs\'ı hangi yıl ilhak etmiştir?', correct:'1914', wrong:['1878','1920','1935','1945'] },
+  { period:'p1950', q:'Kıbrıs\'ta ENOSİS fikri hangi yıllara dayanmaktadır?', correct:'1930\'lu yıllar', wrong:['1900\'lü yıllar','1950\'li yıllar','1920\'li yıllar','1945 sonrası'] },
+  { period:'p1950', q:'EOKA örgütü Kıbrıs\'ta hangi tarihte ve kimin liderliğinde kurulmuştur?', correct:'1955\'te G. Grivas liderliğinde', wrong:['1950\'de Makarios liderliğinde','1960\'ta Nikos Sampson liderliğinde','1948\'de AKEL liderliğinde','1963\'te Yunan cuntası liderliğinde'] },
+  { period:'p1950', q:'Kıbrıs sorununu görüşmek üzere 29 Ağustos 1955\'te Londra\'da bir araya gelen ülkeler hangileridir?', correct:'Türkiye, Yunanistan ve İngiltere', wrong:['Türkiye, Yunanistan ve ABD','Türkiye, SSCB ve İngiltere','BM, Türkiye ve Yunanistan','NATO, Türkiye ve Yunanistan'] },
+  { period:'p1950', q:'6–7 Eylül 1955 olaylarının tetikleyicisi ne olmuştur?', correct:'Atatürk\'ün Selanik\'teki evinin Yunanlılar tarafından bombalandığı haberi', wrong:['EOKA\'nın Kıbrıs\'ta bir Türkü öldürmesi','Yunanistan\'ın Kıbrıs\'a asker çıkarması','Kıbrıs Rum yönetiminin Türk mülklerine el koyması','Makarios\'un ENOSİS ilan etmesi'] },
+  { period:'p1950', q:'Kıbrıs Cumhuriyeti hangi tarihte kurulmuştur?', correct:'16 Ağustos 1960 Lefkoşe Antlaşması\'yla', wrong:['5 Şubat 1959 Zürih Antlaşması\'yla','28 Şubat 1953 Balkan Paktı\'yla','9 Ağustos 1954 İttifak Antlaşması\'yla','29 Ağustos 1955 Londra Konferansı\'yla'] },
+  { period:'p1950', q:'Zürih\'te Türk ve Yunan taraflarının bir araya geldiği toplantı hangi tarihte yapıldı?', correct:'5 Şubat 1959', wrong:['16 Ağustos 1960','29 Ağustos 1955','6 Eylül 1955','28 Şubat 1953'] },
+
+  // ── 1960–1970 ──────────────────────────────────────────────────────────
+  { period:'p1960', q:'Küba\'da komünist devrim hangi yılda gerçekleşmiştir?', correct:'1959', wrong:['1961','1957','1963','1955'] },
+  { period:'p1960', q:'Amerika\'nın Küba çıkarması hangi yılda gerçekleşmiştir?', correct:'1961', wrong:['1959','1962','1963','1960'] },
+  { period:'p1960', q:'1962 Küba Krizi\'nin temel nedeni neydi?', correct:'SSCB\'nin Küba\'ya füze rampası kurmaya çalışması', wrong:['ABD\'nin Küba\'yı işgal etmesi','Küba\'nın NATO\'ya saldırması','Küba\'nın nükleer silah geliştirmesi','Türkiye\'nin Küba\'ya silah satması'] },
+  { period:'p1960', q:'Küba Krizi sonucunda ABD Türkiye\'deki Jupiter füzelerini hangi yıl kaldırmıştır?', correct:'1963', wrong:['1962','1964','1965','1966'] },
+  { period:'p1960', q:'Küba Krizi\'nin Türkiye-ABD ilişkilerine etkisi ne olmuştur?', correct:'Türkiye\'nin ABD\'ye olan tavrını değiştirmiştir', wrong:['Türkiye-ABD ilişkilerini güçlendirmiştir','Türkiye\'nin NATO\'dan çıkmasına yol açmıştır','Türkiye\'nin SSCB ile ittifak kurmasını sağlamıştır','Türkiye\'nin Kıbrıs\'a müdahale etmesini kolaylaştırmıştır'] },
+  { period:'p1960', q:'Esnek Karşılık Doktrini\'ni kim ve hangi gelişme üzerine ilan etmiştir?', correct:'ABD Başkanı J.F. Kennedy, Kitlesel Karşılık Doktrini\'nin yetersizliğini görmesi üzerine', wrong:['ABD Başkanı Eisenhower, Küba Devrimi üzerine','ABD Başkanı Johnson, Vietnam Savaşı üzerine','ABD Başkanı Nixon, Çin ziyareti sonrası','ABD Başkanı Carter, İran Devrimi sonrası'] },
+  { period:'p1960', q:'Kennedy\'nin Esnek Karşılık Doktrini NATO ülkelerini neden rahatsız etmiştir?', correct:'Bir güçsüzlük göstergesi olarak görülmüştür', wrong:['ABD\'nin Avrupa\'dan çekilmesine işaret ettiği için','Nükleer silahları ortadan kaldırmayı hedeflediği için','SSCB ile müzakereye açık kapı bıraktığı için','Türkiye\'nin NATO\'dan çıkacağı mesajı verdiği için'] },
+  { period:'p1960', q:'ABD\'nin SSCB karşısındaki güç dengesini değiştiren savaş hangisidir?', correct:'Vietnam Savaşı', wrong:['Kore Savaşı','Kıbrıs Savaşı','Altı Gün Savaşı','İran-Irak Savaşı'] },
+  { period:'p1960', q:'1963 yılında Kıbrıs\'ta Rumların ne yapması yeni bir krize yol açtı?', correct:'Anayasada değişiklik yapmak istemesi', wrong:['Adayı Yunanistan\'a bağlamak istemesi','EOKA\'yı yeniden kurması','Kıbrıs Türklerini adadan sürmeye çalışması','Makarios\'un bağımsızlık ilan etmesi'] },
+  { period:'p1960', q:'Aralık 1963\'te Cemal Gürsel\'in ABD Başkanı Johnson\'a mektup yazmasının amacı neydi?', correct:'Rumlara karşı destek istemek', wrong:['Jupiter füzelerinin kaldırılmamasını istemek','Küba Krizi konusunda bilgi almak','NATO üyeliğini güçlendirmek','AET\'ye ortaklık başvurusu için destek istemek'] },
+  { period:'p1960', q:'İsmet İnönü Hükümeti\'ne Kıbrıs\'a müdahale yetkisi hangi tarihte verilmiştir?', correct:'TBMM kararıyla 16 Mart 1964', wrong:['22 Aralık 1963','5 Mayıs 1964','15 Temmuz 1965','12 Ekim 1963'] },
+  { period:'p1960', q:'Johnson Mektubu\'nda ABD Başkanı ne bildirmiştir?', correct:'Bir müdahale olursa ABD ve NATO\'nun destek verme durumunun olmayacağını', wrong:['Türkiye\'nin Kıbrıs\'a müdahalesini desteklediğini','Jupiter füzelerinin kaldırılacağını','SSCB\'nin Kıbrıs\'ta etkili olduğunu','Yunanistan\'ın NATO\'dan çıkarılabileceğini'] },
+  { period:'p1960', q:'Süleyman Demirel Hükümeti\'nin ABD ile 3 Temmuz 1969\'da imzaladığı antlaşma nedir?', correct:'Ortak Savunma İşbirliği Antlaşması', wrong:['Karşılıklı Güvenliğe İlişkin Anlaşma','Askerî Tesisler Anlaşması','Türk-Amerikan Güvenlik Anlaşması','Savunma ve Ekonomik İşbirliği Antlaşması'] },
+  { period:'p1960', q:'1960 darbesi sonrası Türkiye\'nin SSCB ile ilişkileri nasıl şekillenmiştir?', correct:'Yeni yönetim SSCB ile görüşmelere başlamıştır', wrong:['Türkiye SSCB ile ilişkilerini tamamen kesmiştir','Türkiye SSCB\'ye savaş ilan etmiştir','SSCB Türkiye\'ye baskı uygulamaya devam etmiştir','İlişkiler 1960\'ta tamamen normalleşmiştir'] },
+  { period:'p1960', q:'Sovyet lider Kruşçev, Türkiye\'nin Dışişleri Bakanı Selim Sarper ile görüşme yaptığı şehir neresidir?', correct:'New York', wrong:['Moskova','Ankara','Cenevre','Londra'] },
+  { period:'p1960', q:'1965 yılından sonra Türkiye-SSCB ilişkileri nasıl bir seyir izlemiştir?', correct:'Artarak devam etmiş, daha çok ekonomik anlamda gelişmiştir', wrong:['Tamamen kesilmiştir','Askeri iş birliğine dönüşmüştür','Türkiye SSCB\'nin müttefiki haline gelmiştir','Değişmeden kalmıştır'] },
+  { period:'p1960', q:'1964 Kıbrıs Krizi\'nde SSCB\'nin tutumu nasıl olmuştur?', correct:'SSCB Türkiye\'yi destekler bir tutum sergilemiştir', wrong:['SSCB Yunanistan\'ı desteklemiştir','SSCB tarafsız kalmıştır','SSCB müdahale etmemiştir','SSCB Makarios\'u desteklemiştir'] },
+  { period:'p1960', q:'Türkiye 1960 sonrasında nasıl bir dış politika izlemeye başlamıştır?', correct:'Çok yönlü bir politika', wrong:['Tamamen Batı yanlısı politika','SSCB yanlısı politika','Tarafsızlık politikası','Yalnızlık politikası'] },
+
+  // ── 1970–1980 ──────────────────────────────────────────────────────────
+  { period:'p1970', q:'1970-1980 yıllarında Türkiye dış politikasını en çok etkileyen sorun hangisidir?', correct:'Kıbrıs Sorunu', wrong:['Ege Sorunu','Ermeni Sorunu','PKK Sorunu','Haşhaş Sorunu'] },
+  { period:'p1970', q:'Haşhaş Sorunu ABD ile ilişkilerde hangi bağlamda gündeme gelmiştir?', correct:'ABD Başkanı Nixon\'ın ülkesindeki uyuşturucu sorununu çözmek için Türkiye\'nin üretimini kesmesini istemesi', wrong:['Türkiye\'nin ABD\'ye haşhaş satmasının yasaklanması','NATO toplantılarında haşhaş konusunun tartışılması','BM\'nin haşhaş üretimine ambargo uygulaması','Türkiye\'nin Afganistan\'dan haşhaş ithal etmesi'] },
+  { period:'p1970', q:'12 Mart 1971 muhtırası sonrası kurulan Erim Hükümeti haşhaş ekimini yasaklamak için ne kadar karşılık almıştır?', correct:'30 milyon dolar', wrong:['10 milyon dolar','50 milyon dolar','100 milyon dolar','5 milyon dolar'] },
+  { period:'p1970', q:'Ecevit Hükümeti 1973\'te haşhaş ekimini serbest bırakınca ABD ne yapmıştır?', correct:'Türkiye\'ye ambargo kararı almıştır', wrong:['Türkiye\'ye ekonomik yardımı artırmıştır','Türkiye ile yeni bir antlaşma imzalamıştır','Türkiye\'yi NATO\'dan ihraç etmeye çalışmıştır','BM\'de Türkiye aleyhine karar aldırmıştır'] },
+  { period:'p1970', q:'1973 Arap-İsrail Savaşı\'nın Türkiye\'ye ekonomik etkisi ne olmuştur?', correct:'Petrol krizi Türkiye\'yi ekonomik açıdan zora sokmuştur', wrong:['Türkiye petrol ihracatından büyük gelir elde etmiştir','Türkiye bu savaşta askeri kazanımlar elde etmiştir','Türkiye\'nin Ortadoğu ile ticaret hacmi daralmıştır','Batı\'dan ek yardım almıştır'] },
+  { period:'p1970', q:'1970-1980 yılları arasında Türkiye\'nin döviz sıkıntısı yaşadığı dönem hangisidir?', correct:'1970–1973', wrong:['1974–1976','1977–1979','1971–1975','1972–1974'] },
+  { period:'p1970', q:'1974 Kıbrıs Barış Harekatı hangi tarihte başlamıştır?', correct:'20 Temmuz 1974', wrong:['14 Ağustos 1974','22 Temmuz 1974','25 Temmuz 1974','1 Ağustos 1974'] },
+  { period:'p1970', q:'1974 Kıbrıs Barış Harekatı\'nda hangi hükümet yetkiyi kullanan taraftı?', correct:'Ecevit Hükümeti', wrong:['Demirel Hükümeti','İnönü Hükümeti','Özal Hükümeti','Erbakan Hükümeti'] },
+  { period:'p1970', q:'Temmuz 1974\'te Kıbrıs\'ta Makarios\'un yerine gelen isim kimdir?', correct:'Nikos Sampson', wrong:['Rauf Denktaş','Glafkos Klerides','Tassos Papadopoulos','Demetris Hristofyas'] },
+  { period:'p1970', q:'BM Güvenlik Konseyi Kıbrıs\'ta ateşkes çağrısında hangi tarihte bulunmuştur?', correct:'22 Temmuz 1974', wrong:['20 Temmuz 1974','25 Temmuz 1974','14 Ağustos 1974','1 Ağustos 1974'] },
+  { period:'p1970', q:'I. Cenevre Konferansı hangi tarihte gerçekleşmiştir?', correct:'25 Temmuz 1974', wrong:['22 Temmuz 1974','20 Temmuz 1974','14 Ağustos 1974','10 Ağustos 1974'] },
+  { period:'p1970', q:'Kıbrıs\'a ikinci müdahale hangi tarihte gerçekleşmiştir?', correct:'14 Ağustos 1974', wrong:['22 Temmuz 1974','25 Temmuz 1974','1 Ağustos 1974','20 Temmuz 1974'] },
+  { period:'p1970', q:'Kıbrıs Barış Harekatı\'nın ardından Yunanistan\'ın tutumu ne olmuştur?', correct:'NATO\'nun askeri kanadından çekildiğini açıklamıştır', wrong:['Türkiye\'ye savaş ilan etmiştir','ABD ile savunma antlaşması imzalamıştır','BM\'ye şikayet başvurusunda bulunmuştur','Kıbrıs\'a asker göndermiştir'] },
+  { period:'p1970', q:'ABD Türkiye\'ye silah ambargosu kararını hangi tarihte almıştır?', correct:'5 Şubat 1975', wrong:['14 Ağustos 1974','1 Ocak 1975','5 Mart 1975','22 Temmuz 1974'] },
+  { period:'p1970', q:'ABD\'nin silah ambargosu hangi yılda sona ermiştir?', correct:'1978', wrong:['1976','1977','1979','1980'] },
+  { period:'p1970', q:'Kıbrıs Türk Federe Devleti hangi tarihte kurulmuştur?', correct:'Şubat 1975', wrong:['14 Ağustos 1974','Kasım 1983','Temmuz 1974','1976'] },
+  { period:'p1970', q:'Kıbrıs Türk Federe Devleti\'nin başkanı kim olmuştur?', correct:'Rauf Denktaş', wrong:['Bülent Ecevit','Kenan Evren','Alparslan Türkeş','Süleyman Demirel'] },
+  { period:'p1970', q:'Türkiye, SSCB ile "İyi Komşuluk ve Dostluk Prensiplerine Dayalı İşbirliği Antlaşması"nı ne zaman imzalamıştır?', correct:'1978 yılında', wrong:['1974','1975','1976','1979'] },
+  { period:'p1970', q:'Türkiye 1980 yılında İsrail ile ilgili nasıl bir adım atmıştır?', correct:'İsrail\'in Kudüs\'e saldırısı üzerine başkonsolosluğu kapatmıştır', wrong:['İsrail ile savunma antlaşması imzalamıştır','İsrail\'i tanımıştır','İsrail\'e ekonomik ambargo uygulamıştır','İsrail\'e elçi göndermiştir'] },
+  { period:'p1970', q:'Türkiye "Altı Gün Savaşı"nda İncirlik üssü konusunda nasıl bir tutum sergilemiştir?', correct:'İncirlik üssünün kullanımına müsaade etmemiştir', wrong:['ABD\'nin İncirlik\'i serbestçe kullanmasına izin vermiştir','İncirlik\'i SSCB\'ye açmıştır','İncirlik\'i kapatmıştır','İncirlik\'ten destek uçuşu yapmıştır'] },
+  { period:'p1970', q:'1974 ABD askeri müdahalesi sırasında Lübnan\'a giden kuvvetler Türkiye\'de hangi üssü kullandı?', correct:'İncirlik Üssü', wrong:['İzmir–Çiğli Üssü','Ankara Üssü','Trabzon Üssü','Diyarbakır Üssü'] },
+  { period:'p1970', q:'Kerkük–Yumurtalık petrol boru hattı Türkiye\'ye ne sağlamıştır?', correct:'Döviz girişi ve ekonomik sorunların çözülmesine katkı', wrong:['SSCB ile ittifak imkânı','ABD ile anlaşmazlık zemini','Irak ile siyasi gerilim','NATO\'ya stratejik avantaj'] },
+  { period:'p1970', q:'Türkiye 1970\'li yıllarda bölgeye yönelik ihracatını ne ölçüde artırmıştır?', correct:'Yaklaşık %40 oranında', wrong:['%10 oranında','%20 oranında','%60 oranında','%80 oranında'] },
+  { period:'p1970', q:'1970\'li yıllarda Türkiye-SSCB ilişkilerinde Sovyetlerin Kıbrıs tutumu nasıldı?', correct:'Rumlara yakın bir politika izlenmiştir', wrong:['Türkiye\'yi desteklemiştir','Tarafsız kalmışlardır','BM üzerinden çözüm arayışına girmiştir','Yunanistan\'ı kınamıştır'] },
+  { period:'p1970', q:'Ege Sorunu\'nun kökeninde hangi antlaşmanın yetersizliği yatmaktadır?', correct:'Lozan Antlaşması\'ndaki açıklayıcı ifadelerin yetersizliği', wrong:['Paris Antlaşması','NATO Kurucu Antlaşması','Balkan Paktı','Roma Antlaşması'] },
+  { period:'p1970', q:'Yunanistan karasuları için başlangıçta ne kadarlık bir sınır belirlenmiş, sonradan kaç mile çıkarmıştır?', correct:'3 milden 6 mile', wrong:['6 milden 12 mile','3 milden 12 mile','4 milden 8 mile','2 milden 6 mile'] },
+  { period:'p1970', q:'TPAO\'nun Ege\'de petrol arama girişimi hangi yılda Yunanistan\'ın tepkisine yol açtı?', correct:'1973', wrong:['1964','1976','1971','1978'] },
+  { period:'p1970', q:'Türkiye Ege Sorununa karşılık 1975\'te hangi askeri yapılanmayı kurmuştur?', correct:'Dördüncü Ordu', wrong:['İkinci Ordu','Beşinci Ordu','Birinci Ordu','Üçüncü Ordu'] },
+  { period:'p1970', q:'1976 Bern Antlaşması\'nın içeriği neydi?', correct:'Bir sonuç alınıncaya kadar iki tarafın da harekete geçmeyeceğini kabul etmesi', wrong:['Yunanistan\'ın kıta sahanlığını 6 mile indirmesi','Türkiye\'nin Ege\'deki araştırmasını durdurması','Kıbrıs sorununda ortak çözüm arayışına girilmesi','İki ülkenin NATO\'da ateşkes ilan etmesi'] },
+  { period:'p1970', q:'SİSMİK I\'in Ege\'de faaliyete geçmesi hangi yılda yeni bir soruna yol açmıştır?', correct:'1976', wrong:['1973','1975','1978','1980'] },
+  { period:'p1970', q:'29 Mart 1980\'de Türkiye ile ABD arasında imzalanan antlaşma nedir?', correct:'Savunma ve Ekonomik İşbirliği Antlaşması', wrong:['Karşılıklı Güvenliğe İlişkin Anlaşma','Ortak Savunma İşbirliği Antlaşması','Askerî Tesisler Anlaşması','NATO Kuvvetler Statüsü Antlaşması'] },
+  { period:'p1970', q:'1971\'de AET ile imzalanan Katma Protokol\'ün amacı neydi?', correct:'Türkiye\'nin Gümrük Birliği\'ne giriş sürecini başlatmak', wrong:['Türkiye\'nin tam üyeliğini sağlamak','Türkiye ile serbest ticaret anlaşması yapmak','AB\'ye üye olmayan ülkelere yardım sağlamak','Yunanistan\'ın AET üyeliğini engellemek'] },
+  { period:'p1970', q:'1978 yılında Bülent Ecevit Hükümeti AET ile ilişkiler konusunda ne yapmıştır?', correct:'AET ile ilişkilerini askıya almıştır', wrong:['Tam üyelik başvurusunda bulunmuştur','AET\'den ayrılmıştır','AET ile gümrük birliğini uygulamaya koymuştur','AET ile savunma antlaşması imzalamıştır'] },
+
+  // ── 1980–1989 ──────────────────────────────────────────────────────────
+  { period:'p1980', q:'SSCB Afganistan\'a hangi tarihte asker göndermiştir?', correct:'24 Aralık 1979', wrong:['1 Ocak 1980','15 Eylül 1979','5 Mart 1980','20 Ağustos 1978'] },
+  { period:'p1980', q:'Sovyetlerde Mihail Gorbaçov hangi yılda iktidara gelmiştir?', correct:'1985', wrong:['1982','1989','1987','1991'] },
+  { period:'p1980', q:'Reagan Doktrini\'nin temel ilkesi neydi?', correct:'Anti-komünist anlayışa destek', wrong:['SSCB ile uzlaşma politikası','Ortadoğu\'da barış süreci','Üçüncü Dünya ülkelerine insani yardım','NATO\'nun genişlemesi'] },
+  { period:'p1980', q:'"Yeşil Kuşak Projesi" hangi ABD başkanının döneminde uygulanmıştır?', correct:'Jimmy Carter', wrong:['Ronald Reagan','Richard Nixon','George H.W. Bush','Gerald Ford'] },
+  { period:'p1980', q:'"Yeşil Kuşak Projesi"nin hedefi neydi?', correct:'SSCB\'ye karşı Türkiye, Mısır, Suudi Arabistan gibi İslam ülkelerini desteklemek', wrong:['Ortadoğu\'da petrol üretimini kontrol altına almak','İsrail\'in güvenliğini sağlamak','Arap ülkelerini demokratikleştirmek','NATO\'yu Ortadoğu\'ya genişletmek'] },
+  { period:'p1980', q:'1979 İran Devrimi\'ni gerçekleştiren lider kimdir?', correct:'Humeyni', wrong:['Şah Rıza Pehlevi','Saddam Hüseyin','Muammer Kaddafi','Hafız Esad'] },
+  { period:'p1980', q:'İran-Irak Savaşı Türkiye\'de hangi yıldan itibaren güvenlik tehdidi oluşturmaya başlamıştır?', correct:'1984', wrong:['1980','1982','1986','1988'] },
+  { period:'p1980', q:'1980 askeri yönetimi döneminde Türkiye\'nin ABD ile ilişkileri nasıldı?', correct:'İyi seviyede tutulmuştur', wrong:['Gerilmiştir','Tamamen kesilmiştir','Sadece ekonomik düzeyde devam etmiştir','Türkiye NATO\'dan ayrılmıştır'] },
+  { period:'p1980', q:'6 Kasım 1983 seçimlerinde iktidara gelen başbakan kimdir?', correct:'Turgut Özal', wrong:['Bülent Ecevit','Süleyman Demirel','Alparslan Türkeş','Necmettin Erbakan'] },
+  { period:'p1980', q:'1980 İran-Irak Savaşı\'nda ABD kimden yana tutum sergilemiştir?', correct:'Irak\'tan (Saddam Hüseyin) yana', wrong:['İran\'dan (Humeyni) yana','Tarafsız kalmıştır','Her iki tarafa da destek vermiştir','BM aracılığıyla barış çabası gütmüştür'] },
+  { period:'p1980', q:'1983 yılında Kuzey Kıbrıs Türk Cumhuriyeti ilan edilince ABD\'nin tepkisi ne olmuştur?', correct:'Bu durumu kabullenmemiştir', wrong:['KKTC\'yi ilk tanıyan ülke olmuştur','Yunanistan\'ı kınamıştır','BM\'de Türkiye lehine oy kullanmıştır','Türkiye\'ye ekonomik yardım artırmıştır'] },
+  { period:'p1980', q:'ABD tarafından 24 Nisan\'ın nasıl tanımlanması Türkiye\'yi rahatsız etmiştir?', correct:'"İnsanın İnsana Hunharlık Günü" olarak adlandırılması', wrong:'["Türk Zaferi Günü" ilan edilmesi,"Soykırım Anma Günü" ilan edilmesi,"Barış Günü" ilan edilmesi,"NATO Dayanışma Günü" ilan edilmesi]'.split(',').map(s=>s.replace(/[\[\]"]/g,'')) },
+  { period:'p1980', q:'1984 yılında Türkiye\'nin PKK\'ya karşı önlemlerinin ABD tarafından uygun görülmemesi hangi sorunu simgelemiştir?', correct:'Kürt Sorunu', wrong:['Ermeni Sorunu','Kıbrıs Sorunu','Ege Sorunu','Haşhaş Sorunu'] },
+  { period:'p1980', q:'1975 Helsinki Nihai Senedi\'ne göre ABD Türkiye\'den ne talep etmiştir?', correct:'Kürtlere azınlık haklarının verilmesini', wrong:['Kıbrıs meselesinde uzlaşı sağlamasını','SSCB ile ilişkilerini geliştirmesini','Ermeni meselesi konusunda adım atmasını','Ege\'deki anlaşmazlıkları çözmesini'] },
+  { period:'p1980', q:'ABD\'nin Celal Talabani ve Mesut Barzani ile görüşmesi Türkiye\'yi neden rahatsız etmiştir?', correct:'Kürt liderlerle yapılan bu görüşmeler Kürt Sorununda ABD\'nin tutumunu ortaya koyuyordu', wrong:['Bu görüşmelerde Kıbrıs meselesi gündeme getirildiği için','Bu görüşmelerde NATO üyeliği tartışıldığı için','Bu görüşmelerin gizlice yapılması Türkiye\'ye yapılan bir saygısızlık olduğu için','Bu görüşmelerde Türkiye\'nin askeri sırları ifşa edildiği için'] },
+  { period:'p1980', q:'1981\'de Yunanistan\'ın AT üyesi olması Türkiye\'ye nasıl yansımıştır?', correct:'Yunanistan Türkiye karşıtı bir politika izlemeye başlamıştır', wrong:['AT Türkiye\'nin üyeliğini hızlandırmıştır','Türkiye ile Yunanistan arasında anlaşma sağlanmıştır','Yunanistan Türkiye adına arabuluculuk yapmıştır','AT Türkiye\'ye ekonomik destek artırmıştır'] },
+  { period:'p1980', q:'1982 yılında AT-Türkiye ilişkilerinin durması hangi gelişmelerin sonucudur?', correct:'12 Eylül askeri darbesi, insan hakları ihlalleri ve Yunanistan\'ın Türkiye karşıtı politikası', wrong:['Türkiye\'nin AT\'den çekilme talebi','Kıbrıs sorununun çözümsüz kalması','Türkiye\'nin ekonomik krize girmesi','Ege anlaşmazlığının tırmanması'] },
+  { period:'p1980', q:'Turgut Özal hangi yıl AT\'ye tam üyelik başvurusunda bulunmuştur?', correct:'Nisan 1987', wrong:['1985','1983','1989','1990'] },
+  { period:'p1980', q:'AT\'nin Türkiye\'nin üyelik başvurusuna olumsuz yaklaşmasının temel nedenleri nelerdir?', correct:'Ekonomi, Kıbrıs sorunu, azınlık hakları ve insan hakları ihlalleri', wrong:['Türkiye\'nin NATO üyeliği','Türkiye\'nin İslam Konferansı Örgütü üyeliği','Türkiye\'nin SSCB ile ilişkileri','Türkiye\'nin büyüklüğü ve nüfusu'] },
+  { period:'p1980', q:'Kenan Evren\'in 1980 sonrasında Yunanistan konusundaki önemli kararı neydi?', correct:'Yunanistan\'ın NATO\'ya dönmesi konusunda gerekli izni vermesi', wrong:['Yunanistan\'a savaş ilan etmesi','Yunanistan\'ı AT\'den çıkarmaya çalışması','Ege sorununu çözmek için ikili görüşme teklif etmesi','Kıbrıs meselesinde Yunanistan\'la uzlaşı sağlaması'] },
+  { period:'p1980', q:'Türkiye-Yunanistan ilişkilerinde "Davos Süreci" hangi yılda gündeme gelmiştir?', correct:'1988', wrong:['1985','1990','1983','1986'] },
+  { period:'p1980', q:'Irak\'ın kimyasal silah kullanması sonucunda Türkiye\'ye ne olmuştur?', correct:'Çok sayıda Kürt\'ün Türkiye sınırına gelmesi', wrong:['Türkiye\'nin Irak\'a askeri müdahalede bulunması','Türkiye\'nin Irak\'a ambargo uygulaması','BM\'nin Türkiye\'ye destek vermesi','Türkiye\'nin sınırını kapatması'] },
+  { period:'p1980', q:'Suriye\'nin 1980\'lerde Türkiye\'ye karşı tutumu nasıldı?', correct:'Kürt gruplarını desteklemiş ve PKK\'ya destek vermiştir', wrong:['Türkiye ile savunma antlaşması imzalamıştır','Türkiye aleyhine BM kararı çıkartmıştır','Bağdat Paktı\'nı güçlendirmiştir','Türkiye ile ticaret anlaşması yapmıştır'] },
+  { period:'p1980', q:'Türkiye 1988\'de Filistin\'in bağımsızlığını tanıyan kaçıncı ülke olmuştur?', correct:'İlk ülkelerden biri', wrong:['İkinci ülke','Son ülke','İlk 10 ülke içinde değil','Tanımamıştır'] },
+  { period:'p1980', q:'ASALA örgütünün faaliyetleri Türkiye\'nin hangi ülkeyle iş birliği yapmasına zemin hazırlamıştır?', correct:'İsrail', wrong:['Yunanistan','ABD','İngiltere','Fransa'] },
+  { period:'p1980', q:'Irak 1959\'da Bağdat Paktı\'ndan ayrılınca pakt hangi adı almıştır?', correct:'CENTO (Ağustos 1959)', wrong:['SEATO','ANZUS','CSCE','OPEC'] },
+  { period:'p1980', q:'1983-1984 yıllarında Türkiye hangi örgütte aktif rol almıştır?', correct:'İslam Konferansı Örgütü', wrong:['Arap Birliği','OPEC','Filistin Kurtuluş Örgütü','Bağdat Paktı'] },
+
+  // ── 1990 SONRASI ────────────────────────────────────────────────────────
+  { period:'p1990', q:'Berlin Duvarı hangi yılda yıkılmıştır?', correct:'1989', wrong:['1991','1987','1985','1993'] },
+  { period:'p1990', q:'AT Maastricht Anlaşması ile hangi ad ve yılda siyasi bir boyuta taşınmıştır?', correct:'Avrupa Birliği adını 1992\'de almıştır', wrong:['Avrupa Birliği adını 1987\'de almıştır','Avrupa Topluluğu adını 1990\'da almıştır','Avrupa Ekonomik Birliği adını 1994\'te almıştır','Avrupa Parlamentosu adını 1991\'de almıştır'] },
+  { period:'p1990', q:'Bosna Savaşı hangi yıllar arasında yaşanmıştır?', correct:'1992–1995', wrong:['1991–1993','1993–1996','1990–1994','1995–1998'] },
+  { period:'p1990', q:'11 Eylül 2001 terör eylemleri sonrasında ABD Afganistan\'a hangi tarihte müdahale etmiştir?', correct:'7 Ekim 2001', wrong:['11 Eylül 2001','20 Mart 2003','1 Mayıs 2001','15 Kasım 2001'] },
+  { period:'p1990', q:'ABD Irak\'a hangi tarihte müdahale etmiştir?', correct:'20 Mart 2003', wrong:['7 Ekim 2001','15 Ocak 2003','1 Nisan 2003','11 Eylül 2001'] },
+  { period:'p1990', q:'Soğuk Savaş\'tan tek süper güç olarak çıkan devlet hangisidir?', correct:'ABD', wrong:['SSCB','Çin','Fransa','Japonya'] },
+  { period:'p1990', q:'1997\'de AB sürecine dahil edilen ülkeler arasında Türkiye\'yi rahatsız eden ülkeler hangileridir?', correct:'Kıbrıs, Romanya ve Bulgaristan', wrong:['Yunanistan, Romanya ve Polonya','Malta, Çekya ve Macaristan','Polonya, Slovakya ve Slovanya','Letonya, Litvanya ve Estonya'] },
+  { period:'p1990', q:'KARDAK KRİZİ iki ülkeyi neyin eşiğine getirmiştir?', correct:'Savaşın eşiğine', wrong:['Diplomatik ilişkilerin kesilmesi eşiğine','NATO\'dan ayrılmanın eşiğine','BM arabuluculuğu talebinin eşiğine','Gümrük birliğinin feshedilmesinin eşiğine'] },
+  { period:'p1990', q:'Türkiye\'nin AB üyelik müzakereleri hangi yılda başlamıştır?', correct:'2005', wrong:['1999','2001','2003','2007'] },
+  { period:'p1990', q:'Soğuk Savaş sonrası Türkiye\'nin çevresinde nasıl bir jeopolitik ortam oluşmuştur?', correct:'Etrafı kendisinden daha zayıf ülkelerle çevrilmiştir', wrong:['Etrafı süper güçlerle çevrilmiştir','Tamamen istikrarlı bir bölgede kalmıştır','SSCB ile doğrudan sınır çıkmıştır','AB üyesi komşu sayısı artmıştır'] },
+  { period:'p1990', q:'1993 sonrası Türkiye hangi politikaya ağırlık vermiştir?', correct:'AB ile bütünleşme politikası', wrong:['SSCB\'nin ardıllarıyla ittifak politikası','Tamamen tarafsızlık politikası','NATO\'dan ayrılma politikası','Ortadoğu merkezli dış politika'] },
+  { period:'p1990', q:'Kopenhag kriterleri Türkiye açısından ne anlama geliyordu?', correct:'Türkiye\'yi zora sokan koşullardı', wrong:['Türkiye\'nin kolayca karşılayabileceği şartlardı','Türkiye\'nin AB üyeliğini güvence altına alıyordu','Türkiye\'ye özel kolaylıklar sağlıyordu','Kıbrıs sorununun çözümünü dışlıyordu'] },
+];
+
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+let currentPeriod = null;
+let questions = [];
+let currentIndex = 0;
+let correctCount = 0;
+let wrongCount = 0;
+let answered = false;
+let shuffledOptions = [];
+let history = [];
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function countFor(pid) {
+  if (pid === 'all') return QUESTIONS.length;
+  return QUESTIONS.filter(q => q.period === pid).length;
+}
+
+function buildHome() {
+  const container = document.getElementById('periodCards');
+  container.innerHTML = '';
+  PERIODS.forEach(p => {
+    const cnt = countFor(p.id);
+    const card = document.createElement('div');
+    card.className = 'period-card' + (p.isAll ? ' all-card' : '');
+    card.onclick = () => startQuiz(p.id);
+    card.innerHTML = `
+      <div class="period-icon" style="background:${p.bg}; color:${p.color}; ${p.isAll ? 'background:rgba(255,255,255,0.18)' : ''}">${p.icon}</div>
+      <div class="period-info">
+        <div class="period-name">${p.name}</div>
+        <div class="period-count" style="color:${p.isAll ? 'rgba(255,255,255,0.6)' : ''}">${cnt} soru</div>
+      </div>`;
+    container.appendChild(card);
+  });
+}
+
+function startQuiz(periodId) {
+  currentPeriod = periodId;
+  const pool = periodId === 'all' ? [...QUESTIONS] : QUESTIONS.filter(q => q.period === periodId);
+  questions = shuffle(pool);
+  currentIndex = 0; correctCount = 0; wrongCount = 0;
+  history = [];
+  const p = PERIODS.find(x => x.id === periodId);
+  document.getElementById('navPeriod').textContent = p.name;
+  showScreen('quiz');
+  loadQuestion();
+}
+
+function loadQuestion() {
+  answered = false;
+  document.getElementById('nextBtn').classList.remove('show');
+  document.getElementById('explanationCard').classList.remove('show');
+
+  const q = questions[currentIndex];
+  const total = questions.length;
+  const p = PERIODS.find(x => x.id === q.period);
+
+  document.getElementById('qNumber').textContent = `Soru ${currentIndex + 1}`;
+  document.getElementById('qPeriodTag').textContent = p.name;
+  document.getElementById('navProgressText').textContent = `${currentIndex + 1} / ${total}`;
+  document.getElementById('navScore').textContent = `✓ ${correctCount}`;
+  document.getElementById('progressBar').style.width = `${(currentIndex / total) * 100}%`;
+  document.getElementById('questionText').textContent = q.q;
+
+  // Shuffle options
+  const letters = ['A','B','C','D','E'];
+  const allOpts = shuffle([q.correct, ...q.wrong.slice(0, 4)]);
+  shuffledOptions = allOpts;
+
+  const list = document.getElementById('optionsList');
+  list.innerHTML = '';
+  allOpts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.onclick = () => selectOption(i);
+    btn.innerHTML = `
+      <div class="option-letter">${letters[i]}</div>
+      <div class="option-text">${opt}</div>
+      <div class="option-icon">${opt === q.correct ? '✓' : '✗'}</div>`;
+    list.appendChild(btn);
+  });
+}
+
+function selectOption(idx) {
+  if (answered) return;
+  answered = true;
+  const q = questions[currentIndex];
+  const chosen = shuffledOptions[idx];
+  const isCorrect = chosen === q.correct;
+  if (isCorrect) correctCount++; else wrongCount++;
+
+  const buttons = document.querySelectorAll('.option-btn');
+  buttons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (shuffledOptions[i] === q.correct) btn.classList.add('correct');
+    else if (i === idx) btn.classList.add('wrong');
+    else btn.classList.add('dimmed');
+  });
+
+  // Explanation
+  const expCard = document.getElementById('explanationCard');
+  const expText = document.getElementById('explanationText');
+  expText.textContent = isCorrect
+    ? `Doğru! Cevap: "${q.correct}"`
+    : `Yanlış! Doğru cevap: "${q.correct}"`;
+  document.querySelector('.explanation-label').textContent = isCorrect ? '✅ Doğru Cevap' : '❌ Yanlış Cevap';
+  document.querySelector('.explanation-label').style.color = isCorrect ? 'var(--green)' : 'var(--red)';
+  expCard.classList.add('show');
+
+  history.push({ q: q.q, correct: q.correct, chosen, ok: isCorrect });
+
+  document.getElementById('navScore').textContent = `✓ ${correctCount}`;
+
+  const nextBtn = document.getElementById('nextBtn');
+  const isLast = currentIndex === questions.length - 1;
+  nextBtn.textContent = isLast ? 'Sonuçları Gör 🎯' : 'Sonraki Soru →';
+  nextBtn.classList.add('show');
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex >= questions.length) {
+    showResult();
+  } else {
+    loadQuestion();
+    document.querySelector('.quiz-body').scrollTop = 0;
+  }
+}
+
+function showResult() {
+  const total = questions.length;
+  const pct = Math.round((correctCount / total) * 100);
+
+  document.getElementById('scorePct').textContent = `%${pct}`;
+  document.getElementById('scoreCorrect').textContent = correctCount;
+  document.getElementById('scoreWrong').textContent = wrongCount;
+
+  let emoji = '😔', title = 'Tekrar Dene!';
+  if (pct >= 90) { emoji = '🏆'; title = 'Mükemmel!'; }
+  else if (pct >= 70) { emoji = '🎉'; title = 'Çok İyi!'; }
+  else if (pct >= 50) { emoji = '👍'; title = 'İyi Deneme!'; }
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultSubtitle').textContent = `${total} sorudan ${correctCount} doğru — %${pct} başarı`;
+
+  const p = PERIODS.find(x => x.id === currentPeriod);
+  document.getElementById('retryBtn').textContent = `"${p.name}" Tekrar Dene`;
+
+  const reviewList = document.getElementById('reviewList');
+  reviewList.innerHTML = `<div class="review-header">Soru Özeti</div>`;
+  history.forEach((h, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item';
+    div.innerHTML = `
+      <div class="review-icon">${h.ok ? '✅' : '❌'}</div>
+      <div>
+        <div class="review-q">${i+1}. ${h.q}</div>
+        <div class="review-ans ${h.ok ? 'ok' : 'no'}">${h.ok ? '✓ ' + h.correct : '✗ ' + h.chosen + ' → ' + h.correct}</div>
+      </div>`;
+    reviewList.appendChild(div);
+  });
+
+  showScreen('result');
+}
+
+function retryQuiz() { startQuiz(currentPeriod); }
+
+function goHome() { showScreen('home'); }
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+buildHome();
+</script>
+</body>
+</html>
